@@ -34,7 +34,6 @@ namespace DarkRift.Dispatching
         /// </summary>
         internal ActionDispatcherTask() : base()
         {
-
         }
 
         /// <summary>
@@ -53,7 +52,7 @@ namespace DarkRift.Dispatching
         /// <param name="callback">The callback to run when this task has been executed.</param>
         internal static ActionDispatcherTask Create(Action action, ActionDispatchCompleteCallback callback)
         {
-            ActionDispatcherTask task = ObjectCache.GetActionDispatcherTask();
+            var task = ObjectCache.GetActionDispatcherTask();
 
             task.isCurrentlyLoungingInAPool = false;
 
@@ -89,9 +88,13 @@ namespace DarkRift.Dispatching
                 }
 
                 if (synchronous)
+                {
                     RunCallback(null);
+                }
                 else
+                {
                     ThreadPool.QueueUserWorkItem(RunCallback);
+                }
             }
         }
 
@@ -121,7 +124,9 @@ namespace DarkRift.Dispatching
         ~ActionDispatcherTask()
         {
             if (!isCurrentlyLoungingInAPool)
+            {
                 ObjectCacheHelper.ActionDispatcherTaskWasFinalized();
+            }
         }
     }
 }
