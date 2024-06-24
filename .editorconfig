@@ -222,9 +222,9 @@ csharp_preserve_single_line_blocks = true:error
 csharp_preserve_single_line_statements = false:error
 
 # Prefer explicit types everywhere
-csharp_style_var_for_built_in_types = false:suggestion
-csharp_style_var_when_type_is_apparent = false:suggestion
-csharp_style_var_elsewhere = false:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
 
 # Prefer property-like constructs to have an expression-body
 csharp_style_expression_bodied_properties = true:suggestion
