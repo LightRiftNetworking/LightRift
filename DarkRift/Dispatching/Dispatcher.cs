@@ -61,7 +61,9 @@ namespace DarkRift.Dispatching
             get
             {
                 lock (tasks)
+                {
                     return tasks.Count;
+                }
             }
         }
 
@@ -72,7 +74,6 @@ namespace DarkRift.Dispatching
         public Dispatcher(bool exceptionsOnExecutorThread)
             : this(exceptionsOnExecutorThread, Thread.CurrentThread.ManagedThreadId)
         {
-
         }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace DarkRift.Dispatching
         /// <param name="executorThreadID">The thread that will be dequeueing tasks.</param>
         public Dispatcher(bool exceptionsOnExecutorThread, int executorThreadID)
         {
-            this.ExceptionsOnExecutorThread = exceptionsOnExecutorThread;
+            ExceptionsOnExecutorThread = exceptionsOnExecutorThread;
             this.executorThreadID = executorThreadID;
         }
 
@@ -108,7 +109,9 @@ namespace DarkRift.Dispatching
                 task.WaitHandle.WaitOne();
 
                 if (task.TaskState == DispatcherTaskState.Failed)
+                {
                     throw new DispatcherException("An unhandled exception was thrown inside the dispatcher task, see inner exception for more details.", task.Exception);
+                }
             }
         }
 
@@ -126,14 +129,18 @@ namespace DarkRift.Dispatching
         public T InvokeWait<T>(Func<T> function)
         {
             //Invoke async and wait for it.
-            using (FunctionDispatcherTask<T> task = InvokeAsync(function))
+            using (var task = InvokeAsync(function))
             {
                 task.WaitHandle.WaitOne();
 
                 if (task.TaskState == DispatcherTaskState.Failed)
+                {
                     throw new DispatcherException("An unhandled exception was thrown inside the dispatcher task, see inner exception for more details.", task.Exception);
+                }
                 else
+                {
                     return task.Result;
+                }
             }
         }
 
@@ -149,7 +156,7 @@ namespace DarkRift.Dispatching
         public ActionDispatcherTask InvokeAsync(Action action)
         {
             //Queue the operation and wait.
-            ActionDispatcherTask task = ActionDispatcherTask.Create(action);
+            var task = ActionDispatcherTask.Create(action);
 
             //Complete synchronously if already executor thread
             if (Thread.CurrentThread.ManagedThreadId == executorThreadID)
@@ -159,7 +166,9 @@ namespace DarkRift.Dispatching
             else
             {
                 lock (tasks)
+                {
                     tasks.Enqueue(task);
+                }
 
                 jobMutex.Set();
             }
@@ -180,7 +189,7 @@ namespace DarkRift.Dispatching
         public FunctionDispatcherTask<T> InvokeAsync<T>(Func<T> function)
         {
             //Queue the operation and wait.
-            FunctionDispatcherTask<T> task = new FunctionDispatcherTask<T>(function);
+            var task = new FunctionDispatcherTask<T>(function);
 
             //Complete synchronously if already executor thread
             if (Thread.CurrentThread.ManagedThreadId == executorThreadID)
@@ -190,7 +199,9 @@ namespace DarkRift.Dispatching
             else
             {
                 lock (tasks)
+                {
                     tasks.Enqueue(task);
+                }
 
                 jobMutex.Set();
             }
@@ -211,7 +222,7 @@ namespace DarkRift.Dispatching
         public ActionDispatcherTask InvokeAsync(Action action, ActionDispatchCompleteCallback callback)
         {
             //Queue the operation and wait.
-            ActionDispatcherTask task = ActionDispatcherTask.Create(action, callback);
+            var task = ActionDispatcherTask.Create(action, callback);
 
             //Complete synchronously if already executor thread
             if (Thread.CurrentThread.ManagedThreadId == executorThreadID)
@@ -221,7 +232,9 @@ namespace DarkRift.Dispatching
             else
             {
                 lock (tasks)
+                {
                     tasks.Enqueue(task);
+                }
 
                 jobMutex.Set();
             }
@@ -243,7 +256,7 @@ namespace DarkRift.Dispatching
         public FunctionDispatcherTask<T> InvokeAsync<T>(Func<T> function, FunctionDispatchCompleteCallback<T> callback)
         {
             //Queue the operation and wait.
-            FunctionDispatcherTask<T> task = new FunctionDispatcherTask<T>(function, callback);
+            var task = new FunctionDispatcherTask<T>(function, callback);
 
             //Complete synchronously if already executor thread
             if (Thread.CurrentThread.ManagedThreadId == executorThreadID)
@@ -253,7 +266,9 @@ namespace DarkRift.Dispatching
             else
             {
                 lock (tasks)
+                {
                     tasks.Enqueue(task);
+                }
 
                 jobMutex.Set();
             }
@@ -268,18 +283,22 @@ namespace DarkRift.Dispatching
         public void ExecuteDispatcherTasks()
         {
             if (executorThreadID != -1 && Thread.CurrentThread.ManagedThreadId != executorThreadID)
+            {
                 throw new InvalidOperationException("Can only execute tasks from the thread that created the dispatcher.");
+            }
 
             //Get the number to execute
-            int countAtStart = Count;
+            var countAtStart = Count;
 
             //Execute that number of tasks
-            for (int i = 0; i < countAtStart; i++)
+            for (var i = 0; i < countAtStart; i++)
             {
                 //Get the task
                 DispatcherTask task;
                 lock (tasks)
+                {
                     task = tasks.Dequeue();
+                }
 
                 //Execute the task
                 try
@@ -290,7 +309,9 @@ namespace DarkRift.Dispatching
                 {
                     //Raise exception on main thread if necessary, else suppress and pick up later
                     if (ExceptionsOnExecutorThread)
+                    {
                         throw;
+                    }
                 }
             }
 
@@ -298,14 +319,17 @@ namespace DarkRift.Dispatching
             lock (tasks)
             {
                 if (tasks.Count == 0)
+                {
                     jobMutex.Reset();
+                }
             }
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
-        private void Dispose(bool disposing)        //TODO 1 dispose items in queue and possibly throw ObjectDisposedExceptions
+        private void Dispose(bool disposing) //TODO 1 dispose items in queue and possibly throw ObjectDisposedExceptions
         {
             if (!disposedValue)
             {
@@ -326,6 +350,7 @@ namespace DarkRift.Dispatching
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
         }
+
         #endregion
     }
 }

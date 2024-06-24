@@ -65,9 +65,13 @@ namespace DarkRift.Dispatching
                 }
 
                 if (synchronous)
+                {
                     RunCallback(null);
+                }
                 else
+                {
                     ThreadPool.QueueUserWorkItem(RunCallback);
+                }
             }
         }
     }
