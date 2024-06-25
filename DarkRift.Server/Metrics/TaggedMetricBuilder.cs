@@ -50,7 +50,7 @@ namespace DarkRift.Server.Metrics
         {
             if (values == null)
             {
-                throw new ArgumentNullException("values", "Tag values must not be null, use an empty array instead.");
+                throw new ArgumentNullException(nameof(values), "Tag values must not be null, use an empty array instead.");
             }
 
             foreach (var tag in values)
