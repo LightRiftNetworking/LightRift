@@ -138,7 +138,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
                 MaxTcpBodyLength = 65535;
             }
 
-            // By default on Windows ICMP Port Unreachable messages cause the socket to close, we really don't want that
+            // By default, on Windows ICMP Port Unreachable messages cause the socket to close, we really don't want that
             // https://stackoverflow.com/a/74327430/2755790
 
             try

@@ -21,7 +21,7 @@ namespace DarkRift.Server.Plugins.Performance
         internal override bool Hidden => true;
 
         /// <summary>
-        ///     The number of miliseconds between checks.
+        ///     The number of milliseconds between checks.
         /// </summary>
         private readonly int period = 10000;
 

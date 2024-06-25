@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace DarkRift.Server.Plugins.Matchmaking
 {
     /// <summary>
-    ///     Event args for changes to a groups's matchmaking state.
+    ///     Event args for changes to a group's matchmaking state.
     /// </summary>
     /// <typeparam name="T">The type of object being matched.</typeparam>
     public class MatchmakingStateChangedEventArgs<T> : EventArgs
@@ -21,7 +21,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public MatchmakingState MatchmakingState { get; }
 
         /// <summary>
-        ///     The sub groups the state change occured for.
+        ///     The subgroups the state change occured for.
         /// </summary>
         public IEnumerable<EntityGroup<T>> SubGroups { get; }
 
@@ -34,7 +34,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         ///     Creates new event args with the given state.
         /// </summary>
         /// <param name="matchmakingState">The new matchmaking state.</param>
-        /// <param name="subGroups">The subgroups that the matchamking state change occured for.</param>
+        /// <param name="subGroups">The subgroups that the matchmaking state change occured for.</param>
         /// <param name="entities">The entities the matchmaking state change occurred for.</param>
         public MatchmakingStateChangedEventArgs(MatchmakingState matchmakingState, IEnumerable<EntityGroup<T>> subGroups, IEnumerable<T> entities)
         {

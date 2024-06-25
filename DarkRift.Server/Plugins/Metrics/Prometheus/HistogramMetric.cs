@@ -51,12 +51,12 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         private double sum;
 
         /// <summary>
-        /// The current upper bound of each buckets.
+        /// The current upper bound of each bucket.
         /// </summary>
         private readonly double[] bucketUpperBounds;
 
         /// <summary>
-        /// The current counts of each buckets.
+        /// The current counts of each bucket.
         /// </summary>
         private readonly long[] bucketCounts;
 
@@ -74,7 +74,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         /// <inheritDoc/>
         public void Report(double value)
         {
-            // Currently we accept there are race conditions here, we could get around it with a lock but frankly it's probably ok
+            // Currently we accept there are race conditions here, we could get around it with a lock, but frankly it's probably ok
             // until proven otherwise
             InterlockedDouble.Add(ref sum, value);
 

@@ -24,14 +24,14 @@ namespace DarkRift.Server.Plugins.Matchmaking
         ///     Enqueues an entity into the matchmaker.
         /// </summary>
         /// <param name="entity">The entity to enqueue.</param>
-        /// <param name="callback">The callback to make when the matchmnaking state changes for this entity, null to omit.</param>
+        /// <param name="callback">The callback to make when the matchmaking state changes for this entity, null to omit.</param>
         IMatchmakerQueueTask<T> Enqueue(T entity, EventHandler<MatchmakingStateChangedEventArgs<T>> callback = null);
 
         /// <summary>
         ///     Enqueues a group of entities into the matchmaker.
         /// </summary>
         /// <param name="entities">The entities to enqueue.</param>
-        /// <param name="callback">The callback to make when the matchmnaking state changes for this entity, null to omit.</param>
+        /// <param name="callback">The callback to make when the matchmaking state changes for this entity, null to omit.</param>
         /// <remarks>
         ///     Groups of entities enqueued using this method will be guaranteed to be placed in a room together 
         ///     (provided there are not more in the group than <see cref="RankingMatchmaker{T}.EntitiesPerGroup"/>) even if they would 
@@ -43,7 +43,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         ///     Enqueues a group of entities into the matchmaker.
         /// </summary>
         /// <param name="entities">The entities to enqueue.</param>
-        /// <param name="callback">The callback to make when the matchmnaking state changes for this entity, null to omit.</param>
+        /// <param name="callback">The callback to make when the matchmaking state changes for this entity, null to omit.</param>
         /// <remarks>
         ///     Groups of entities enqueued using this method will be guaranteed to be placed in a room together 
         ///     (provided there are not more in the group than <see cref="RankingMatchmaker{T}.EntitiesPerGroup"/>) even if they would 
@@ -56,7 +56,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// </summary>
         /// <remarks>
         ///     This will block flush all in/out queues and perform a full search. If a search is 
-        ///     already in progress this method will block until it completes. Normallly you would 
+        ///     already in progress this method will block until it completes. Normally you would 
         ///     perform searches from the timers already setup rather than calling this method 
         ///     directly.
         /// </remarks>

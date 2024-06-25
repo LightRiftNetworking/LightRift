@@ -22,7 +22,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         Queued,
 
         /// <summary>
-        ///     Indicates the matchmakign operation succeeded.
+        ///     Indicates the matchmaking operation succeeded.
         /// </summary>
         Success,
 

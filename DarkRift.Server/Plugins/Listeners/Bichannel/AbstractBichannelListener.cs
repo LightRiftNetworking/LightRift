@@ -35,7 +35,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         public abstract int BichannelProtocolVersion { get; protected set; }
 
         /// <summary>
-        ///     The maximum size the client can ask a TCP body to be without being striked.
+        ///     The maximum size the client can ask a TCP body to be without being struck.
         /// </summary>
         /// <remarks>This defaults to 65KB.</remarks>
         public abstract int MaxTcpBodyLength { get; }
@@ -43,7 +43,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         /// <summary>
         ///     Creates a new bichannel listener with the given load data.
         /// </summary>
-        /// <param name="networkListenerLoadData">The load data for thsi listener.</param>
+        /// <param name="networkListenerLoadData">The load data for this listener.</param>
         protected AbstractBichannelListener(NetworkListenerLoadData networkListenerLoadData)
             : base(networkListenerLoadData)
         {

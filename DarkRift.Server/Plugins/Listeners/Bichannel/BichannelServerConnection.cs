@@ -13,7 +13,7 @@ using System.Net.Sockets;
 namespace DarkRift.Server.Plugins.Listeners.Bichannel
 {
     /// <summary>
-    ///     A connection to a remote cliente and handles TCP and UDP channels.
+    ///     A connection to a remote client and handles TCP and UDP channels.
     /// </summary>
     internal sealed class BichannelServerConnection : NetworkServerConnection
     {
@@ -38,7 +38,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         public IPEndPoint RemoteUdpEndPoint { get; }
 
         /// <summary>
-        ///     Whether Nagel's algorithm should be disabled or not.
+        ///     Whether Nagle's algorithm should be disabled or not.
         /// </summary>
         public bool NoDelay
         {
@@ -113,7 +113,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         /// </summary>
         public override void StartListening()
         {
-            //Setup the TCP socket to receive a header
+            //Set up the TCP socket to receive a header
             var tcpArgs = ObjectCache.GetSocketAsyncEventArgs();
             tcpArgs.BufferList = null;
 
@@ -226,7 +226,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         {
             while (true)
             {
-                if (!WasHeaderReceiveSucessful(args))
+                if (!WasHeaderReceiveSuccessful(args))
                 {
                     HandleDisconnectionDuringHeaderReceive(args);
                     return;
@@ -277,7 +277,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
                         return;
                     }
 
-                    if (!WasBodyReceiveSucessful(args))
+                    if (!WasBodyReceiveSuccessful(args))
                     {
                         HandleDisconnectionDuringBodyReceive(args);
                         return;
@@ -343,7 +343,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         {
             while (true)
             {
-                if (!WasBodyReceiveSucessful(args))
+                if (!WasBodyReceiveSuccessful(args))
                 {
                     HandleDisconnectionDuringBodyReceive(args);
                     return;
@@ -460,7 +460,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         }
 
         /// <summary>
-        ///     Invokes message recevied events and cleans up.
+        ///     Invokes message received events and cleans up.
         /// </summary>
         /// <param name="buffer">The TCP body received.</param>
         private void ProcessMessage(MessageBuffer buffer)
@@ -477,8 +477,8 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         ///     Checks if a TCP header was received correctly.
         /// </summary>
         /// <param name="args">The socket args used during the operation.</param>
-        /// <returns>If the receive completed correctly.</returns>
-        private bool WasHeaderReceiveSucessful(SocketAsyncEventArgs args)
+        /// <returns>If the reception completed correctly.</returns>
+        private bool WasHeaderReceiveSuccessful(SocketAsyncEventArgs args)
         {
             return args.BytesTransferred != 0 && args.SocketError == SocketError.Success;
         }
@@ -487,8 +487,8 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         ///     Checks if a TCP body was received correctly.
         /// </summary>
         /// <param name="args">The socket args used during the operation.</param>
-        /// <returns>If the receive completed correctly.</returns>
-        private bool WasBodyReceiveSucessful(SocketAsyncEventArgs args)
+        /// <returns>If the reception completed correctly.</returns>
+        private bool WasBodyReceiveSuccessful(SocketAsyncEventArgs args)
         {
             return args.BytesTransferred != 0 && args.SocketError == SocketError.Success;
         }
@@ -534,7 +534,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         }
 
         /// <summary>
-        ///     Setup a listen operation for a new TCP header.
+        ///     Set up a listen operation for a new TCP header.
         /// </summary>
         /// <param name="args">The socket args to use during the operation.</param>
         private void SetupReceiveHeader(SocketAsyncEventArgs args)
@@ -548,7 +548,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         }
 
         /// <summary>
-        ///     Setup a listen operation for a new TCP body.
+        ///     Set up a listen operation for a new TCP body.
         /// </summary>
         /// <param name="args">The socket args to use during the operation.</param>
         /// <param name="length">The number of bytes in the body.</param>

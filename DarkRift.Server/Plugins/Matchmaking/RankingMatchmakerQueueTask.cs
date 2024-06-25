@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace DarkRift.Server.Plugins.Matchmaking
 {
     /// <summary>
-    ///     A matchmmaker task for the <see cref="RankingMatchmaker{T}"/>.
+    ///     A matchmaker task for the <see cref="RankingMatchmaker{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of objects being used as entities.</typeparam>
     internal class RankingMatchmakerQueueTask<T> : IMatchmakerQueueTask<T>
@@ -28,7 +28,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public EntityGroup<T> Entities { get; }
 
         /// <summary>
-        ///     The ranking matchmater in use.
+        ///     The ranking matchmaker in use.
         /// </summary>
         private RankingMatchmaker<T> matchmaker;
 
