@@ -116,7 +116,7 @@ namespace DarkRift.Client
         /// </summary>
         /// <param name="ip">The IP address of the server.</param>
         /// <param name="port">The port of the server.</param>
-        /// <param name="noDelay">Whether to disable Nagel's algorithm or not.</param>
+        /// <param name="noDelay">Whether to disable Nagle's algorithm or not.</param>
         public void Connect(IPAddress ip, int port, bool noDelay)
         {
             Connect(new BichannelClientConnection(ip, port, noDelay));
@@ -128,7 +128,7 @@ namespace DarkRift.Client
         /// <param name="ip">The IP address of the server.</param>
         /// <param name="tcpPort">The port the server is listening on for TCP.</param>
         /// <param name="udpPort">The port the server is listening on for UDP.</param>
-        /// <param name="noDelay">Whether to disable Nagel's algorithm or not.</param>
+        /// <param name="noDelay">Whether to disable Nagle's algorithm or not.</param>
         public void Connect(IPAddress ip, int tcpPort, int udpPort, bool noDelay)
         {
             Connect(new BichannelClientConnection(ip, tcpPort, udpPort, noDelay));
@@ -166,7 +166,7 @@ namespace DarkRift.Client
         /// <param name="ip">The IP address of the server.</param>
         /// <param name="port">The port of the server.</param>
         /// <param name="callback">The callback to invoke one the connection attempt has finished.</param>
-        /// <param name="noDelay">Whether to disable Nagel's algorithm or not.</param>
+        /// <param name="noDelay">Whether to disable Nagle's algorithm or not.</param>
         public void ConnectInBackground(IPAddress ip, int port, bool noDelay, ConnectCompleteHandler callback = null)
         {
             ConnectInBackground(new BichannelClientConnection(ip, port, noDelay), callback);
@@ -179,7 +179,7 @@ namespace DarkRift.Client
         /// <param name="tcpPort">The port the server is listening on for TCP.</param>
         /// <param name="udpPort">The port the server is listening on for UDP.</param>
         /// <param name="callback">The callback to invoke one the connection attempt has finished.</param>
-        /// <param name="noDelay">Whether to disable Nagel's algorithm or not.</param>
+        /// <param name="noDelay">Whether to disable Nagle's algorithm or not.</param>
         public void ConnectInBackground(IPAddress ip, int tcpPort, int udpPort, bool noDelay, ConnectCompleteHandler callback = null)
         {
             ConnectInBackground(new BichannelClientConnection(ip, tcpPort, udpPort, noDelay), callback);
@@ -260,7 +260,7 @@ namespace DarkRift.Client
         /// <summary>
         ///     Callback for when data is received.
         /// </summary>
-        /// <param name="buffer">The data recevied.</param>
+        /// <param name="buffer">The data received.</param>
         /// <param name="sendMode">The SendMode used to send the data.</param>
         private void MessageReceivedHandler(MessageBuffer buffer, SendMode sendMode)
         {
