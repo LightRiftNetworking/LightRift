@@ -40,7 +40,7 @@ namespace DarkRift.Client
         /// <param name="sendMode">The send mode the message was received with.</param>
         public static MessageReceivedEventArgs Create(Message message, SendMode sendMode)
         {
-            MessageReceivedEventArgs messageReceivedEventArgs = ClientObjectCache.GetMessageReceivedEventArgs();
+            var messageReceivedEventArgs = ClientObjectCache.GetMessageReceivedEventArgs();
 
             messageReceivedEventArgs.message = message;
             messageReceivedEventArgs.SendMode = sendMode;
@@ -55,7 +55,6 @@ namespace DarkRift.Client
         /// </summary>
         internal MessageReceivedEventArgs()
         {
-
         }
 
         /// <summary>
@@ -82,7 +81,9 @@ namespace DarkRift.Client
         ~MessageReceivedEventArgs()
         {
             if (!isCurrentlyLoungingInAPool)
+            {
                 ClientObjectCacheHelper.MessageReceivedEventArgsWasFinalized();
+            }
         }
     }
 }

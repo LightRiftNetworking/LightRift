@@ -97,7 +97,6 @@ namespace DarkRift.Client
         public DarkRiftClient()
             : this(DefaultClientCacheSettings)
         {
-
         }
 
         /// <summary>
@@ -109,7 +108,7 @@ namespace DarkRift.Client
             ObjectCache.Initialize(objectCacheSettings);
             ClientObjectCache.Initialize(objectCacheSettings);
 
-            this.RoundTripTime = new RoundTripTimeHelper(10, 10);
+            RoundTripTime = new RoundTripTimeHelper(10, 10);
         }
 
         /// <summary>
@@ -143,10 +142,12 @@ namespace DarkRift.Client
         {
             setupMutex.Reset();
 
-            if (this.Connection != null)
-                this.Connection.Dispose();
+            if (Connection != null)
+            {
+                Connection.Dispose();
+            }
 
-            this.Connection = connection;
+            Connection = connection;
             connection.MessageReceived = MessageReceivedHandler;
             connection.Disconnected = DisconnectedHandler;
 
@@ -154,7 +155,9 @@ namespace DarkRift.Client
 
             //On timeout disconnect
             if (!setupMutex.WaitOne(10000))
+            {
                 Connection.Disconnect();
+            }
         }
 
         /// <summary>
@@ -190,7 +193,7 @@ namespace DarkRift.Client
         public void ConnectInBackground(NetworkClientConnection connection, ConnectCompleteHandler callback = null)
         {
             new Thread(
-                delegate ()
+                delegate()
                 {
                     try
                     {
@@ -216,7 +219,9 @@ namespace DarkRift.Client
         public bool SendMessage(Message message, SendMode sendMode)
         {
             if (message.IsPingMessage)
+            {
                 RoundTripTime.RecordOutboundPing(message.PingCode);
+            }
 
             return Connection.SendMessage(message.ToBuffer(), sendMode);
         }
@@ -238,10 +243,14 @@ namespace DarkRift.Client
         public bool Disconnect()
         {
             if (Connection == null)
+            {
                 return false;
+            }
 
             if (!Connection.Disconnect())
+            {
                 return false;
+            }
 
             Disconnected?.Invoke(this, new DisconnectedEventArgs(true, SocketError.Disconnecting, null));
 
@@ -255,7 +264,7 @@ namespace DarkRift.Client
         /// <param name="sendMode">The SendMode used to send the data.</param>
         private void MessageReceivedHandler(MessageBuffer buffer, SendMode sendMode)
         {
-            using (Message message = Message.Create(buffer, true))
+            using (var message = Message.Create(buffer, true))
             {
                 //Record any ping acknowledgements
                 if (message.IsPingAcknowledgementMessage)
@@ -271,9 +280,13 @@ namespace DarkRift.Client
                 }
 
                 if (message.IsCommandMessage)
+                {
                     HandleCommand(message);
+                }
                 else
+                {
                     HandleMessage(message, sendMode);
+                }
             }
         }
 
@@ -283,7 +296,7 @@ namespace DarkRift.Client
         /// <param name="message">The message that was received.</param>
         private void HandleCommand(Message message)
         {
-            using (DarkRiftReader reader = message.GetReader())
+            using (var reader = message.GetReader())
             {
                 switch ((CommandCode)message.Tag)
                 {
@@ -304,8 +317,10 @@ namespace DarkRift.Client
         private void HandleMessage(Message message, SendMode sendMode)
         {
             //Invoke for message received event
-            using (MessageReceivedEventArgs args = MessageReceivedEventArgs.Create(message, sendMode))
+            using (var args = MessageReceivedEventArgs.Create(message, sendMode))
+            {
                 MessageReceived?.Invoke(this, args);
+            }
         }
 
         /// <summary>
@@ -340,7 +355,9 @@ namespace DarkRift.Client
                 disposed = true;
 
                 if (Connection != null)
+                {
                     Connection.Dispose();
+                }
 
                 setupMutex.Close();
             }

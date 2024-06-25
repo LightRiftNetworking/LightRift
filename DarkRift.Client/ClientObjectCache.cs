@@ -73,7 +73,9 @@ namespace DarkRift.Client
         public static MessageReceivedEventArgs GetMessageReceivedEventArgs()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ClientObjectCacheTestHelper.MessageReceivedEventArgsWasRetrieved();
@@ -92,7 +94,9 @@ namespace DarkRift.Client
         public static void ReturnMessageReceivedEventArgs(MessageReceivedEventArgs writer)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ClientObjectCacheTestHelper.MessageReceivedEventArgsWasReturned();
