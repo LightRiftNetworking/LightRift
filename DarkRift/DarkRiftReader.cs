@@ -61,12 +61,12 @@ namespace DarkRift
 
         internal static DarkRiftReader Create(IMessageBuffer buffer)
         {
-            DarkRiftReader reader = ObjectCache.GetReader();
+            var reader = ObjectCache.GetReader();
 
             reader.isCurrentlyLoungingInAPool = false;
 
             reader.buffer = buffer;
-            reader.Encoding = Encoding.Unicode;     // TODO DR3 Default to UTF-8
+            reader.Encoding = Encoding.Unicode; // TODO DR3 Default to UTF-8
             reader.Position = 0;
 
             return reader;
@@ -99,7 +99,9 @@ namespace DarkRift
         public byte ReadByte()
         {
             if (Position >= Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 1 byte but reader only has {Length - Position} bytes remaining.");
+            }
 
             return buffer.Buffer[buffer.Offset + Position++];
         }
@@ -157,9 +159,11 @@ namespace DarkRift
         public double ReadDouble()
         {
             if (Position + 8 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 8 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            double v = BigEndianHelper.ReadDouble(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadDouble(buffer.Buffer, buffer.Offset + Position);
             Position += 8;
 
             return v;
@@ -181,9 +185,11 @@ namespace DarkRift
         public short ReadInt16()
         {
             if (Position + 2 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 2 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            short v = BigEndianHelper.ReadInt16(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadInt16(buffer.Buffer, buffer.Offset + Position);
             Position += 2;
 
             return v;
@@ -205,9 +211,11 @@ namespace DarkRift
         public int ReadInt32()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 4 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int v = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
             Position += 4;
 
             return v;
@@ -229,9 +237,11 @@ namespace DarkRift
         public long ReadInt64()
         {
             if (Position + 8 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 8 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            long v = BigEndianHelper.ReadInt64(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadInt64(buffer.Buffer, buffer.Offset + Position);
             Position += 8;
 
             return v;
@@ -271,9 +281,11 @@ namespace DarkRift
         public float ReadSingle()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 4 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            float v = BigEndianHelper.ReadSingle(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadSingle(buffer.Buffer, buffer.Offset + Position);
             Position += 4;
 
             return v;
@@ -315,14 +327,18 @@ namespace DarkRift
         {
             //Read number of bytes not chars
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             if (Position + 4 + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            string v = encoding.GetString(buffer.Buffer, buffer.Offset + Position + 4, length);
+            var v = encoding.GetString(buffer.Buffer, buffer.Offset + Position + 4, length);
 
             Position += 4 + length;
 
@@ -346,9 +362,11 @@ namespace DarkRift
         public ushort ReadUInt16()
         {
             if (Position + 2 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 2 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            ushort v = BigEndianHelper.ReadUInt16(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadUInt16(buffer.Buffer, buffer.Offset + Position);
             Position += 2;
 
             return v;
@@ -370,9 +388,11 @@ namespace DarkRift
         public uint ReadUInt32()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 4 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            uint v = BigEndianHelper.ReadUInt32(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadUInt32(buffer.Buffer, buffer.Offset + Position);
             Position += 4;
 
             return v;
@@ -394,9 +414,11 @@ namespace DarkRift
         public ulong ReadUInt64()
         {
             if (Position + 8 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected 8 bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            ulong v = BigEndianHelper.ReadUInt64(buffer.Buffer, buffer.Offset + Position);
+            var v = BigEndianHelper.ReadUInt64(buffer.Buffer, buffer.Offset + Position);
             Position += 8;
 
             return v;
@@ -418,7 +440,7 @@ namespace DarkRift
         /// <returns>The serializable object read.</returns>
         public T ReadSerializable<T>() where T : IDarkRiftSerializable, new()
         {
-            T t = new T();
+            var t = new T();
             ReadSerializableInto(ref t);
             return t;
         }
@@ -450,14 +472,18 @@ namespace DarkRift
         public byte[] ReadBytes()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             if (Position + 4 + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            byte[] array = new byte[length];
+            var array = new byte[length];
             Buffer.BlockCopy(buffer.Buffer, buffer.Offset + Position + 4, array, 0, length);
 
             Position += 4 + length;
@@ -482,12 +508,16 @@ namespace DarkRift
         public void ReadBytesInto(byte[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             if (Position + 4 + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             Buffer.BlockCopy(buffer.Buffer, buffer.Offset + Position + 4, destination, offset, length);
 
@@ -531,14 +561,18 @@ namespace DarkRift
         {
             //Read number of bytes not chars
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             if (Position + 4 + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            char[] array = encoding.GetChars(buffer.Buffer, buffer.Offset + Position + 4, length);
+            var array = encoding.GetChars(buffer.Buffer, buffer.Offset + Position + 4, length);
 
             Position += 4 + length;
 
@@ -565,12 +599,16 @@ namespace DarkRift
         {
             //Read number of bytes not chars
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             if (Position + 4 + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             encoding.GetChars(buffer.Buffer, buffer.Offset + Position + 4, length, destination, offset);
 
@@ -584,26 +622,32 @@ namespace DarkRift
         public bool[] ReadBooleans()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            int total = (int)Math.Ceiling(length / 8.0);    //Number of bytes the booleans are stored in
+            var total = (int)Math.Ceiling(length / 8.0); //Number of bytes the booleans are stored in
 
             if (Position + 4 + total > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {total} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            bool[] array = new bool[length];
-            int ptr = 0;                                    //The index of the array we're writing to.
+            var array = new bool[length];
+            var ptr = 0; //The index of the array we're writing to.
 
             //Repeat for each byte we will need
-            for (int i = 0; i < total; i++)
+            for (var i = 0; i < total; i++)
             {
-                byte b = buffer.Buffer[buffer.Offset + Position + 4 + i];
+                var b = buffer.Buffer[buffer.Offset + Position + 4 + i];
 
                 //Repeat for each bit in that byte
-                for (int k = 7; k >= 0 && ptr < length; k--)
+                for (var k = 7; k >= 0 && ptr < length; k--)
+                {
                     array[ptr++] = (b & (1 << k)) != 0;
+                }
             }
 
             Position += 4 + total;
@@ -628,25 +672,31 @@ namespace DarkRift
         public void ReadBooleansInto(bool[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            int total = (int)Math.Ceiling(length / 8.0);    //Number of bytes the booleans are stored in
+            var total = (int)Math.Ceiling(length / 8.0); //Number of bytes the booleans are stored in
 
             if (Position + 4 + total > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {total} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            int ptr = offset;                                    //The index of the array we're writing to.
+            var ptr = offset; //The index of the array we're writing to.
 
             //Repeat for each byte we will need
-            for (int i = 0; i < total; i++)
+            for (var i = 0; i < total; i++)
             {
-                byte b = buffer.Buffer[buffer.Offset + Position + 4 + i];
+                var b = buffer.Buffer[buffer.Offset + Position + 4 + i];
 
                 //Repeat for each bit in that byte
-                for (int k = 7; k >= 0 && ptr < length; k--)
+                for (var k = 7; k >= 0 && ptr < length; k--)
+                {
                     destination[ptr++] = (b & (1 << k)) != 0;
+                }
             }
 
             Position += 4 + total;
@@ -659,18 +709,24 @@ namespace DarkRift
         public double[] ReadDoubles()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 8 > Length)
+            if (Position + 4 + (length * 8) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 8} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            double[] array = new double[length];
+            var array = new double[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 8)
+            {
                 array[i] = BigEndianHelper.ReadDouble(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 8;
+            Position += 4 + (length * 8);
 
             return array;
         }
@@ -693,17 +749,23 @@ namespace DarkRift
         public void ReadDoublesInto(double[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 8 > Length)
+            if (Position + 4 + (length * 8) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 8} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 8)
+            {
                 destination[i + offset] = BigEndianHelper.ReadDouble(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 8;
+            Position += 4 + (length * 8);
         }
 
         /// <summary>
@@ -713,18 +775,24 @@ namespace DarkRift
         public short[] ReadInt16s()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 2 > Length)
+            if (Position + 4 + (length * 2) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 2} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            short[] array = new short[length];
+            var array = new short[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 2)
+            {
                 array[i] = BigEndianHelper.ReadInt16(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 2;
+            Position += 4 + (length * 2);
 
             return array;
         }
@@ -746,17 +814,23 @@ namespace DarkRift
         public void ReadInt16sInto(short[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 2 > Length)
+            if (Position + 4 + (length * 2) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 2} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 2)
+            {
                 destination[i + offset] = BigEndianHelper.ReadInt16(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 2;
+            Position += 4 + (length * 2);
         }
 
         /// <summary>
@@ -766,18 +840,24 @@ namespace DarkRift
         public int[] ReadInt32s()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 4 > Length)
+            if (Position + 4 + (length * 4) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 4} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            int[] array = new int[length];
+            var array = new int[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 4)
+            {
                 array[i] = BigEndianHelper.ReadInt32(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 4;
+            Position += 4 + (length * 4);
 
             return array;
         }
@@ -799,17 +879,23 @@ namespace DarkRift
         public void ReadInt32sInto(int[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 4 > Length)
+            if (Position + 4 + (length * 4) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 4} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 4)
+            {
                 destination[i + offset] = BigEndianHelper.ReadInt32(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 4;
+            Position += 4 + (length * 4);
         }
 
         /// <summary>
@@ -819,18 +905,24 @@ namespace DarkRift
         public long[] ReadInt64s()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 8 > Length)
+            if (Position + 4 + (length * 8) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 8} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            long[] array = new long[length];
+            var array = new long[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 8)
+            {
                 array[i] = BigEndianHelper.ReadInt64(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 8;
+            Position += 4 + (length * 8);
 
             return array;
         }
@@ -852,17 +944,23 @@ namespace DarkRift
         public void ReadInt64sInto(long[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 8 > Length)
+            if (Position + 4 + (length * 8) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 8} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 8)
+            {
                 destination[i + offset] = BigEndianHelper.ReadInt64(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 8;
+            Position += 4 + (length * 8);
         }
 
         /// <summary>
@@ -872,14 +970,18 @@ namespace DarkRift
         public sbyte[] ReadSBytes()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             if (Position + 4 + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            sbyte[] array = new sbyte[length];
+            var array = new sbyte[length];
             Buffer.BlockCopy(buffer.Buffer, buffer.Offset + Position + 4, array, 0, length);
 
             Position += 4 + length;
@@ -904,12 +1006,16 @@ namespace DarkRift
         public void ReadSBytesInto(sbyte[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             if (Position + 4 + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             Buffer.BlockCopy(buffer.Buffer, buffer.Offset + Position + 4, destination, offset, length);
 
@@ -923,18 +1029,24 @@ namespace DarkRift
         public float[] ReadSingles()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 4 > Length)
+            if (Position + 4 + (length * 4) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 4} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            float[] array = new float[length];
+            var array = new float[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 4)
+            {
                 array[i] = BigEndianHelper.ReadSingle(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 4;
+            Position += 4 + (length * 4);
 
             return array;
         }
@@ -956,17 +1068,23 @@ namespace DarkRift
         public void ReadSinglesInto(float[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 4 > Length)
+            if (Position + 4 + (length * 4) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 4} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 4)
+            {
                 destination[i + offset] = BigEndianHelper.ReadSingle(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 4;
+            Position += 4 + (length * 4);
         }
 
         /// <summary>
@@ -976,14 +1094,18 @@ namespace DarkRift
         public string[] ReadStrings()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
             Position += 4;
 
-            string[] array = new string[length];
-            for (int i = 0; i < length; i++)
+            var array = new string[length];
+            for (var i = 0; i < length; i++)
+            {
                 array[i] = ReadString();
+            }
 
             return array;
         }
@@ -1005,13 +1127,17 @@ namespace DarkRift
         public void ReadStringsInto(string[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
             Position += 4;
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
+            {
                 destination[i + offset] = ReadString();
+            }
         }
 
         /// <summary>
@@ -1021,18 +1147,24 @@ namespace DarkRift
         public ushort[] ReadUInt16s()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 2 > Length)
+            if (Position + 4 + (length * 2) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 2} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            ushort[] array = new ushort[length];
+            var array = new ushort[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 2)
+            {
                 array[i] = BigEndianHelper.ReadUInt16(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 2;
+            Position += 4 + (length * 2);
 
             return array;
         }
@@ -1054,17 +1186,23 @@ namespace DarkRift
         public void ReadUInt16sInto(ushort[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 2 > Length)
+            if (Position + 4 + (length * 2) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 2} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 2)
+            {
                 destination[i + offset] = BigEndianHelper.ReadUInt16(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 2;
+            Position += 4 + (length * 2);
         }
 
         /// <summary>
@@ -1074,18 +1212,24 @@ namespace DarkRift
         public uint[] ReadUInt32s()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 4 > Length)
+            if (Position + 4 + (length * 4) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 4} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            uint[] array = new uint[length];
+            var array = new uint[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 4)
+            {
                 array[i] = BigEndianHelper.ReadUInt32(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 4;
+            Position += 4 + (length * 4);
 
             return array;
         }
@@ -1107,17 +1251,23 @@ namespace DarkRift
         public void ReadUInt32sInto(uint[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 4 > Length)
+            if (Position + 4 + (length * 4) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 4} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 4)
+            {
                 destination[i + offset] = BigEndianHelper.ReadUInt32(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 4;
+            Position += 4 + (length * 4);
         }
 
         /// <summary>
@@ -1127,18 +1277,24 @@ namespace DarkRift
         public ulong[] ReadUInt64s()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 8 > Length)
+            if (Position + 4 + (length * 8) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 8} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
-            ulong[] array = new ulong[length];
+            var array = new ulong[length];
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 8)
+            {
                 array[i] = BigEndianHelper.ReadUInt64(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 8;
+            Position += 4 + (length * 8);
 
             return array;
         }
@@ -1160,17 +1316,23 @@ namespace DarkRift
         public void ReadUInt64sInto(ulong[] destination, int offset)
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
-            if (Position + 4 + length * 8 > Length)
+            if (Position + 4 + (length * 8) > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length * 8} bytes but reader only has {Length - Position - 4} bytes remaining.");
+            }
 
             for (int i = 0, j = buffer.Offset + Position + 4; i < length; i++, j += 8)
+            {
                 destination[i + offset] = BigEndianHelper.ReadUInt64(buffer.Buffer, j);
+            }
 
-            Position += 4 + length * 8;
+            Position += 4 + (length * 8);
         }
 
         /// <summary>
@@ -1181,15 +1343,19 @@ namespace DarkRift
         public T[] ReadSerializables<T>() where T : IDarkRiftSerializable, new()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             Position += 4;
 
-            T[] array = new T[length];
-            for (int i = 0; i < length; i++)
+            var array = new T[length];
+            for (var i = 0; i < length; i++)
+            {
                 array[i] = ReadSerializable<T>();
+            }
 
             return array;
         }
@@ -1212,14 +1378,18 @@ namespace DarkRift
         public void ReadSerializablesInto<T>(T[] destination, int offset) where T : IDarkRiftSerializable, new()
         {
             if (Position + 4 > Length)
+            {
                 throw new EndOfStreamException($"Failed to read as the reader does not have enough data remaining. Expected 4 byte array length header but reader only has {Length - Position} bytes remaining.");
+            }
 
-            int length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
+            var length = BigEndianHelper.ReadInt32(buffer.Buffer, buffer.Offset + Position);
 
             Position += 4;
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
+            {
                 destination[i + offset] = ReadSerializable<T>();
+            }
         }
 
         /// <summary>
@@ -1230,9 +1400,11 @@ namespace DarkRift
         public byte[] ReadRaw(int length)
         {
             if (Position + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
-            byte[] raw = new byte[length];
+            var raw = new byte[length];
 
             ReadRawInto(raw, 0, length);
 
@@ -1249,7 +1421,9 @@ namespace DarkRift
         public void ReadRawInto(byte[] buffer, int offset, int length)
         {
             if (Position + length > Length)
+            {
                 throw new EndOfStreamException($"Failed to read data from reader as the reader does not have enough data remaining. Expected {length} bytes but reader only has {Length - Position} bytes remaining.");
+            }
 
             Buffer.BlockCopy(this.buffer.Buffer, this.buffer.Offset + Position, buffer, offset, length);
             Position += length;
@@ -1272,7 +1446,9 @@ namespace DarkRift
         ~DarkRiftReader()
         {
             if (!isCurrentlyLoungingInAPool)
+            {
                 ObjectCacheHelper.DarkRiftReaderWasFinalized();
+            }
         }
     }
 }

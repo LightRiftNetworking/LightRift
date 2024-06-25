@@ -110,7 +110,7 @@ namespace DarkRift
             uint ivalue;
             unsafe
             {
-                float* ptr = &value;
+                var ptr = &value;
                 ivalue = *(uint*)ptr;
             }
 
@@ -130,7 +130,7 @@ namespace DarkRift
             ulong lvalue;
             unsafe
             {
-                double* ptr = &value;
+                var ptr = &value;
                 lvalue = *(ulong*)ptr;
             }
 
@@ -146,7 +146,8 @@ namespace DarkRift
         /// <returns>The short read.</returns>
         public static short ReadInt16(byte[] source, int offset)
         {
-            return (short)((source[offset] << 8) | source[offset + 1]);
+            return (short)((source[offset] << 8)
+                           | source[offset + 1]);
         }
 
         /// <summary>
@@ -157,7 +158,8 @@ namespace DarkRift
         /// <returns>The unsigned short read.</returns>
         public static ushort ReadUInt16(byte[] source, int offset)
         {
-            return (ushort)((source[offset] << 8) | source[offset + 1]);
+            return (ushort)((source[offset] << 8)
+                            | source[offset + 1]);
         }
 
         /// <summary>
@@ -168,7 +170,10 @@ namespace DarkRift
         /// <returns>The integer read.</returns>
         public static int ReadInt32(byte[] source, int offset)
         {
-            return (int)((source[offset] << 24) | (source[offset + 1] << 16) | (source[offset + 2] << 8) | source[offset + 3]);
+            return (int)((source[offset] << 24)
+                         | (source[offset + 1] << 16)
+                         | (source[offset + 2] << 8)
+                         | source[offset + 3]);
         }
 
         /// <summary>
@@ -179,7 +184,10 @@ namespace DarkRift
         /// <returns>The unsigned integer read.</returns>
         public static uint ReadUInt32(byte[] source, int offset)
         {
-            return (uint)((source[offset] << 24) | (source[offset + 1] << 16) | (source[offset + 2] << 8) | source[offset + 3]);
+            return (uint)((source[offset] << 24)
+                          | (source[offset + 1] << 16)
+                          | (source[offset + 2] << 8)
+                          | source[offset + 3]);
         }
 
         /// <summary>
@@ -190,7 +198,14 @@ namespace DarkRift
         /// <returns>The long read.</returns>
         public static long ReadInt64(byte[] source, int offset)
         {
-            return ((long)source[offset] << 56) | ((long)source[offset + 1] << 48) | ((long)source[offset + 2] << 40) | ((long)source[offset + 3] << 32) | ((long)source[offset + 4] << 24) | ((long)source[offset + 5] << 16) | ((long)source[offset + 6] << 8) | source[offset + 7];
+            return ((long)source[offset] << 56)
+                   | ((long)source[offset + 1] << 48)
+                   | ((long)source[offset + 2] << 40)
+                   | ((long)source[offset + 3] << 32)
+                   | ((long)source[offset + 4] << 24)
+                   | ((long)source[offset + 5] << 16)
+                   | ((long)source[offset + 6] << 8)
+                   | source[offset + 7];
         }
 
         /// <summary>
@@ -201,7 +216,14 @@ namespace DarkRift
         /// <returns>The unsigned long read.</returns>
         public static ulong ReadUInt64(byte[] source, int offset)
         {
-            return ((ulong)source[offset] << 56) | ((ulong)source[offset + 1] << 48) | ((ulong)source[offset + 2] << 40) | ((ulong)source[offset + 3] << 32) | ((ulong)source[offset + 4] << 24) | ((ulong)source[offset + 5] << 16) | ((ulong)source[offset + 6] << 8) | source[offset + 7];
+            return ((ulong)source[offset] << 56)
+                   | ((ulong)source[offset + 1] << 48)
+                   | ((ulong)source[offset + 2] << 40)
+                   | ((ulong)source[offset + 3] << 32)
+                   | ((ulong)source[offset + 4] << 24)
+                   | ((ulong)source[offset + 5] << 16)
+                   | ((ulong)source[offset + 6] << 8)
+                   | source[offset + 7];
         }
 
         /// <summary>
@@ -213,11 +235,11 @@ namespace DarkRift
         public static float ReadSingle(byte[] source, int offset)
         {
             //Endianess handled here
-            uint ivalue = ReadUInt32(source, offset);
+            var value = ReadUInt32(source, offset);
 
             unsafe
             {
-                uint* ptr = &ivalue;
+                var ptr = &value;
                 return *(float*)ptr;
             }
         }
@@ -231,11 +253,11 @@ namespace DarkRift
         public static double ReadDouble(byte[] source, int offset)
         {
             //Endianess handled here
-            ulong lvalue = ReadUInt64(source, offset);
+            var value = ReadUInt64(source, offset);
 
             unsafe
             {
-                ulong* ptr = &lvalue;
+                var ptr = &value;
                 return *(double*)ptr;
             }
         }
@@ -247,8 +269,8 @@ namespace DarkRift
         /// <returns>The reversed bytes.</returns>
         public static ushort SwapBytes(ushort value)
         {
-            return (ushort)(((value & 0x00FF) << 8) |
-                   ((value & 0xFF00) >> 8));
+            return (ushort)(((value & 0x00FF) << 8)
+                            | ((value & 0xFF00) >> 8));
         }
 
         /// <summary>
@@ -258,10 +280,10 @@ namespace DarkRift
         /// <returns>The reversed bytes.</returns>
         public static uint SwapBytes(uint value)
         {
-            return ((value & 0x000000FF) << 24) |
-                   ((value & 0x0000FF00) << 08) |
-                   ((value & 0x00FF0000) >> 08) |
-                   ((value & 0xFF000000) >> 24);
+            return ((value & 0x000000FF) << 24)
+                   | ((value & 0x0000FF00) << 08)
+                   | ((value & 0x00FF0000) >> 08)
+                   | ((value & 0xFF000000) >> 24);
         }
 
         /// <summary>
@@ -271,14 +293,14 @@ namespace DarkRift
         /// <returns>The reversed bytes.</returns>
         public static ulong SwapBytes(ulong value)
         {
-            return ((value & 0x00000000000000FF) << 56) |
-                   ((value & 0x000000000000FF00) << 40) |
-                   ((value & 0x0000000000FF0000) << 24) |
-                   ((value & 0x00000000FF000000) << 08) |
-                   ((value & 0x000000FF00000000) >> 08) |
-                   ((value & 0x0000FF0000000000) >> 24) |
-                   ((value & 0x00FF000000000000) >> 40) |
-                   ((value & 0xFF00000000000000) >> 56);
+            return ((value & 0x00000000000000FF) << 56)
+                   | ((value & 0x000000000000FF00) << 40)
+                   | ((value & 0x0000000000FF0000) << 24)
+                   | ((value & 0x00000000FF000000) << 08)
+                   | ((value & 0x000000FF00000000) >> 08)
+                   | ((value & 0x0000FF0000000000) >> 24)
+                   | ((value & 0x00FF000000000000) >> 40)
+                   | ((value & 0xFF00000000000000) >> 56);
         }
     }
 }
