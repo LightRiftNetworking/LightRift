@@ -50,7 +50,7 @@ namespace DarkRift.Server
         ///     The connection to the remote server.
         /// </summary>
         /// <remarks>
-        ///     Will change reference on reconnections. Currently this is not marked volatile as that is a very exceptional circumstance and at that point
+        ///     Will change reference on reconnections. Currently, this is not marked volatile as that is a very exceptional circumstance and at that point
         ///     was can likely tolerate just waiting for something else to synchronise caches later.
         /// </remarks>
         private NetworkServerConnection connection;
@@ -221,7 +221,7 @@ namespace DarkRift.Server
         /// <summary>
         ///     Callback for when data is received.
         /// </summary>
-        /// <param name="buffer">The data recevied.</param>
+        /// <param name="buffer">The data received.</param>
         /// <param name="sendMode">The SendMode used to send the data.</param>
         private void MessageReceivedHandler(MessageBuffer buffer, SendMode sendMode)
         {
@@ -242,10 +242,10 @@ namespace DarkRift.Server
         ///     Handles a message received.
         /// </summary>
         /// <param name="message">The message that was received.</param>
-        /// <param name="sendMode">The send mode the emssage was received with.</param>
+        /// <param name="sendMode">The send mode the message was received with.</param>
         private void HandleMessage(Message message, SendMode sendMode)
         {
-            // Get another reference to the message so 1. we can control the backing array's lifecycle and thus it won't get disposed of before we dispatch, and
+            // Get another reference to the message so 1. we can control the backing array's lifecycle, and thus it won't get disposed of before we dispatch, and
             // 2. because the current message will be disposed of when this method returns.
             var messageReference = message.Clone();
 
@@ -283,8 +283,8 @@ namespace DarkRift.Server
         /// <summary>
         /// Called when the connection is lost.
         /// </summary>
-        /// <param name="error">The socket error that ocurred</param>
-        /// <param name="exception">The exception that ocurred.</param>
+        /// <param name="error">The socket error that occurred</param>
+        /// <param name="exception">The exception that occurred.</param>
         private void DisconnectedHandler(SocketError error, Exception exception)
         {
             serverGroup.DisconnectedHandler(this, exception);
@@ -338,8 +338,7 @@ namespace DarkRift.Server
         ///     Handles disposing of the connection.
         /// </summary>
         /// <param name="disposing"></param>
-#pragma warning disable CS0628
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing && !disposed)
             {
@@ -350,7 +349,6 @@ namespace DarkRift.Server
                     connection.Dispose();
                 }
             }
-        }
-#pragma warning restore CS0628
+        }8
     }
 }

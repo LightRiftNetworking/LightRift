@@ -31,7 +31,7 @@ namespace DarkRift.Server
         private readonly string configurationDocsRoot;
 
         /// <summary>
-        /// Page in documetation for variable resolution.
+        /// Page in documentation for variable resolution.
         /// </summary>
         private readonly string variablesDocsPage;
 
@@ -40,7 +40,7 @@ namespace DarkRift.Server
         /// </summary>
         /// <param name="variables">The variables to interpolate while processing the configuration file.</param>
         /// <param name="configurationDocsRoot">The root of documentation for this configuration file.</param>
-        /// <param name="variablesDocsPage">Page in documetation for variable resolution.</param>
+        /// <param name="variablesDocsPage">Page in documentation for variable resolution.</param>
         internal ConfigurationFileHelper(NameValueCollection variables, string configurationDocsRoot, string variablesDocsPage)
         {
             Variables = variables;
