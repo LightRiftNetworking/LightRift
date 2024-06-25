@@ -36,7 +36,7 @@ namespace DarkRift
         /// <inheritdoc/>
         public IMessageBuffer Clone()
         {
-            // For an unmanaged arrray we don't need to actually clone this or change reference counts. We're read only so can just return ourselves.
+            // For an unmanaged array we don't need to actually clone this or change reference counts. We're read only so can just return ourselves.
             return this;
         }
 

@@ -35,7 +35,7 @@ namespace DarkRift.Client
         /// <summary>
         ///     Sets up the ObjectCache with the given settings.
         /// </summary>
-        /// <returns>True if the object cache was set with the sepcified settings, false if it is already initialized.</returns>
+        /// <returns>True if the object cache was set with the specified settings, false if it is already initialized.</returns>
         public static bool Initialize(ClientObjectCacheSettings settings)
         {
             lock (settingsLock)
