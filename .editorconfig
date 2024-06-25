@@ -230,7 +230,7 @@ csharp_style_var_elsewhere = true:suggestion
 csharp_style_expression_bodied_properties = true:suggestion
 csharp_style_expression_bodied_accessors = true:suggestion
 csharp_style_expression_bodied_indexers = true:suggestion
-csharp_style_expression_bodied_lambdas = true:suggestion;
+csharp_style_expression_bodied_lambdas = true:suggestion ;
 
 # Prefer method-like constructs to have a block body
 csharp_style_expression_bodied_methods = false:warning
@@ -276,3 +276,44 @@ csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimenta
 csharp_style_prefer_pattern_matching = true:silent
 csharp_style_prefer_not_pattern = true:suggestion
 csharp_style_prefer_extended_property_pattern = true:suggestion
+
+# ReSharper properties
+resharper_braces_for_for = required
+resharper_braces_for_foreach = required
+resharper_braces_for_ifelse = required
+resharper_braces_for_while = required
+resharper_braces_redundant = false
+resharper_csharp_max_line_length = 130
+resharper_csharp_wrap_before_binary_opsign = true
+resharper_csharp_wrap_lines = false
+resharper_enforce_line_ending_style = true
+resharper_modifiers_order = public private protected internal static extern new virtual abstract sealed override readonly unsafe volatile async file required
+resharper_namespace_body = block_scoped
+resharper_parentheses_group_non_obvious_operations = none, arithmetic, relational, conditional
+resharper_use_heuristics_for_body_style = false
+resharper_use_indent_from_vs = false
+
+# ReSharper inspection severities
+resharper_arrange_constructor_or_destructor_body_highlighting = warning
+resharper_arrange_method_or_operator_body_highlighting = warning
+resharper_arrange_modifiers_order_highlighting = error
+resharper_arrange_namespace_body_highlighting = none
+resharper_arrange_redundant_parentheses_highlighting = none
+resharper_arrange_this_qualifier_highlighting = suggestion
+resharper_arrange_type_member_modifiers_highlighting = warning
+resharper_arrange_type_modifiers_highlighting = warning
+resharper_built_in_type_reference_style_for_member_access_highlighting = warning
+resharper_built_in_type_reference_style_highlighting = warning
+resharper_enforce_do_while_statement_braces_highlighting = suggestion
+resharper_enforce_fixed_statement_braces_highlighting = suggestion
+resharper_enforce_foreach_statement_braces_highlighting = suggestion
+resharper_enforce_for_statement_braces_highlighting = suggestion
+resharper_enforce_if_statement_braces_highlighting = suggestion
+resharper_enforce_lock_statement_braces_highlighting = suggestion
+resharper_enforce_using_statement_braces_highlighting = suggestion
+resharper_enforce_while_statement_braces_highlighting = suggestion
+resharper_redundant_base_qualifier_highlighting = suggestion
+resharper_remove_redundant_braces_highlighting = suggestion
+resharper_suggest_var_or_type_built_in_types_highlighting = suggestion
+resharper_suggest_var_or_type_elsewhere_highlighting = suggestion
+resharper_suggest_var_or_type_simple_types_highlighting = suggestion
