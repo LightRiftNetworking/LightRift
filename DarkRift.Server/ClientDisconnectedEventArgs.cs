@@ -62,10 +62,10 @@ namespace DarkRift.Server
         /// <param name="exception">The exception that caused the disconenct.</param>
         public ClientDisconnectedEventArgs(IClient clientConnection, bool localDisconnect, SocketError error, Exception exception)
         {
-            this.Client = clientConnection;
-            this.LocalDisconnect = localDisconnect;
-            this.Exception = exception;
-            this.Error = error;
+            Client = clientConnection;
+            LocalDisconnect = localDisconnect;
+            Exception = exception;
+            Error = error;
         }
 
         /// <summary>

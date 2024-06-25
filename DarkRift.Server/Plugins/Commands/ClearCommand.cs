@@ -17,7 +17,8 @@ namespace DarkRift.Server.Plugins.Commands
 
         public override Version Version => new Version(1, 0, 0);
 
-        public override Command[] Commands => new Command[] {
+        public override Command[] Commands => new Command[]
+        {
             new Command("clear", "Clears the console window.", "clear", (sender, args) => Console.Clear())
         };
 

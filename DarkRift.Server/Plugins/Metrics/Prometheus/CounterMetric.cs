@@ -36,9 +36,9 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
 
         public CounterMetric(string name, string description, string preformatted)
         {
-            this.Name = name;
-            this.Description = description;
-            this.Preformatted = preformatted;
+            Name = name;
+            Description = description;
+            Preformatted = preformatted;
         }
 
         /// <inheritDoc/>

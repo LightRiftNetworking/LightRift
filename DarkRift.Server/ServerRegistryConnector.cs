@@ -79,7 +79,6 @@ namespace DarkRift.Server
         /// <param name="id">The ID of the server unable to connect to.</param>
         protected internal virtual void HandleConnectionFailure(ushort id)
         {
-
         }
 
         /// <summary>

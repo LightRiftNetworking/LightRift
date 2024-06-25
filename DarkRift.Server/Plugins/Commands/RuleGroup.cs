@@ -20,15 +20,17 @@ namespace DarkRift.Server.Plugins.Commands
 
         public RuleGroup(bool outputData)
         {
-            this.OutputData = outputData;
+            OutputData = outputData;
         }
 
         internal bool Accepts(Message message, Client client)
         {
-            foreach (IRule rule in this)
+            foreach (var rule in this)
             {
                 if (!rule.Accepts(message, client))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -36,11 +38,11 @@ namespace DarkRift.Server.Plugins.Commands
 
         public override string ToString()
         {
-            string[] outs = new string[Count];
+            var outs = new string[Count];
 
-            int i = 0;
+            var i = 0;
 
-            foreach (IRule rule in this)
+            foreach (var rule in this)
             {
                 outs[i++] = rule.ToString();
             }
@@ -62,13 +64,15 @@ namespace DarkRift.Server.Plugins.Commands
                 return false;
             }
 
-            RuleGroup g = (RuleGroup)obj;
+            var g = (RuleGroup)obj;
 
             // Return true if the inside rules match
-            foreach (IRule rule in this)
+            foreach (var rule in this)
             {
                 if (!g.Contains(rule))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -76,9 +80,11 @@ namespace DarkRift.Server.Plugins.Commands
 
         public override int GetHashCode()
         {
-            int i = 17;
-            foreach (IRule rule in this)
+            var i = 17;
+            foreach (var rule in this)
+            {
                 i = (i + rule.GetHashCode()) * 31;
+            }
 
             return i;
         }

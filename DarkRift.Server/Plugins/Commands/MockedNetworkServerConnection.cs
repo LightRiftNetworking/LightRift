@@ -29,7 +29,7 @@ namespace DarkRift.Server.Plugins.Commands
         public MockedNetworkServerConnection(ClientCommand clientCommand, IPAddress ip, ushort port, bool outputData)
         {
             this.clientCommand = clientCommand;
-            this.RemoteEndPoints = new IPEndPoint[] { new IPEndPoint(ip, port) };
+            RemoteEndPoints = new IPEndPoint[] { new IPEndPoint(ip, port) };
             this.outputData = outputData;
         }
 
@@ -60,7 +60,6 @@ namespace DarkRift.Server.Plugins.Commands
 
         public override void StartListening()
         {
-
         }
     }
 }

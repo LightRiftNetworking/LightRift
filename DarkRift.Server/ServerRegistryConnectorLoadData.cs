@@ -27,8 +27,8 @@ namespace DarkRift.Server
         internal ServerRegistryConnectorLoadData(string name, DarkRiftServer server, NameValueCollection settings, Logger logger, MetricsCollector metricsCollector)
             : base(name, server, settings, logger, metricsCollector)
         {
-            this.ServerRegistryConnectorManager = server.ServerRegistryConnectorManager;
-            this.RemoteServerManager = server.RemoteServerManager;
+            ServerRegistryConnectorManager = server.ServerRegistryConnectorManager;
+            RemoteServerManager = server.RemoteServerManager;
         }
 
         /// <summary>

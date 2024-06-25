@@ -36,9 +36,9 @@ namespace DarkRift.Server
         /// <param name="serverGroup">The group the server joined.</param>
         public ServerJoinedEventArgs(IRemoteServer remoteServer, ushort id, IServerGroup serverGroup)
         {
-            this.RemoteServer = remoteServer;
-            this.ID = id;
-            this.ServerGroup = serverGroup;
+            RemoteServer = remoteServer;
+            ID = id;
+            ServerGroup = serverGroup;
         }
     }
 }

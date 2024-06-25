@@ -66,13 +66,13 @@ namespace DarkRift.Server
         /// <param name="settings">The settings to load plugins with.</param>
         internal void LoadPlugins(ServerSpawnData.PluginsSettings settings)
         {
-            Type[] types = pluginFactory.GetAllSubtypes(typeof(Plugin));
+            var types = pluginFactory.GetAllSubtypes(typeof(Plugin));
 
-            foreach (Type type in types)
+            foreach (var type in types)
             {
                 var s = settings.Plugins.FirstOrDefault(p => p.Type == type.Name);
 
-                PluginLoadData loadData = new PluginLoadData(
+                var loadData = new PluginLoadData(
                     type.Name,
                     server,
                     s?.Settings ?? new NameValueCollection(),
@@ -82,7 +82,9 @@ namespace DarkRift.Server
                 );
 
                 if (s?.Load ?? settings.LoadByDefault)
+                {
                     LoadPlugin(type.Name, type, loadData, null, true);
+                }
             }
         }
 

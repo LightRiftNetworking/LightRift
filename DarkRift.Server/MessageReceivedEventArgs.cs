@@ -46,7 +46,7 @@ namespace DarkRift.Server
         /// <param name="client">The client the message was received from.</param>
         public static MessageReceivedEventArgs Create(Message message, SendMode sendMode, IClient client)
         {
-            MessageReceivedEventArgs messageReceivedEventArgs = ServerObjectCache.GetMessageReceivedEventArgs();
+            var messageReceivedEventArgs = ServerObjectCache.GetMessageReceivedEventArgs();
 
             messageReceivedEventArgs.message = message;
             messageReceivedEventArgs.SendMode = sendMode;
@@ -62,7 +62,6 @@ namespace DarkRift.Server
         /// </summary>
         internal MessageReceivedEventArgs()
         {
-
         }
 
         /// <summary>
@@ -89,7 +88,9 @@ namespace DarkRift.Server
         ~MessageReceivedEventArgs()
         {
             if (!isCurrentlyLoungingInAPool)
+            {
                 ServerObjectCacheHelper.MessageReceivedEventArgsWasFinalized();
+            }
         }
     }
 }

@@ -21,47 +21,56 @@ namespace DarkRift
         /// <summary>
         ///     Whether this cache has been initialized yet.
         /// </summary>
-        [ThreadStatic] private static bool initialized;
+        [ThreadStatic]
+        private static bool initialized;
 
         /// <summary>
         ///     Object pool of <see cref="DarkRiftWriter"/> objects.
         /// </summary>
-        [ThreadStatic] private static ObjectPool<DarkRiftWriter> writerPool;
+        [ThreadStatic]
+        private static ObjectPool<DarkRiftWriter> writerPool;
 
         /// <summary>
         ///     Object pool of <see cref="DarkRiftReader"/> objects.
         /// </summary>
-        [ThreadStatic] private static ObjectPool<DarkRiftReader> readerPool;
+        [ThreadStatic]
+        private static ObjectPool<DarkRiftReader> readerPool;
 
         /// <summary>
         ///     Object pool of <see cref="Message"/> objects.
         /// </summary>
-        [ThreadStatic] private static ObjectPool<Message> messagePool;
+        [ThreadStatic]
+        private static ObjectPool<Message> messagePool;
 
         /// <summary>
         ///     Object pool of <see cref="MessageBuffer"/> objects.
         /// </summary>
-        [ThreadStatic] private static ObjectPool<MessageBuffer> messageBufferPool;
+        [ThreadStatic]
+        private static ObjectPool<MessageBuffer> messageBufferPool;
 
         /// <summary>
         ///     Object pool of <see cref="SocketAsyncEventArgs"/> objects.
         /// </summary>
-        [ThreadStatic] private static ObjectPool<SocketAsyncEventArgs> socketAsyncEventArgsPool;
+        [ThreadStatic]
+        private static ObjectPool<SocketAsyncEventArgs> socketAsyncEventArgsPool;
 
         /// <summary>
         ///     Object pool of <see cref="ActionDispatcherTask"/> objects.
         /// </summary>
-        [ThreadStatic] private static ObjectPool<ActionDispatcherTask> actionDispatcherTaskPool;
+        [ThreadStatic]
+        private static ObjectPool<ActionDispatcherTask> actionDispatcherTaskPool;
 
         /// <summary>
         ///     Object pool of <see cref="AutoRecyclingArray"/> objects.
         /// </summary>
-        [ThreadStatic] private static ObjectPool<AutoRecyclingArray> autoRecyclingArrayPool;
+        [ThreadStatic]
+        private static ObjectPool<AutoRecyclingArray> autoRecyclingArrayPool;
 
         /// <summary>
         ///     Pool of byte arrays.
         /// </summary>
-        [ThreadStatic] private static MemoryPool memoryPool;
+        [ThreadStatic]
+        private static MemoryPool memoryPool;
 
         /// <summary>
         ///     The settings for all object caches.

@@ -26,7 +26,6 @@ namespace DarkRift.Server.Plugins
         /// </summary>
         public MessageSinkSourceEntityGroup()
         {
-
         }
 
         /// <summary>
@@ -35,14 +34,16 @@ namespace DarkRift.Server.Plugins
         /// <param name="group">The group to copy elements from</param>
         public MessageSinkSourceEntityGroup(IEnumerable<T> group)
         {
-            foreach (T item in group)
+            foreach (var item in group)
+            {
                 Add(item);
+            }
         }
 
         /// <inheritdoc/>
         public override bool Add(T item)
         {
-            bool success = base.Add(item);
+            var success = base.Add(item);
 
             item.MessageReceived += MessageReceivedHandler;
 
@@ -53,7 +54,9 @@ namespace DarkRift.Server.Plugins
         public override void Clear()
         {
             foreach (IMessageSinkSource item in this)
+            {
                 item.MessageReceived -= MessageReceivedHandler;
+            }
 
             base.Clear();
         }
@@ -79,11 +82,13 @@ namespace DarkRift.Server.Plugins
         /// <inheritdoc/>
         public bool SendMessage(Message message, SendMode sendMode)
         {
-            bool failed = false;
+            var failed = false;
             foreach (IMessageSinkSource item in this)
             {
                 if (!item.SendMessage(message, sendMode))
+                {
                     failed = true;
+                }
             }
 
             return !failed;

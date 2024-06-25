@@ -61,7 +61,9 @@ namespace DarkRift.Server.Plugins.LogWriters
             if (logWriterLoadData.Settings["useFastAnsiColoring"] != null)
             {
                 if (!bool.TryParse(logWriterLoadData.Settings["useFastAnsiColoring"], out useFastAnsiColoring))
+                {
                     throw new ArgumentException("useFastAnsiColoring setting on ConsoleWriter was not a boolean!");
+                }
             }
             else
             {
@@ -73,7 +75,9 @@ namespace DarkRift.Server.Plugins.LogWriters
             {
                 if (!ColorsOnWindows.Enable())
                 {
-                    Console.WriteLine($"Could not enable ANSI coloring on Windows. Consider adding useFastAnsiColoring = false to the {nameof(ConsoleWriter)}'s settings (https://www.darkriftnetworking.com/DarkRift2/Docs/2.9.0/advanced/internal_plugins/console_writer.html):\n" +
+                    Console.WriteLine(
+                        $"Could not enable ANSI coloring on Windows. Consider adding useFastAnsiColoring = false to the {nameof(ConsoleWriter)}'s settings (https://www.darkriftnetworking.com/DarkRift2/Docs/2.9.0/advanced/internal_plugins/console_writer.html):\n"
+                        +
                         $"\n" +
                         $"\t<logWriter name=\"{Name}\" type=\"{nameof(ConsoleWriter)}\" levels=\"...\">\n" +
                         $"\t\t<settings useFastAnsiColoring=\"false\" />\n" +
@@ -89,9 +93,13 @@ namespace DarkRift.Server.Plugins.LogWriters
         public override void WriteEvent(WriteEventArgs args)
         {
             if (useFastAnsiColoring)
+            {
                 WriteWithAnsiColorCodes(args);
+            }
             else
+            {
                 WriteWithConsoleColor(args);
+            }
         }
 
         /// <summary>
@@ -104,14 +112,17 @@ namespace DarkRift.Server.Plugins.LogWriters
         private void WriteWithAnsiColorCodes(WriteEventArgs args)
         {
             // Add colour codes
-            string coloredMessage = ansiColours[(int)args.LogType] + args.FormattedMessage + ANSI_RESET_COLOR_CODE;
+            var coloredMessage = ansiColours[(int)args.LogType] + args.FormattedMessage + ANSI_RESET_COLOR_CODE;
 
             // Output
             if (args.LogType == LogType.Error)
+            {
                 Console.Error.WriteLine(coloredMessage);
+            }
             else
+            {
                 Console.WriteLine(coloredMessage);
-
+            }
         }
 
         /// <summary>
@@ -131,9 +142,13 @@ namespace DarkRift.Server.Plugins.LogWriters
 
                 // Output
                 if (args.LogType == LogType.Error)
+                {
                     Console.Error.WriteLine(args.FormattedMessage);
+                }
                 else
+                {
                     Console.WriteLine(args.FormattedMessage);
+                }
 
                 Console.ResetColor();
             }

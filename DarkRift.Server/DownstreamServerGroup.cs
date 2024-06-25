@@ -57,7 +57,7 @@ namespace DarkRift.Server
         /// <inheritdoc />
         public override void HandleServerJoin(ushort id, string host, ushort port, IDictionary<string, string> properties)
         {
-            DownstreamRemoteServer remoteServer = new DownstreamRemoteServer(id, host, port, this, threadHelper, remoteServerLogger, remoteServerMetricsCollector);
+            var remoteServer = new DownstreamRemoteServer(id, host, port, this, threadHelper, remoteServerLogger, remoteServerMetricsCollector);
 
             AddServer(remoteServer);
 
@@ -67,7 +67,7 @@ namespace DarkRift.Server
         /// <inheritdoc />
         public override void HandleServerLeave(ushort id)
         {
-            DownstreamRemoteServer remoteServer = RemoveServer(id);
+            var remoteServer = RemoveServer(id);
 
             HandleServerLeaveEvent(id, remoteServer);
         }

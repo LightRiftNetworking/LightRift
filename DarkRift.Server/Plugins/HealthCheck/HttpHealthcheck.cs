@@ -65,7 +65,9 @@ namespace DarkRift.Server.Plugins.HealthCheck
             if (pluginLoadData.Settings["port"] != null)
             {
                 if (!ushort.TryParse(pluginLoadData.Settings["port"], out port))
+                {
                     Logger.Error($"Health check port not a valid value. Using a value of {port} instead.");
+                }
             }
 
             path = pluginLoadData.Settings["path"] ?? "/health";
@@ -97,7 +99,10 @@ namespace DarkRift.Server.Plugins.HealthCheck
                 catch (HttpListenerException e)
                 {
                     if (e.ErrorCode != 500)
+                    {
                         Logger.Warning("HTTP health check has exited prematurely as the HTTP server has reported an error.", e);
+                    }
+
                     return;
                 }
 
@@ -115,8 +120,10 @@ namespace DarkRift.Server.Plugins.HealthCheck
                 {
                     context.Response.ContentType = "application/json";
 
-                    using (StreamWriter writer = new StreamWriter(context.Response.OutputStream))
+                    using (var writer = new StreamWriter(context.Response.OutputStream))
+                    {
                         writer.WriteLine($"{{\"listening\": true, \"startTime\": \"{ServerInfo.StartTime:yyyy-MM-ddTHH:mm:ss.fffZ}\", \"version\": \"{ServerInfo.Version}\"}}");
+                    }
                 }
             }
         }

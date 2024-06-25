@@ -38,11 +38,18 @@ namespace DarkRift.Server.Plugins.Commands
                 {
                     case "events-from-dispatcher":
                         if (e.Flags[property] == "true")
+                        {
                             ThreadHelper.EventsFromDispatcher = true;
+                        }
                         else if (e.Flags[property] == "false")
+                        {
                             ThreadHelper.EventsFromDispatcher = false;
+                        }
                         else
+                        {
                             throw new CommandSyntaxException("Cannot set events-from-dispatcher to anything but 'true' or 'false'.");
+                        }
+
                         break;
 
                     default:
@@ -50,9 +57,13 @@ namespace DarkRift.Server.Plugins.Commands
                 }
 
                 if (e.Flags[property] != null)
+                {
                     Logger.Info(property + " set to " + e.Flags[property] + ".");
+                }
                 else
+                {
                     Logger.Info(property + " set.");
+                }
             }
         }
 
@@ -74,11 +85,11 @@ namespace DarkRift.Server.Plugins.Commands
 
         private void DebugLatency(object sender, CommandEventArgs e)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine("| Client | EndPoint             | Latest RTT       | Latest Smoothed  |");
             builder.AppendLine("|--------|----------------------|------------------|------------------|");
 
-            foreach (IClient client in ClientManager.GetAllClients())
+            foreach (var client in ClientManager.GetAllClients())
             {
                 builder.Append("| ");
                 builder.Append(client.ID.ToString().PadRight(6));

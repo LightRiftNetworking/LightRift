@@ -49,16 +49,22 @@ namespace DarkRift.Server.Metrics
         public T WithTags(params string[] values)
         {
             if (values == null)
+            {
                 throw new ArgumentNullException("values", "Tag values must not be null, use an empty array instead.");
+            }
 
-            foreach (string tag in values)
+            foreach (var tag in values)
             {
                 if (!Regex.IsMatch(tag, @"^[a-zA-Z_][a-zA-Z0-9_]*$"))
+                {
                     throw new ArgumentException($@"Tag value '{tag}' must match regex '^[a-zA-Z_][a-zA-Z0-9_]*'. For example: 'tag_value_here'.");
+                }
             }
 
             if (values.Length != noTagsExpected)
+            {
                 throw new ArgumentException($"Not enough tag values were provided to match the number of tags initialized. Expected {noTagsExpected} but only {values.Length} were provided.");
+            }
 
             return producer.Invoke(values);
         }

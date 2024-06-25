@@ -75,25 +75,28 @@ namespace DarkRift.Server
         /// <param name="logManager">The server's log manager.</param>
         /// <param name="logger">The logger to use.</param>
         /// <param name="metricsManager">The server's metrics manager.</param>
-        internal RemoteServerManager(ServerSpawnData.ServerSettings serverSettings, ServerSpawnData.ServerRegistrySettings serverRegistrySettings, ClusterSpawnData clusterSpawnData, NetworkListenerManager networkListenerManager, DarkRiftThreadHelper threadHelper, ServerRegistryConnectorManager serverRegistryConnectorManager, LogManager logManager, Logger logger, MetricsManager metricsManager)
+        internal RemoteServerManager(ServerSpawnData.ServerSettings serverSettings, ServerSpawnData.ServerRegistrySettings serverRegistrySettings, ClusterSpawnData clusterSpawnData, NetworkListenerManager networkListenerManager,
+            DarkRiftThreadHelper threadHelper, ServerRegistryConnectorManager serverRegistryConnectorManager, LogManager logManager, Logger logger, MetricsManager metricsManager)
         {
-            this.AdvertisedHost = serverRegistrySettings.AdvertisedHost;
-            this.AdvertisedPort = serverRegistrySettings.AdvertisedPort;
+            AdvertisedHost = serverRegistrySettings.AdvertisedHost;
+            AdvertisedPort = serverRegistrySettings.AdvertisedPort;
 
 
             this.networkListenerManager = networkListenerManager;
             this.serverRegistryConnectorManager = serverRegistryConnectorManager;
             this.logger = logger;
-            this.Group = serverSettings.ServerGroup;
+            Group = serverSettings.ServerGroup;
 
             if (!string.IsNullOrEmpty(serverSettings.ServerGroup))
             {
                 if (serverRegistrySettings.AdvertisedHost == null || serverRegistrySettings.AdvertisedPort == 0)
+                {
                     throw new ArgumentException("Cannot start server clustering without an advertised host and port. Consider setting the 'advertisedHost' and 'advertisedPort' properties in configuration.");
+                }
 
                 // Find our group
                 ClusterSpawnData.GroupsSettings.GroupSettings ourGroup = null;
-                foreach (ClusterSpawnData.GroupsSettings.GroupSettings groupSettings in clusterSpawnData.Groups.Groups)
+                foreach (var groupSettings in clusterSpawnData.Groups.Groups)
                 {
                     if (groupSettings.Name == serverSettings.ServerGroup)
                     {
@@ -103,23 +106,34 @@ namespace DarkRift.Server
                 }
 
                 if (ourGroup == null)
-                    throw new ArgumentException($"The group specified to own this server '{serverSettings.ServerGroup}' is not present in the cluster configuration. Consider adding this group to the cluster configuration or moving the server to an existing group.");
+                {
+                    throw new ArgumentException(
+                        $"The group specified to own this server '{serverSettings.ServerGroup}' is not present in the cluster configuration. Consider adding this group to the cluster configuration or moving the server to an existing group.");
+                }
 
-                this.Visibility = ourGroup.Visibility;
+                Visibility = ourGroup.Visibility;
 
                 // Build relationships to other groups
-                foreach (ClusterSpawnData.GroupsSettings.GroupSettings groupSettings in clusterSpawnData.Groups.Groups)
+                foreach (var groupSettings in clusterSpawnData.Groups.Groups)
                 {
-                    ClusterSpawnData.GroupsSettings.GroupSettings.ConnectsToSettings ourGroupConnectsTo = ourGroup.ConnectsTo.FirstOrDefault(c => c.Name == groupSettings.Name);
-                    ClusterSpawnData.GroupsSettings.GroupSettings.ConnectsToSettings connectsToOurGroup = groupSettings.ConnectsTo.FirstOrDefault(c => c.Name == ourGroup.Name);
+                    var ourGroupConnectsTo = ourGroup.ConnectsTo.FirstOrDefault(c => c.Name == groupSettings.Name);
+                    var connectsToOurGroup = groupSettings.ConnectsTo.FirstOrDefault(c => c.Name == ourGroup.Name);
 
                     IModifiableServerGroup serverGroup;
                     if (ourGroupConnectsTo != null)
-                        serverGroup = new UpstreamServerGroup(groupSettings.Name, groupSettings.Visibility, threadHelper, serverRegistryConnectorManager, this, serverSettings.ReconnectAttempts, logManager.GetLoggerFor(nameof(UpstreamServerGroup)), logManager.GetLoggerFor(nameof(UpstreamRemoteServer)), metricsManager.GetMetricsCollectorFor(nameof(UpstreamServerGroup)), metricsManager.GetMetricsCollectorFor(nameof(UpstreamRemoteServer)));
+                    {
+                        serverGroup = new UpstreamServerGroup(groupSettings.Name, groupSettings.Visibility, threadHelper, serverRegistryConnectorManager, this, serverSettings.ReconnectAttempts, logManager.GetLoggerFor(nameof(UpstreamServerGroup)),
+                            logManager.GetLoggerFor(nameof(UpstreamRemoteServer)), metricsManager.GetMetricsCollectorFor(nameof(UpstreamServerGroup)), metricsManager.GetMetricsCollectorFor(nameof(UpstreamRemoteServer)));
+                    }
                     else if (connectsToOurGroup != null)
-                        serverGroup = new DownstreamServerGroup(groupSettings.Name, groupSettings.Visibility, threadHelper, logManager.GetLoggerFor(nameof(DownstreamServerGroup)), logManager.GetLoggerFor(nameof(DownstreamRemoteServer)), metricsManager.GetMetricsCollectorFor(nameof(DownstreamServerGroup)), metricsManager.GetMetricsCollectorFor(nameof(DownstreamRemoteServer)));
+                    {
+                        serverGroup = new DownstreamServerGroup(groupSettings.Name, groupSettings.Visibility, threadHelper, logManager.GetLoggerFor(nameof(DownstreamServerGroup)), logManager.GetLoggerFor(nameof(DownstreamRemoteServer)),
+                            metricsManager.GetMetricsCollectorFor(nameof(DownstreamServerGroup)), metricsManager.GetMetricsCollectorFor(nameof(DownstreamRemoteServer)));
+                    }
                     else
+                    {
                         continue;
+                    }
 
                     groups.Add(groupSettings.Name, serverGroup);
                 }
@@ -131,7 +145,7 @@ namespace DarkRift.Server
         /// </summary>
         internal void SubscribeToListeners()
         {
-            foreach (NetworkListener listener in networkListenerManager.GetAllNetworkListeners())
+            foreach (var listener in networkListenerManager.GetAllNetworkListeners())
             {
                 // Unsubscribe first to make sure we don't start getting duplicate calls if this method is called twice
                 listener.RegisteredConnection -= HandleNewConnection;
@@ -175,7 +189,9 @@ namespace DarkRift.Server
         public IServerGroup[] GetAllGroups()
         {
             lock (groups)
+            {
                 return groups.Values.ToArray();
+            }
         }
 
         /// <inheritdoc/>
@@ -185,7 +201,9 @@ namespace DarkRift.Server
         public IServerGroup GetGroup(string name)
         {
             lock (groups)
+            {
                 return groups[name];
+            }
         }
 
         /// <inheritdoc/>
@@ -193,7 +211,7 @@ namespace DarkRift.Server
         {
             lock (groups)
             {
-                foreach (IModifiableServerGroup group in groups.Values)
+                foreach (var group in groups.Values)
                 {
                     try
                     {
@@ -222,17 +240,23 @@ namespace DarkRift.Server
         {
             // Skip ourselves, we know we exist
             if (id == ServerID)
+            {
                 return;
+            }
 
             IModifiableServerGroup serverGroup;
             bool exists;
             lock (groups)
+            {
                 exists = groups.TryGetValue(group, out serverGroup);
+            }
 
             logger.Trace($"Server registry informed us of a server ({id}) in group '{group}'.");
 
             if (exists)
+            {
                 serverGroup.HandleServerJoin(id, host, port, properties);
+            }
         }
 
         /// <summary>
@@ -264,10 +288,12 @@ namespace DarkRift.Server
         internal void HandleNewConnection(NetworkServerConnection connection)
         {
             //TODO make configurable
-            PendingDownstreamRemoteServer server = new PendingDownstreamRemoteServer(connection, 10000, HandleServerReady, HandleServerDroppedBeforeReady, logger);
+            var server = new PendingDownstreamRemoteServer(connection, 10000, HandleServerReady, HandleServerDroppedBeforeReady, logger);
 
             lock (pendingDownstreamServers)
+            {
                 pendingDownstreamServers.Add(server);
+            }
 
             connection.StartListening();
 
@@ -296,7 +322,9 @@ namespace DarkRift.Server
             finally
             {
                 lock (pendingDownstreamServers)
+                {
                     pendingDownstreamServers.Remove(pendingServer);
+                }
             }
         }
 
@@ -309,7 +337,9 @@ namespace DarkRift.Server
             logger.Trace($"Server at [{pendingServer.Connection.RemoteEndPoints.Format()}]  did not identifiy itself in time.");
 
             lock (pendingDownstreamServers)
+            {
                 pendingDownstreamServers.Remove(pendingServer);
+            }
         }
 
         public void Dispose()
@@ -325,14 +355,18 @@ namespace DarkRift.Server
             {
                 lock (groups)
                 {
-                    foreach (IModifiableServerGroup group in groups.Values)
+                    foreach (var group in groups.Values)
+                    {
                         group.Dispose();
+                    }
                 }
 
                 lock (pendingDownstreamServers)
                 {
-                    foreach (PendingDownstreamRemoteServer pendingDownstreamServer in pendingDownstreamServers)
+                    foreach (var pendingDownstreamServer in pendingDownstreamServers)
+                    {
                         pendingDownstreamServer.Dispose();
+                    }
                 }
             }
         }

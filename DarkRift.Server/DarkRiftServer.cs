@@ -141,7 +141,11 @@ namespace DarkRift.Server
         /// <summary>
         ///     Whether this server has been disposed yet.
         /// </summary>
-        public bool Disposed { get => disposed; private set => disposed = value; }
+        public bool Disposed
+        {
+            get => disposed;
+            private set => disposed = value;
+        }
 
         /// <summary>
         ///     Whether this server has been disposed yet.
@@ -160,7 +164,6 @@ namespace DarkRift.Server
         public DarkRiftServer(ServerSpawnData spawnData)
             : this(spawnData, ClusterSpawnData.CreateDefault())
         {
-
         }
 
         /// <summary>
@@ -177,8 +180,8 @@ namespace DarkRift.Server
             DataManager = new DataManager(spawnData.Data, logManager.GetLoggerFor(nameof(Server.DataManager)));
 
             //Initialize object caches before we shoot ourselves in the foot
-            bool initializedCache = ObjectCache.Initialize(spawnData.Cache.ServerObjectCacheSettings)
-                & ServerObjectCache.Initialize(spawnData.Cache.ServerObjectCacheSettings);
+            var initializedCache = ObjectCache.Initialize(spawnData.Cache.ServerObjectCacheSettings)
+                                   & ServerObjectCache.Initialize(spawnData.Cache.ServerObjectCacheSettings);
 
             //Set before loading plugins so plugins override this setting
             dispatcher = new Dispatcher(false, spawnData.DispatcherExecutorThreadID);
@@ -248,7 +251,9 @@ namespace DarkRift.Server
 
             //Write whether the cache was initialized
             if (!initializedCache)
+            {
                 logger.Trace("Cache already initialized, cannot update settings. The server will continue using the pre-existing cache.");
+            }
 
             //Load later stage things
             metricsManager = new MetricsManager(this, spawnData.Metrics);
@@ -302,7 +307,7 @@ namespace DarkRift.Server
             //Load default if no other listeners are present
             if (spawnData.Listeners.NetworkListeners.Count == 0)
             {
-                NameValueCollection listenerSettings = new NameValueCollection();
+                var listenerSettings = new NameValueCollection();
 
                 // TODO default port
                 networkListenerManager.LoadNetworkListener(
@@ -427,7 +432,6 @@ namespace DarkRift.Server
         {
             if (disposing && !disposed)
             {
-
                 InternalRemoteServerManager.DeregisterServer();
 
                 InternalClientManager.Dispose();

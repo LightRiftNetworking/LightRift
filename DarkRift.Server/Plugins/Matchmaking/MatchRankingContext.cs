@@ -19,7 +19,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
 
         internal MatchRankingContext(float discardThreshold)
         {
-            this.DiscardThreshold = discardThreshold;
+            DiscardThreshold = discardThreshold;
         }
     }
 }

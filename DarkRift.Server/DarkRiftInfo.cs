@@ -35,7 +35,7 @@ namespace DarkRift.Server
         /// <param name="startTime">The time the server was started</param>
         public DarkRiftInfo(DateTime startTime)
         {
-            this.StartTime = startTime;
+            StartTime = startTime;
         }
     }
 }

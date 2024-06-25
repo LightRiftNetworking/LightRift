@@ -40,7 +40,9 @@ namespace DarkRift.Server
             set
             {
                 if (value < 1)
+                {
                     throw new ArgumentException("Weight nust be at least 1. Use Forgive() instead of setting weight to zero.");
+                }
 
                 weight = value;
             }
@@ -59,8 +61,8 @@ namespace DarkRift.Server
         /// <param name="weight">The weight of the strike.</param>
         public StrikeEventArgs(StrikeReason reason, string message, int weight)
         {
-            this.Reason = reason;
-            this.Message = message;
+            Reason = reason;
+            Message = message;
             this.weight = weight;
         }
 

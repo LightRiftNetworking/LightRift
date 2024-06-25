@@ -54,7 +54,7 @@ namespace DarkRift.Server
         /// <param name="createResourceDirectory">Whether to create a resource directory or not.</param>
         protected override T LoadPlugin(string name, Type type, PluginBaseLoadData pluginLoadData, PluginLoadData backupLoadData, bool createResourceDirectory)
         {
-            T plugin = base.LoadPlugin(name, type, pluginLoadData, backupLoadData, createResourceDirectory);
+            var plugin = base.LoadPlugin(name, type, pluginLoadData, backupLoadData, createResourceDirectory);
 
             HandleThreadSafe(plugin);
 
@@ -73,7 +73,7 @@ namespace DarkRift.Server
         /// <param name="createResourceDirectory">Whether to create a resource directory or not.</param>
         protected override T LoadPlugin(string name, string type, PluginBaseLoadData pluginLoadData, PluginLoadData backupLoadData, bool createResourceDirectory)
         {
-            T plugin = base.LoadPlugin(name, type, pluginLoadData, backupLoadData, createResourceDirectory);
+            var plugin = base.LoadPlugin(name, type, pluginLoadData, backupLoadData, createResourceDirectory);
 
             HandleThreadSafe(plugin);
 
@@ -101,26 +101,32 @@ namespace DarkRift.Server
         /// <param name="plugin">The plugin to check.</param>
         private void HandleInstallUpgrade(T plugin)
         {
-            PluginRecord oldRecord = dataManager.ReadAndSetPluginRecord(plugin.Name, plugin.Version);
+            var oldRecord = dataManager.ReadAndSetPluginRecord(plugin.Name, plugin.Version);
 
             if (oldRecord == null)
             {
                 plugin.Install(new InstallEventArgs());
 
                 if (!plugin.Hidden)
+                {
                     logger.Info($"Installed plugin {plugin.Name} version {plugin.Version}");
+                }
             }
             else if (oldRecord.Version == plugin.Version)
             {
                 if (!plugin.Hidden)
+                {
                     logger.Info($"Loaded plugin {plugin.Name} version {plugin.Version}");
+                }
             }
             else
             {
                 plugin.Upgrade(new UpgradeEventArgs(oldRecord.Version));
 
                 if (!plugin.Hidden)
+                {
                     logger.Info($"Upgraded plugin {plugin.Name} version {plugin.Version} from version {oldRecord.Version}");
+                }
             }
         }
 
@@ -158,8 +164,10 @@ namespace DarkRift.Server
         /// </remarks>
         internal void Loaded()
         {
-            foreach (T plugin in GetPlugins())
+            foreach (var plugin in GetPlugins())
+            {
                 plugin.Loaded(new LoadedEventArgs());
+            }
         }
     }
 }

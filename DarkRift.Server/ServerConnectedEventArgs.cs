@@ -31,7 +31,7 @@ namespace DarkRift.Server
         /// <param name="remoteServer">The <see cref="IRemoteServer"/> that connected.</param>
         public ServerConnectedEventArgs(IRemoteServer remoteServer)
         {
-            this.RemoteServer = remoteServer;
+            RemoteServer = remoteServer;
         }
 
         /// <summary>

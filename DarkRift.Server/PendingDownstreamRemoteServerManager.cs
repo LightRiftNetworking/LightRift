@@ -79,9 +79,9 @@ namespace DarkRift.Server
         /// <param name="logger">The logger to use.</param>
         internal PendingDownstreamRemoteServer(NetworkServerConnection connection, int timeoutMs, Action<PendingDownstreamRemoteServer, ushort> ready, Action<PendingDownstreamRemoteServer> dropped, Logger logger)
         {
-            this.Connection = connection;
-            this.Ready = ready;
-            this.Dropped = dropped;
+            Connection = connection;
+            Ready = ready;
+            Dropped = dropped;
             this.logger = logger;
 
             connection.MessageReceived += MessageReceivedHandler;
@@ -98,7 +98,9 @@ namespace DarkRift.Server
         internal List<QueuedMessage> GetQueuedMessages()
         {
             lock (queuedMessages)
+            {
                 return queuedMessages.ToList();
+            }
         }
 
         /// <summary>
@@ -108,7 +110,7 @@ namespace DarkRift.Server
         /// <param name="sendMode">The SendMode used to send the data.</param>
         private void MessageReceivedHandler(MessageBuffer buffer, SendMode sendMode)
         {
-            using (Message message = Message.Create(buffer, true))
+            using (var message = Message.Create(buffer, true))
             {
                 if (message.IsCommandMessage)
                 {
@@ -117,7 +119,9 @@ namespace DarkRift.Server
                 else
                 {
                     lock (queuedMessages)
+                    {
                         queuedMessages.Enqueue(new QueuedMessage { Message = message.Clone(), SendMode = sendMode });
+                    }
                 }
             }
         }
@@ -151,8 +155,10 @@ namespace DarkRift.Server
             Complete();
 
             ushort id;
-            using (DarkRiftReader reader = message.GetReader())
+            using (var reader = message.GetReader())
+            {
                 id = reader.ReadUInt16();
+            }
 
             Ready.Invoke(this, id);
         }
@@ -170,7 +176,9 @@ namespace DarkRift.Server
         private bool DropConnection()
         {
             if (!Complete())
+            {
                 return false;
+            }
 
             Dropped.Invoke(this);
 
@@ -186,7 +194,9 @@ namespace DarkRift.Server
             lock (timer)
             {
                 if (completed)
+                {
                     return false;
+                }
 
                 completed = true;
                 timer.Dispose();
@@ -218,7 +228,9 @@ namespace DarkRift.Server
                 disposed = true;
 
                 if (Connection != null)
+                {
                     Connection.Dispose();
+                }
             }
         }
 #pragma warning restore CS0628

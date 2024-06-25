@@ -21,8 +21,8 @@ namespace DarkRift.Server.Plugins.LogWriters
             }
 
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-            return GetConsoleMode(iStdOut, out uint outConsoleMode) &&
-                SetConsoleMode(iStdOut, outConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+            return GetConsoleMode(iStdOut, out var outConsoleMode) &&
+                   SetConsoleMode(iStdOut, outConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
         }
 
         private static bool IsOnWindows()

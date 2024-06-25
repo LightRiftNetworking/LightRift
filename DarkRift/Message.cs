@@ -162,7 +162,8 @@ namespace DarkRift
         /// <summary>
         ///     Random number generator for each thread.
         /// </summary>
-        [ThreadStatic] private static Random random;
+        [ThreadStatic]
+        private static Random random;
 
         /// <summary>
         ///     Whether this message is currently in an object pool waiting or not.

@@ -45,9 +45,13 @@ namespace DarkRift.Server
         public void DispatchIfNeeded(Action action)
         {
             if (EventsFromDispatcher)
+            {
                 Dispatcher.InvokeAsync(action);
+            }
             else
+            {
                 action.Invoke();
+            }
         }
 
         /// <summary>

@@ -34,7 +34,6 @@ namespace DarkRift.Server.Plugins
         /// </summary>
         public EntityGroup()
         {
-
         }
 
         /// <summary>
@@ -43,8 +42,10 @@ namespace DarkRift.Server.Plugins
         /// <param name="group">The group to copy elements from</param>
         public EntityGroup(IEnumerable<T> group)
         {
-            foreach (T item in group)
+            foreach (var item in group)
+            {
                 Add(item);
+            }
         }
 
         /// <inheritdoc/>

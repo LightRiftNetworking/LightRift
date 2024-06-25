@@ -67,11 +67,13 @@ namespace DarkRift.Server.Plugins.Performance
 
         public ObjectCacheMonitor(PluginLoadData pluginLoadData) : base(pluginLoadData)
         {
-            string periodSetting = pluginLoadData.Settings["period"];
+            var periodSetting = pluginLoadData.Settings["period"];
             if (periodSetting != null)
             {
                 if (!int.TryParse(periodSetting, out period))
+                {
                     Logger.Error("'period' setting was not a valid number. Using the default of " + period + "ms.");
+                }
             }
 
             timer = new System.Threading.Timer(CheckObjectCache);
@@ -96,48 +98,61 @@ namespace DarkRift.Server.Plugins.Performance
             // Collect GC in debug mode so the warnings are more up to date
             GC.Collect();
 #endif
-            int deltaAutoRecyclingArrays = ObjectCacheHelper.FinalizedAutoRecyclingArrays - lastFinalizedAutoRecyclingArrays;
+            var deltaAutoRecyclingArrays = ObjectCacheHelper.FinalizedAutoRecyclingArrays - lastFinalizedAutoRecyclingArrays;
             if (deltaAutoRecyclingArrays > 0)
+            {
                 Logger.Warning(deltaAutoRecyclingArrays + " AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.");
+            }
 
             finalizationsCounter.WithTags("auto_recycling_array").Increment(deltaAutoRecyclingArrays);
 
             lastFinalizedAutoRecyclingArrays = ObjectCacheHelper.FinalizedAutoRecyclingArrays;
 
-            int deltaDarkRiftReaders = ObjectCacheHelper.FinalizedDarkRiftReaders - lastFinalizedDarkRiftReaders;
+            var deltaDarkRiftReaders = ObjectCacheHelper.FinalizedDarkRiftReaders - lastFinalizedDarkRiftReaders;
             if (deltaDarkRiftReaders > 0)
+            {
                 Logger.Warning(deltaDarkRiftReaders + " DarkRiftReader objects were finalized last period. This is usually a sign that you are not recycling objects correctly.");
+            }
 
             finalizationsCounter.WithTags("darkrift_reader").Increment(deltaDarkRiftReaders);
 
             lastFinalizedDarkRiftReaders = ObjectCacheHelper.FinalizedDarkRiftReaders;
 
-            int deltaDarkRiftWriters = ObjectCacheHelper.FinalizedDarkRiftWriters - lastFinalizedDarkRiftWriters;
+            var deltaDarkRiftWriters = ObjectCacheHelper.FinalizedDarkRiftWriters - lastFinalizedDarkRiftWriters;
             if (deltaDarkRiftWriters > 0)
+            {
                 Logger.Warning(deltaDarkRiftWriters + " DarkRiftWriter objects were finalized last period. This is usually a sign that you are not recycling objects correctly.");
+            }
+
             finalizationsCounter.WithTags("darkrift_writer").Increment(deltaDarkRiftWriters);
 
             lastFinalizedDarkRiftWriters = ObjectCacheHelper.FinalizedDarkRiftWriters;
 
-            int deltaMessages = ObjectCacheHelper.FinalizedMessages - lastFinalizedMessages;
+            var deltaMessages = ObjectCacheHelper.FinalizedMessages - lastFinalizedMessages;
             if (deltaMessages > 0)
+            {
                 Logger.Warning(deltaMessages + " Message objects were finalized last period. This is usually a sign that you are not recycling objects correctly.");
+            }
 
             finalizationsCounter.WithTags("message").Increment(deltaMessages);
 
             lastFinalizedMessages = ObjectCacheHelper.FinalizedMessages;
 
-            int deltaMessageBuffers = ObjectCacheHelper.FinalizedMessageBuffers - lastFinalizedMessageBuffers;
+            var deltaMessageBuffers = ObjectCacheHelper.FinalizedMessageBuffers - lastFinalizedMessageBuffers;
             if (deltaMessageBuffers > 0)
+            {
                 Logger.Warning(deltaMessageBuffers + " MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.");
+            }
 
             finalizationsCounter.WithTags("message_buffer").Increment(deltaMessageBuffers);
 
             lastFinalizedMessageBuffers = ObjectCacheHelper.FinalizedMessageBuffers;
 
-            int deltaMessageReceivedEventArgs = ServerObjectCacheHelper.FinalizedMessageReceivedEventArgs - lastFinalizedMessageReceivedEventArgs;
+            var deltaMessageReceivedEventArgs = ServerObjectCacheHelper.FinalizedMessageReceivedEventArgs - lastFinalizedMessageReceivedEventArgs;
             if (deltaMessageReceivedEventArgs > 0)
+            {
                 Logger.Warning(deltaMessageReceivedEventArgs + " MessageReceivedEventArgs objects were finalized last period. This is usually a sign that you are not recycling objects correctly.");
+            }
 
             finalizationsCounter.WithTags("message_received_event_args").Increment(deltaMessageReceivedEventArgs);
 

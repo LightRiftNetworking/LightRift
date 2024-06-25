@@ -42,7 +42,6 @@ namespace DarkRift.Server
 
             public DefaultWriter(LogWriterLoadData loadData) : base(loadData)
             {
-
             }
 
             public override void WriteEvent(WriteEventArgs args)
@@ -97,38 +96,55 @@ namespace DarkRift.Server
         internal void LoadWriters(ServerSpawnData.LoggingSettings settings, PluginFactory pluginFactory)
         {
             if (logWriters != null)
-                throw new InvalidOperationException("Cannot load writers if writers are already present. This suggests that writers have already been loaded into the server.\n\nThis is likely an internal DR issue, please consider creating an issue here: https://github.com/DarkRiftNetworking/DarkRift/issues");
+            {
+                throw new InvalidOperationException(
+                    "Cannot load writers if writers are already present. This suggests that writers have already been loaded into the server.\n\nThis is likely an internal DR issue, please consider creating an issue here: https://github.com/DarkRiftNetworking/DarkRift/issues");
+            }
 
-            List<LogWriter> traceWriters = new List<LogWriter>();
-            List<LogWriter> infoWriters = new List<LogWriter>();
-            List<LogWriter> warningWriters = new List<LogWriter>();
-            List<LogWriter> errorWriters = new List<LogWriter>();
-            List<LogWriter> fatalWriters = new List<LogWriter>();
+            var traceWriters = new List<LogWriter>();
+            var infoWriters = new List<LogWriter>();
+            var warningWriters = new List<LogWriter>();
+            var errorWriters = new List<LogWriter>();
+            var fatalWriters = new List<LogWriter>();
 
             logWriters = new LogWriter[settings.LogWriters.Count];
 
-            for (int i = 0; i < settings.LogWriters.Count; i++)
+            for (var i = 0; i < settings.LogWriters.Count; i++)
             {
-                ServerSpawnData.LoggingSettings.LogWriterSettings s = settings.LogWriters[i];
+                var s = settings.LogWriters[i];
 
                 //Create a load data object and backup
-                LogWriterLoadData loadData = new LogWriterLoadData(s.Name, server, s.Settings, GetLoggerFor(nameof(s.Name)));
-                PluginLoadData backupLoadData = new PluginLoadData(s.Name, server, s.Settings, GetLoggerFor(nameof(s.Name)), null, null);
+                var loadData = new LogWriterLoadData(s.Name, server, s.Settings, GetLoggerFor(nameof(s.Name)));
+                var backupLoadData = new PluginLoadData(s.Name, server, s.Settings, GetLoggerFor(nameof(s.Name)), null, null);
 
-                LogWriter writer = pluginFactory.Create<LogWriter>(s.Type, loadData, backupLoadData);
+                var writer = pluginFactory.Create<LogWriter>(s.Type, loadData, backupLoadData);
 
                 logWriters[i] = writer;
 
                 if (s.LogLevels.Contains(LogType.Trace))
+                {
                     traceWriters.Add(writer);
+                }
+
                 if (s.LogLevels.Contains(LogType.Info))
+                {
                     infoWriters.Add(writer);
+                }
+
                 if (s.LogLevels.Contains(LogType.Warning))
+                {
                     warningWriters.Add(writer);
+                }
+
                 if (s.LogLevels.Contains(LogType.Error))
+                {
                     errorWriters.Add(writer);
+                }
+
                 if (s.LogLevels.Contains(LogType.Fatal))
+                {
                     fatalWriters.Add(writer);
+                }
             }
 
             writerMatrix = new LogWriter[][]
@@ -146,8 +162,10 @@ namespace DarkRift.Server
         /// </summary>
         internal void Clear()
         {
-            foreach (LogWriter writer in logWriters)
+            foreach (var writer in logWriters)
+            {
                 writer.Dispose();
+            }
 
             logWriters = null;
             writerMatrix = null;
@@ -163,11 +181,13 @@ namespace DarkRift.Server
         internal void WriteEvent(string sender, string message, LogType logType, Exception exception = null)
         {
             if (writerMatrix == null || writerMatrix[(int)logType].Length == 0)
+            {
                 return;
+            }
 
-            string exceptionString = exception?.ToString();
+            var exceptionString = exception?.ToString();
 
-            StringBuilder builder = new StringBuilder(TYPE_PAD + NAME_PAD + 1 + message.Length + (exceptionString?.Length * 2) ?? 0);   //TODO 1 pool object
+            var builder = new StringBuilder(TYPE_PAD + NAME_PAD + 1 + message.Length + (exceptionString?.Length * 2) ?? 0); //TODO 1 pool object
             builder.Append("[");
             builder.Append(logType.ToString());
             builder.Append("]");
@@ -175,9 +195,9 @@ namespace DarkRift.Server
             builder.Append(sender);
             builder.Append(' ', Math.Max(NAME_PAD - sender.Length, 1));
 
-            string[] lines = message.Split('\n');
+            var lines = message.Split('\n');
             builder.Append(lines[0]);
-            for (int i = 1; i < lines.Length; i++)
+            for (var i = 1; i < lines.Length; i++)
             {
                 builder.Append('\n');
                 builder.Append(' ', TYPE_PAD + NAME_PAD);
@@ -187,7 +207,7 @@ namespace DarkRift.Server
             if (exceptionString != null)
             {
                 lines = exceptionString.Split('\n');
-                for (int i = 0; i < lines.Length; i++)
+                for (var i = 0; i < lines.Length; i++)
                 {
                     builder.Append('\n');
                     builder.Append(' ', TYPE_PAD + NAME_PAD + 1);
@@ -195,21 +215,25 @@ namespace DarkRift.Server
                 }
             }
 
-            WriteEventArgs args = new WriteEventArgs(sender, message, logType, exception, builder.ToString(), DateTime.Now);    //TODO 1 pool object
+            var args = new WriteEventArgs(sender, message, logType, exception, builder.ToString(), DateTime.Now); //TODO 1 pool object
 
-            foreach (LogWriter logWriter in writerMatrix[(int)logType])
+            foreach (var logWriter in writerMatrix[(int)logType])
+            {
                 logWriter.WriteEvent(args);
+            }
         }
 
         /// <inheritdoc/>
         public LogWriter GetLogWriterByName(string name)
         {
-            foreach (LogWriter[] writerLevel in writerMatrix)
+            foreach (var writerLevel in writerMatrix)
             {
-                foreach (LogWriter writer in writerLevel)
+                foreach (var writer in writerLevel)
                 {
                     if (writer.Name == name)
+                    {
                         return writer;
+                    }
                 }
             }
 
@@ -220,7 +244,7 @@ namespace DarkRift.Server
         public T GetLogWriterByType<T>() where T : LogWriter
         {
             return (T)writerMatrix.SelectMany(w => w)
-                        .First(x => x is T);
+                .First(x => x is T);
         }
 
         /// <inheritdoc/>
@@ -237,7 +261,9 @@ namespace DarkRift.Server
         {
             return new Logger(name, this);
         }
+
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         private void Dispose(bool disposing)
@@ -246,8 +272,10 @@ namespace DarkRift.Server
             {
                 if (disposing)
                 {
-                    foreach (LogWriter writer in logWriters)
+                    foreach (var writer in logWriters)
+                    {
                         writer.Dispose();
+                    }
                 }
 
                 disposedValue = true;
@@ -258,6 +286,7 @@ namespace DarkRift.Server
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

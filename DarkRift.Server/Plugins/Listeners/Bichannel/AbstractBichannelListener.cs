@@ -47,7 +47,6 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
         protected AbstractBichannelListener(NetworkListenerLoadData networkListenerLoadData)
             : base(networkListenerLoadData)
         {
-
         }
     }
 }

@@ -103,7 +103,9 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 //Read max strikes
                 MaxStrikes = helper.ReadByteAttribute(
@@ -172,7 +174,9 @@ namespace DarkRift.Server
                 internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
                 {
                     if (element == null)
+                    {
                         return;
+                    }
 
                     //Read source
                     Source = helper.ReadStringAttribute(
@@ -204,7 +208,9 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 //Read search paths
                 helper.ReadElementCollectionTo(
@@ -212,7 +218,7 @@ namespace DarkRift.Server
                     "pluginSearchPath",
                     e =>
                     {
-                        PluginSearchPath psp = new PluginSearchPath();
+                        var psp = new PluginSearchPath();
                         psp.LoadFromXmlElement(e, helper);
                         return psp;
                     },
@@ -240,7 +246,9 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 //Read data directory
                 Directory = helper.ReadStringAttribute(
@@ -297,7 +305,6 @@ namespace DarkRift.Server
                 /// </summary>
                 public LogWriterSettings()
                 {
-
                 }
 
                 /// <summary>
@@ -308,7 +315,9 @@ namespace DarkRift.Server
                 internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
                 {
                     if (element == null)
+                    {
                         return;
+                    }
 
                     Type = helper.ReadStringAttribute(
                         element,
@@ -337,7 +346,6 @@ namespace DarkRift.Server
             /// </summary>
             public LoggingSettings()
             {
-
             }
 
             /// <summary>
@@ -348,12 +356,14 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 StartupLogLevels = helper.ReadLogLevelsAttributeOrDefault(
-                        element,
-                        "startupLevels",
-                        new LogType[] { LogType.Info, LogType.Warning, LogType.Error, LogType.Fatal }
+                    element,
+                    "startupLevels",
+                    new LogType[] { LogType.Info, LogType.Warning, LogType.Error, LogType.Fatal }
                 );
 
                 //Load writers
@@ -363,7 +373,7 @@ namespace DarkRift.Server
                     "logWriter",
                     e =>
                     {
-                        LogWriterSettings s = new LogWriterSettings();
+                        var s = new LogWriterSettings();
                         s.LoadFromXmlElement(e, helper);
                         return s;
                     },
@@ -371,7 +381,6 @@ namespace DarkRift.Server
                 );
             }
         }
-
 
 
         /// <summary>
@@ -419,7 +428,9 @@ namespace DarkRift.Server
                 internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
                 {
                     if (element == null)
+                    {
                         return;
+                    }
 
                     //Type attribute.
                     Type = helper.ReadStringAttribute(
@@ -449,7 +460,9 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 //LoadByDefault attribute.
                 LoadByDefault = helper.ReadBooleanAttribute(
@@ -464,7 +477,7 @@ namespace DarkRift.Server
                     "plugin",
                     e =>
                     {
-                        PluginSettings pluginSettings = new PluginSettings();
+                        var pluginSettings = new PluginSettings();
                         pluginSettings.LoadFromXmlElement(e, helper);
                         return pluginSettings;
                     },
@@ -640,7 +653,6 @@ namespace DarkRift.Server
                 // TODO add constructors to these objects
                 public NetworkListenerSettings()
                 {
-
                 }
 
                 /// <summary>
@@ -651,7 +663,9 @@ namespace DarkRift.Server
                 internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
                 {
                     if (element == null)
+                    {
                         return;
+                    }
 
                     Type = helper.ReadStringAttribute(
                         element,
@@ -687,7 +701,6 @@ namespace DarkRift.Server
             /// </summary>
             public ListenersSettings()
             {
-
             }
 
             /// <summary>
@@ -698,14 +711,16 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 helper.ReadElementCollectionTo(
                     element,
                     "listener",
                     e =>
                     {
-                        NetworkListenerSettings s = new NetworkListenerSettings();
+                        var s = new NetworkListenerSettings();
                         s.LoadFromXmlElement(e, helper);
                         return s;
                     },
@@ -754,7 +769,9 @@ namespace DarkRift.Server
                 internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
                 {
                     if (element == null)
+                    {
                         return;
+                    }
 
                     //Type attribute.
                     Type = helper.ReadStringAttribute(
@@ -774,7 +791,6 @@ namespace DarkRift.Server
             /// </summary>
             public MetricsSettings()
             {
-
             }
 
             /// <summary>
@@ -785,7 +801,9 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 // Load writer
                 MetricsWriter.LoadFromXmlElement(element.Element("metricsWriter"), helper);
@@ -843,7 +861,9 @@ namespace DarkRift.Server
                 internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
                 {
                     if (element == null)
+                    {
                         return;
+                    }
 
                     //Type attribute.
                     Type = helper.ReadStringAttribute(
@@ -863,7 +883,6 @@ namespace DarkRift.Server
             /// </summary>
             public ServerRegistrySettings()
             {
-
             }
 
             /// <summary>
@@ -874,7 +893,9 @@ namespace DarkRift.Server
             internal void LoadFromXmlElement(XElement element, ConfigurationFileHelper helper)
             {
                 if (element == null)
+                {
                     return;
+                }
 
                 // Load writer
                 ServerRegistryConnector.LoadFromXmlElement(element.Element("serverRegistryConnector"), helper);
@@ -925,11 +946,11 @@ namespace DarkRift.Server
         public static ServerSpawnData CreateFromXml(XDocument document, NameValueCollection variables)
         {
             //Create a new server spawn data.
-            ServerSpawnData spawnData = new ServerSpawnData();
+            var spawnData = new ServerSpawnData();
 
-            ConfigurationFileHelper helper = new ConfigurationFileHelper(variables, $"{new DarkRiftInfo(DateTime.Now).DocumentationRoot}configuration/server/", $"{new DarkRiftInfo(DateTime.Now).DocumentationRoot}advanced/configuration_variables.html");
+            var helper = new ConfigurationFileHelper(variables, $"{new DarkRiftInfo(DateTime.Now).DocumentationRoot}configuration/server/", $"{new DarkRiftInfo(DateTime.Now).DocumentationRoot}advanced/configuration_variables.html");
 
-            XElement root = document.Root;
+            var root = document.Root;
 
             spawnData.Server.LoadFromXmlElement(helper.GetRequiredElement(root, "server"), helper);
             spawnData.PluginSearch.LoadFromXmlElement(helper.GetRequiredElement(root, "pluginSearch"), helper);
@@ -960,8 +981,6 @@ namespace DarkRift.Server
         /// </summary>
         public ServerSpawnData()
         {
-
         }
-
     }
 }

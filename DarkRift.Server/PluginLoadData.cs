@@ -48,12 +48,12 @@ namespace DarkRift.Server
         internal PluginLoadData(string name, DarkRiftServer server, NameValueCollection settings, Logger logger, MetricsCollector metricsCollector, string resourceDirectory)
             : base(name, server, settings, logger, metricsCollector)
         {
-            this.ClientManager = server.ClientManager;
-            this.PluginManager = server.PluginManager;
-            this.NetworkListenerManager = server.NetworkListenerManager;
-            this.ServerRegistryConnectorManager = server.ServerRegistryConnectorManager;
-            this.RemoteServerManager = server.RemoteServerManager;
-            this.ResourceDirectory = resourceDirectory;
+            ClientManager = server.ClientManager;
+            PluginManager = server.PluginManager;
+            NetworkListenerManager = server.NetworkListenerManager;
+            ServerRegistryConnectorManager = server.ServerRegistryConnectorManager;
+            RemoteServerManager = server.RemoteServerManager;
+            ResourceDirectory = resourceDirectory;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace DarkRift.Server
         public PluginLoadData(string name, NameValueCollection settings, DarkRiftInfo serverInfo, DarkRiftThreadHelper threadHelper, Logger logger, string resourceDirectory)
             : base(name, settings, serverInfo, threadHelper, logger)
         {
-            this.ResourceDirectory = resourceDirectory;
+            ResourceDirectory = resourceDirectory;
         }
     }
 }

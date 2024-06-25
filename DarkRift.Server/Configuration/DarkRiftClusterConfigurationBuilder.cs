@@ -66,15 +66,15 @@ namespace DarkRift.Server.Configuration
         /// <returns>The configuration builder to continue construction.</returns>
         public DarkRiftClusterConfigurationBuilder AddGroup(string name, ServerVisibility visibility, params string[] connectsTo)
         {
-            ClusterSpawnData.GroupsSettings.GroupSettings networkListenerSettings = new ClusterSpawnData.GroupsSettings.GroupSettings
+            var networkListenerSettings = new ClusterSpawnData.GroupsSettings.GroupSettings
             {
                 Name = name,
                 Visibility = visibility
             };
 
-            foreach (string connectsToName in connectsTo)
+            foreach (var connectsToName in connectsTo)
             {
-                ClusterSpawnData.GroupsSettings.GroupSettings.ConnectsToSettings connectsToSettings = new ClusterSpawnData.GroupsSettings.GroupSettings.ConnectsToSettings()
+                var connectsToSettings = new ClusterSpawnData.GroupsSettings.GroupSettings.ConnectsToSettings()
                 {
                     Name = connectsToName
                 };

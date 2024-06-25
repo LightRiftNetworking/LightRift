@@ -51,12 +51,16 @@ namespace DarkRift.Server
         internal void HandleCommand(string command)
         {
             if (command == null)
+            {
                 return;
+            }
 
             command = command.Trim();
 
             if (string.IsNullOrEmpty(command))
+            {
                 return;
+            }
 
             logger.Trace("Command entered: '" + command + "'");
 
@@ -83,7 +87,7 @@ namespace DarkRift.Server
         /// <param name="command">The command to run.</param>
         private void InvokeCommand(string rawCommand, Command command)
         {
-            CommandEventArgs args = BuildCommandEventArgs(rawCommand, command);
+            var args = BuildCommandEventArgs(rawCommand, command);
 
             threadHelper.DispatchIfNeeded(() =>
             {
@@ -110,9 +114,9 @@ namespace DarkRift.Server
         /// <returns>The event args for the event.</returns>
         internal static CommandEventArgs BuildCommandEventArgs(string rawCommand, Command command)
         {
-            string[] rawArguments = ParseArguments(GetArguments(rawCommand));
-            string[] arguments = GetArguments(rawArguments);
-            NameValueCollection flags = GetFlags(rawArguments);
+            var rawArguments = ParseArguments(GetArguments(rawCommand));
+            var arguments = GetArguments(rawArguments);
+            var flags = GetFlags(rawArguments);
 
             return new CommandEventArgs(command, rawCommand, rawArguments, arguments, flags);
         }
@@ -125,8 +129,8 @@ namespace DarkRift.Server
         internal Command FindCommand(string command)
         {
             //Split the command up
-            string pluginName = GetIntendedPlugin(command);
-            string commandName = GetCommandName(command);
+            var pluginName = GetIntendedPlugin(command);
+            var commandName = GetCommandName(command);
 
             Plugin plugin;
             if (pluginName == null)
@@ -145,7 +149,7 @@ namespace DarkRift.Server
                 }
             }
 
-            string commandNameLower = commandName.ToLower();
+            var commandNameLower = commandName.ToLower();
             return plugin.Commands.Single((x) => x.Name.ToLower() == commandNameLower);
         }
 
@@ -156,7 +160,7 @@ namespace DarkRift.Server
         /// <returns>The plugin containing the command.</returns>
         private Plugin FindPluginWithCommand(string commandName)
         {
-            string commandNameLower = commandName.ToLower();
+            var commandNameLower = commandName.ToLower();
 
             //Filter out to plugins containing that command
             var found =
@@ -167,16 +171,20 @@ namespace DarkRift.Server
                     );
 
             //Report on any errors
-            int count = found.Count();
+            var count = found.Count();
             if (count == 0)
+            {
                 throw new InvalidOperationException($"Could not find any plugins able to handle the command {commandName}.");
+            }
 
             if (count > 1)
             {
                 //Build error
-                string list = "";
-                foreach (Plugin p in found)
+                var list = "";
+                foreach (var p in found)
+                {
                     list += "\n\t" + p.Name;
+                }
 
                 throw new InvalidOperationException($"Found {count} plugin(s) with that command, please specify which you mean: {list}");
             }
@@ -210,9 +218,13 @@ namespace DarkRift.Server
         public static string GetIntendedPlugin(string command)
         {
             if (command.Contains('/'))
+            {
                 return command.Split(new char[] { '/' }, 2, StringSplitOptions.None)[0];
+            }
             else
+            {
                 return null;
+            }
         }
 
         /// <summary>
@@ -223,9 +235,13 @@ namespace DarkRift.Server
         public static string GetCommandAndArgs(string command)
         {
             if (command.Contains('/'))
+            {
                 return command.Split(new char[] { '/' }, 2, StringSplitOptions.None)[1];
+            }
             else
+            {
                 return command;
+            }
         }
 
         /// <summary>
@@ -245,7 +261,7 @@ namespace DarkRift.Server
         /// <returns>The argument string of the command invoked</returns>
         public static string GetArguments(string command)
         {
-            string[] parts = GetCommandAndArgs(command).Split(new char[] { ' ' }, 2, StringSplitOptions.None);
+            var parts = GetCommandAndArgs(command).Split(new char[] { ' ' }, 2, StringSplitOptions.None);
             return parts.Length == 2 ? parts[1] : "";
         }
 
@@ -256,11 +272,11 @@ namespace DarkRift.Server
         /// <returns>The list of raw arguments for the invocation.</returns>
         public static string[] ParseArguments(string arguments)
         {
-            List<string> parsed = new List<string>();
+            var parsed = new List<string>();
 
             //Get arguments
-            string current = "";
-            int i = 0;
+            var current = "";
+            var i = 0;
             while (i < arguments.Length)
             {
                 switch (arguments[i])
@@ -271,6 +287,7 @@ namespace DarkRift.Server
                             parsed.Add(current);
                             current = "";
                         }
+
                         break;
 
                     case '"':
@@ -298,6 +315,7 @@ namespace DarkRift.Server
                                 current += arguments[i];
                             }
                         }
+
                         break;
 
                     case '\'':
@@ -325,6 +343,7 @@ namespace DarkRift.Server
                                 current += arguments[i];
                             }
                         }
+
                         break;
 
                     default:
@@ -351,12 +370,14 @@ namespace DarkRift.Server
         /// <returns>The list of arguments for the invocation.</returns>
         public static string[] GetArguments(string[] rawArguments)
         {
-            List<string> args = new List<string>(rawArguments.Length);
+            var args = new List<string>(rawArguments.Length);
 
-            foreach (string argument in rawArguments)
+            foreach (var argument in rawArguments)
             {
                 if (!argument.StartsWith("-"))
+                {
                     args.Add(argument);
+                }
             }
 
             return args.ToArray();
@@ -369,18 +390,22 @@ namespace DarkRift.Server
         /// <returns>The flags for the invocation.</returns>
         public static NameValueCollection GetFlags(string[] rawArguments)
         {
-            NameValueCollection flags = new NameValueCollection(rawArguments.Length);
+            var flags = new NameValueCollection(rawArguments.Length);
 
-            foreach (string argument in rawArguments)
+            foreach (var argument in rawArguments)
             {
                 if (argument.StartsWith("-"))
                 {
-                    string[] parts = argument.Substring(1).Split(new char[] { '=' }, 2);
+                    var parts = argument.Substring(1).Split(new char[] { '=' }, 2);
 
                     if (parts.Length == 2)
+                    {
                         flags.Add(parts[0], parts[1]);
+                    }
                     else
+                    {
                         flags.Add(parts[0], null);
+                    }
                 }
             }
 

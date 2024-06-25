@@ -122,10 +122,10 @@ namespace DarkRift.Server
         /// <param name="metricsCollector">The metrics collector to use.</param>
         internal DownstreamRemoteServer(ushort id, string host, ushort port, DownstreamServerGroup group, DarkRiftThreadHelper threadHelper, Logger logger, MetricsCollector metricsCollector)
         {
-            this.ID = id;
-            this.Host = host;
-            this.Port = port;
-            this.serverGroup = group;
+            ID = id;
+            Host = host;
+            Port = port;
+            serverGroup = group;
             this.threadHelper = threadHelper;
             this.logger = logger;
 
@@ -157,12 +157,12 @@ namespace DarkRift.Server
             connection.MessageReceived = MessageReceivedHandler;
             connection.Disconnected = DisconnectedHandler;
 
-            EventHandler<ServerConnectedEventArgs> handler = ServerConnected;
+            var handler = ServerConnected;
             if (handler != null)
             {
                 void DoServerConnectedEvent()
                 {
-                    long startTimestamp = Stopwatch.GetTimestamp();
+                    var startTimestamp = Stopwatch.GetTimestamp();
 
                     try
                     {
@@ -175,7 +175,7 @@ namespace DarkRift.Server
                         logger.Error("A plugin encountered an error whilst handling the ServerConnected event. The server will still be connected. (See logs for exception)", e);
                     }
 
-                    double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                    var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                     serverConnectedEventTimeHistogram.Report(time);
                 }
 
@@ -183,7 +183,7 @@ namespace DarkRift.Server
             }
 
             // Handle all messages that had queued
-            foreach (PendingDownstreamRemoteServer.QueuedMessage queuedMessage in pendingServer.GetQueuedMessages())
+            foreach (var queuedMessage in pendingServer.GetQueuedMessages())
             {
                 HandleMessage(queuedMessage.Message, queuedMessage.SendMode);
 
@@ -199,9 +199,11 @@ namespace DarkRift.Server
         /// <returns>Whether the send was successful.</returns>
         public bool SendMessage(Message message, SendMode sendMode)
         {
-            bool success = connection?.SendMessage(message.ToBuffer(), sendMode) ?? false;
+            var success = connection?.SendMessage(message.ToBuffer(), sendMode) ?? false;
             if (success)
+            {
                 messagesSentCounter.Increment();
+            }
 
             return success;
         }
@@ -225,10 +227,12 @@ namespace DarkRift.Server
         {
             messagesReceivedCounter.Increment();
 
-            using (Message message = Message.Create(buffer, true))
+            using (var message = Message.Create(buffer, true))
             {
                 if (message.IsCommandMessage)
+                {
                     logger.Warning($"Server {ID} sent us a command message unexpectedly. This server may be configured to expect clients to connect.");
+                }
 
                 HandleMessage(message, sendMode);
             }
@@ -243,13 +247,13 @@ namespace DarkRift.Server
         {
             // Get another reference to the message so 1. we can control the backing array's lifecycle and thus it won't get disposed of before we dispatch, and
             // 2. because the current message will be disposed of when this method returns.
-            Message messageReference = message.Clone();
+            var messageReference = message.Clone();
 
             void DoMessageReceived()
             {
-                ServerMessageReceivedEventArgs args = ServerMessageReceivedEventArgs.Create(message, sendMode, this);
+                var args = ServerMessageReceivedEventArgs.Create(message, sendMode, this);
 
-                long startTimestamp = Stopwatch.GetTimestamp();
+                var startTimestamp = Stopwatch.GetTimestamp();
 
                 try
                 {
@@ -268,7 +272,7 @@ namespace DarkRift.Server
                     args.Dispose();
                 }
 
-                double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                 messageReceivedEventTimeHistogram.Report(time);
             }
 
@@ -285,12 +289,12 @@ namespace DarkRift.Server
         {
             serverGroup.DisconnectedHandler(this, exception);
 
-            EventHandler<ServerDisconnectedEventArgs> handler = ServerDisconnected;
+            var handler = ServerDisconnected;
             if (handler != null)
             {
                 void DoServerDisconnectedEvent()
                 {
-                    long startTimestamp = Stopwatch.GetTimestamp();
+                    var startTimestamp = Stopwatch.GetTimestamp();
 
                     try
                     {
@@ -303,7 +307,7 @@ namespace DarkRift.Server
                         logger.Error("A plugin encountered an error whilst handling the ServerDisconnected event. (See logs for exception)", e);
                     }
 
-                    double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                    var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                     serverDisconnectedEventTimeHistogram.Report(time);
                 }
 
@@ -342,7 +346,9 @@ namespace DarkRift.Server
                 disposed = true;
 
                 if (connection != null)
+                {
                     connection.Dispose();
+                }
             }
         }
 #pragma warning restore CS0628

@@ -34,9 +34,9 @@ namespace DarkRift.Server
         internal NetworkListenerLoadData(string name, IPAddress address, ushort port, DarkRiftServer server, NameValueCollection settings, Logger logger, MetricsCollector metricsCollector)
             : base(name, server, settings, logger, metricsCollector)
         {
-            this.Address = address;
-            this.Port = port;
-            this.NetworkListenerManager = server.NetworkListenerManager;
+            Address = address;
+            Port = port;
+            NetworkListenerManager = server.NetworkListenerManager;
         }
 
         /// <summary>

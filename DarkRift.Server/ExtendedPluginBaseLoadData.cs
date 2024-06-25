@@ -26,10 +26,10 @@ namespace DarkRift.Server
         public MetricsCollector MetricsCollector { get; set; }
 
         internal ExtendedPluginBaseLoadData(string name, DarkRiftServer server, NameValueCollection settings, Logger logger, MetricsCollector metricsCollector
-            )
+        )
             : base(name, server, settings, logger)
         {
-            this.MetricsManager = server.MetricsManager;
+            MetricsManager = server.MetricsManager;
             MetricsCollector = metricsCollector;
         }
 

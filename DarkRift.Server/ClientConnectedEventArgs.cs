@@ -31,7 +31,7 @@ namespace DarkRift.Server
         /// <param name="clientConnection">The ClientConnection of the new client.</param>
         public ClientConnectedEventArgs(IClient clientConnection)
         {
-            this.Client = clientConnection;
+            Client = clientConnection;
         }
 
         /// <summary>

@@ -80,7 +80,9 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
             if (metricsWriterLoadData.Settings["port"] != null)
             {
                 if (!ushort.TryParse(metricsWriterLoadData.Settings["port"], out port))
+                {
                     Logger.Error($"Prometheus port not an valid value. Using a value of {port} instead.");
+                }
             }
 
             path = metricsWriterLoadData.Settings["path"] ?? "/metrics";
@@ -100,7 +102,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         /// <inheritdoc />
         protected internal override ICounterMetric CreateCounter(MetricsCollector metricsCollector, string name, string description)
         {
-            string formattedMetric = FormatMetric(metricsCollector.Prefix, name);
+            var formattedMetric = FormatMetric(metricsCollector.Prefix, name);
             return GetOrCreateCounter(name, description, formattedMetric);
         }
 
@@ -109,7 +111,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         {
             return new TaggedMetricBuilder<ICounterMetric>(tags.Length, tagValues =>
             {
-                string formattedMetric = FormatMetric(metricsCollector.Prefix, name, tags, tagValues);
+                var formattedMetric = FormatMetric(metricsCollector.Prefix, name, tags, tagValues);
                 return GetOrCreateCounter(name, description, formattedMetric);
             });
         }
@@ -117,7 +119,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         /// <inheritdoc />
         protected internal override IGaugeMetric CreateGauge(MetricsCollector metricsCollector, string name, string description)
         {
-            string formattedMetric = FormatMetric(metricsCollector.Prefix, name);
+            var formattedMetric = FormatMetric(metricsCollector.Prefix, name);
             return GetOrCreateGauge(name, description, formattedMetric);
         }
 
@@ -126,7 +128,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         {
             return new TaggedMetricBuilder<IGaugeMetric>(tags.Length, tagValues =>
             {
-                string formattedMetric = FormatMetric(metricsCollector.Prefix, name, tags, tagValues);
+                var formattedMetric = FormatMetric(metricsCollector.Prefix, name, tags, tagValues);
                 return GetOrCreateGauge(name, description, formattedMetric);
             });
         }
@@ -153,9 +155,9 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         /// <returns>The created <see cref="IHistogramMetric"/>.</returns>
         internal IHistogramMetric CreateHistogram(MetricsCollector metricsCollector, string name, string description, double[] buckets)
         {
-            string formattedSumMetric = FormatMetric(metricsCollector.Prefix, name + "_sum");
-            string formattedCountMetric = FormatMetric(metricsCollector.Prefix, name + "_count");
-            string[] formattedBuckets = buckets.Select(b => FormatMetric(metricsCollector.Prefix, name + "_bucket", b)).ToArray();
+            var formattedSumMetric = FormatMetric(metricsCollector.Prefix, name + "_sum");
+            var formattedCountMetric = FormatMetric(metricsCollector.Prefix, name + "_count");
+            var formattedBuckets = buckets.Select(b => FormatMetric(metricsCollector.Prefix, name + "_bucket", b)).ToArray();
             return GetOrCreateHistogram(name, description, buckets, formattedSumMetric, formattedCountMetric, formattedBuckets);
         }
 
@@ -172,9 +174,9 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         {
             return new TaggedMetricBuilder<IHistogramMetric>(tags.Length, tagValues =>
             {
-                string formattedSumMetric = FormatMetric(metricsCollector.Prefix, name + "_sum", tags, tagValues);
-                string formattedCountMetric = FormatMetric(metricsCollector.Prefix, name + "_count", tags, tagValues);
-                string[] formattedBuckets = buckets.Select(b => FormatMetric(metricsCollector.Prefix, name + "_bucket", tags, tagValues, b)).ToArray();
+                var formattedSumMetric = FormatMetric(metricsCollector.Prefix, name + "_sum", tags, tagValues);
+                var formattedCountMetric = FormatMetric(metricsCollector.Prefix, name + "_count", tags, tagValues);
+                var formattedBuckets = buckets.Select(b => FormatMetric(metricsCollector.Prefix, name + "_bucket", tags, tagValues, b)).ToArray();
                 return GetOrCreateHistogram(name, description, buckets, formattedSumMetric, formattedCountMetric, formattedBuckets);
             });
         }
@@ -191,7 +193,10 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
                 catch (HttpListenerException e)
                 {
                     if (e.ErrorCode != 500)
+                    {
                         Logger.Warning("Prometheus endpoint has exited prematurely as the HTTP server has reported an error.", e);
+                    }
+
                     return;
                 }
 
@@ -209,14 +214,14 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
                 {
                     context.Response.ContentType = "text/plain; version=0.0.4";
 
-                    using (StreamWriter writer = new StreamWriter(context.Response.OutputStream))
+                    using (var writer = new StreamWriter(context.Response.OutputStream))
                     {
                         writer.NewLine = "\n";
 
                         lock (counters)
                         {
                             // TODO deduplicate descriptions for different tags etc.
-                            foreach (CounterMetric metric in counters)
+                            foreach (var metric in counters)
                             {
                                 WriteDocs(writer, metric.Name, metric.Description, "counter");
                                 WriteMetric(writer, metric.Preformatted, metric.Value);
@@ -227,7 +232,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
                         lock (gauges)
                         {
                             // TODO deduplicate descriptions for different tags etc.
-                            foreach (GaugeMetric metric in gauges)
+                            foreach (var metric in gauges)
                             {
                                 WriteDocs(writer, metric.Name, metric.Description, "gauge");
                                 WriteMetric(writer, metric.Preformatted, metric.Value);
@@ -238,11 +243,13 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
                         lock (histograms)
                         {
                             // TODO deduplicate descriptions for different tags etc.
-                            foreach (HistogramMetric metric in histograms)
+                            foreach (var metric in histograms)
                             {
                                 WriteDocs(writer, metric.Name, metric.Description, "histogram");
-                                for (int i = 0; i < metric.PreformattedBuckets.Length; i++)
+                                for (var i = 0; i < metric.PreformattedBuckets.Length; i++)
+                                {
                                     WriteMetric(writer, metric.PreformattedBuckets[i], metric.GetBucketCount(i));
+                                }
 
                                 WriteMetric(writer, metric.PreformattedSum, metric.Sum);
                                 WriteMetric(writer, metric.PreformattedCount, metric.Count);
@@ -266,13 +273,15 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
             lock (counters)
             {
                 // If this counter already exists use that
-                foreach (CounterMetric counter in counters)
+                foreach (var counter in counters)
                 {
                     if (counter.Preformatted == formattedMetric)
+                    {
                         return counter;
+                    }
                 }
 
-                CounterMetric metric = new CounterMetric(name, description, formattedMetric);
+                var metric = new CounterMetric(name, description, formattedMetric);
                 counters.Add(metric);
                 return metric;
             }
@@ -290,13 +299,15 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
             lock (gauges)
             {
                 // If this gauge already exists use that
-                foreach (GaugeMetric gauge in gauges)
+                foreach (var gauge in gauges)
                 {
                     if (gauge.Preformatted == formattedMetric)
+                    {
                         return gauge;
+                    }
                 }
 
-                GaugeMetric metric = new GaugeMetric(name, description, formattedMetric);
+                var metric = new GaugeMetric(name, description, formattedMetric);
                 gauges.Add(metric);
                 return metric;
             }
@@ -317,15 +328,17 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
             lock (histograms)
             {
                 // If this histogram already exists use that
-                foreach (HistogramMetric histogram in histograms)
+                foreach (var histogram in histograms)
                 {
                     if (histogram.PreformattedSum == formattedSumMetric
                         && histogram.PreformattedCount == formattedCountMetric
                         && Enumerable.SequenceEqual(histogram.PreformattedBuckets, formattedBuckets))
+                    {
                         return histogram;
+                    }
                 }
 
-                HistogramMetric metric = new HistogramMetric(
+                var metric = new HistogramMetric(
                     name,
                     description,
                     buckets,
@@ -368,7 +381,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         {
             writer.Write(metricName);
             writer.Write(' ');
-            writer.WriteLine(value.ToString(CultureInfo.InvariantCulture));     // Use invarient culture otherwise decimal points will be decimal commas in some places!
+            writer.WriteLine(value.ToString(CultureInfo.InvariantCulture)); // Use invarient culture otherwise decimal points will be decimal commas in some places!
         }
 
         /// <summary>
@@ -378,8 +391,8 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         internal static long GetTimestamp()
         {
             // TODO when not supporting net35 just use DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-            DateTimeOffset epoch = new DateTimeOffset(1970, 01, 01, 00, 00, 00, TimeSpan.Zero);
-            DateTimeOffset now = DateTimeOffset.UtcNow;
+            var epoch = new DateTimeOffset(1970, 01, 01, 00, 00, 00, TimeSpan.Zero);
+            var now = DateTimeOffset.UtcNow;
 
             return (long)now.Subtract(epoch).TotalMilliseconds;
         }
@@ -445,14 +458,20 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
             {
                 // Don't add underscores to the first character
                 if (i == 0)
+                {
                     return c.ToString();
+                }
 
                 // Don't add underscores if the previous character was upper
                 if (char.IsUpper(prefix[i - 1]))
+                {
                     return c.ToString();
+                }
 
                 if (char.IsUpper(c))
+                {
                     return '_' + c.ToString();
+                }
 
                 return c.ToString();
             }).Aggregate((a, b) => a + b).ToLower();
@@ -467,7 +486,9 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         private static string FormatTagString(string[] tags, string[] tagValues)
         {
             if (tags == null || tags.Length == 0)
+            {
                 return "";
+            }
 
             return "{" + tags.Select((key, i) => key + "=\"" + tagValues[i] + "\"").Aggregate((str, next) => str + "," + next) + "}";
         }
@@ -481,7 +502,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         /// <returns>The prometheus style tag string.</returns>
         private static string FormatTagString(string[] tags, string[] tagValues, double bucket)
         {
-            string bucketText = bucket == double.PositiveInfinity ? "+Inf" : bucket.ToString();
+            var bucketText = bucket == double.PositiveInfinity ? "+Inf" : bucket.ToString();
             return "{" + tags.Select((key, i) => key + "=\"" + tagValues[i] + "\"").Select(t => t + ",").Aggregate("", (str, next) => str + next) + "le=\"" + bucketText + "\"}";
         }
 
@@ -492,7 +513,7 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         /// <returns>The prometheus style tag string.</returns>
         private static string FormatTagString(double bucket)
         {
-            string bucketText = bucket == double.PositiveInfinity ? "+Inf" : bucket.ToString();
+            var bucketText = bucket == double.PositiveInfinity ? "+Inf" : bucket.ToString();
             return "{le=\"" + bucketText + "\"}";
         }
 

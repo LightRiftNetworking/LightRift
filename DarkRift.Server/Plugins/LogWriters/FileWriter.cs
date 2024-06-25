@@ -61,8 +61,11 @@ namespace DarkRift.Server.Plugins.LogWriters
             if (disposing)
             {
                 lock (LogFileStream)
+                {
                     LogFileStream.Dispose();
+                }
             }
+
             base.Dispose(disposing);
         }
     }

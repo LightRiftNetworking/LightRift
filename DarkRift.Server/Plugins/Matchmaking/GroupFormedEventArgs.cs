@@ -31,8 +31,8 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="group">The individual entities in the group.</param>
         public GroupFormedEventArgs(IEnumerable<EntityGroup<T>> subGroups, IEnumerable<T> group)
         {
-            this.SubGroups = subGroups;
-            this.Group = group;
+            SubGroups = subGroups;
+            Group = group;
         }
     }
 }

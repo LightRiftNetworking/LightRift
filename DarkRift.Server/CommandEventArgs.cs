@@ -50,11 +50,11 @@ namespace DarkRift.Server
         /// <param name="flags">The flags that were passed with the command.</param>
         internal CommandEventArgs(Command command, string originalCommand, string[] rawArguments, string[] arguments, NameValueCollection flags)
         {
-            this.Command = command;
-            this.OriginalCommand = originalCommand;
-            this.RawArguments = rawArguments;
-            this.Arguments = arguments;
-            this.Flags = flags;
+            Command = command;
+            OriginalCommand = originalCommand;
+            RawArguments = rawArguments;
+            Arguments = arguments;
+            Flags = flags;
         }
 
         /// <summary>

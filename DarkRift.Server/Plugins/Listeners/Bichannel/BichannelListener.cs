@@ -35,18 +35,20 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
             Logger.Trace("Starting bichannel listener.");
 
             //Sort TCP
-            SocketAsyncEventArgs tcpArgs = ObjectCache.GetSocketAsyncEventArgs();
+            var tcpArgs = ObjectCache.GetSocketAsyncEventArgs();
             tcpArgs.BufferList = null;
             tcpArgs.SetBuffer(null, 0, 0);
             tcpArgs.Completed += TcpAcceptCompleted;
 
-            bool completingAsync = TcpListener.AcceptAsync(tcpArgs);
+            var completingAsync = TcpListener.AcceptAsync(tcpArgs);
 
             if (!completingAsync)
+            {
                 TcpAcceptCompleted(this, tcpArgs);
+            }
 
             //Sort UDP
-            SocketAsyncEventArgs udpArgs = ObjectCache.GetSocketAsyncEventArgs();
+            var udpArgs = ObjectCache.GetSocketAsyncEventArgs();
             udpArgs.Completed += UdpMessageReceived;
 
             udpArgs.RemoteEndPoint = new IPEndPoint(Address, 0);
@@ -55,7 +57,9 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
 
             completingAsync = UdpListener.ReceiveFromAsync(udpArgs);
             if (!completingAsync)
+            {
                 UdpMessageReceived(this, udpArgs);
+            }
 
             Logger.Info($"Server mounted, listening on port {Port}{(UdpPort != Port ? "|" + UdpPort : "")}.");
         }
@@ -100,7 +104,9 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
             }
 
             if (!completingAsync)
+            {
                 TcpAcceptCompleted(this, e);
+            }
         }
 
         /// <summary>
@@ -114,12 +120,12 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
             bool completingAsync;
             do
             {
-                using (MessageBuffer buffer = MessageBuffer.Create(e.BytesTransferred))
+                using (var buffer = MessageBuffer.Create(e.BytesTransferred))
                 {
                     Buffer.BlockCopy(e.Buffer, 0, buffer.Buffer, buffer.Offset, e.BytesTransferred);
                     buffer.Count = e.BytesTransferred;
 
-                    EndPoint remoteEndPoint = e.RemoteEndPoint;
+                    var remoteEndPoint = e.RemoteEndPoint;
 
                     //Start listening again
                     try
@@ -134,16 +140,21 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
                     //Handle message or new connection
                     BichannelServerConnection connection;
                     bool exists;
-                    lock (UdpConnections)   // TODO remove lock please
+                    lock (UdpConnections) // TODO remove lock please
+                    {
                         exists = UdpConnections.TryGetValue(remoteEndPoint, out connection);
+                    }
 
                     if (exists)
+                    {
                         connection.HandleUdpMessage(buffer);
+                    }
                     else
+                    {
                         HandleUdpConnection(buffer, remoteEndPoint);
+                    }
                 }
-            }
-            while (!completingAsync);
+            } while (!completingAsync);
         }
 
         private struct UdpSendOperation
@@ -154,7 +165,7 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
 
         internal override bool SendUdpBuffer(EndPoint remoteEndPoint, MessageBuffer message, Action<int, SocketError> completed)
         {
-            SocketAsyncEventArgs args = ObjectCache.GetSocketAsyncEventArgs();
+            var args = ObjectCache.GetSocketAsyncEventArgs();
             args.BufferList = null;
             args.UserToken = new UdpSendOperation { callback = completed, message = message };
             args.SetBuffer(message.Buffer, message.Offset, message.Count);
@@ -176,14 +187,16 @@ namespace DarkRift.Server.Plugins.Listeners.Bichannel
             }
 
             if (!completingAsync)
+            {
                 UdpSendCompleted(this, args);
+            }
 
             return true;
         }
 
         private void UdpSendCompleted(object sender, SocketAsyncEventArgs args)
         {
-            UdpSendOperation operation = (UdpSendOperation)args.UserToken;
+            var operation = (UdpSendOperation)args.UserToken;
 
             operation.callback(operation.message.Count, args.SocketError);
 

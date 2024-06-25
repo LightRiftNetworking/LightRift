@@ -59,12 +59,12 @@ namespace DarkRift.Server
         /// <param name="logTime">The time the message was logged.</param>
         public WriteEventArgs(string sender, string message, LogType logType, Exception exception, string formattedMessage, DateTime logTime)
         {
-            this.Sender = sender;
-            this.Message = message;
-            this.LogType = logType;
-            this.Exception = exception;
-            this.FormattedMessage = formattedMessage;
-            this.LogTime = logTime;
+            Sender = sender;
+            Message = message;
+            LogType = logType;
+            Exception = exception;
+            FormattedMessage = formattedMessage;
+            LogTime = logTime;
         }
     }
 }

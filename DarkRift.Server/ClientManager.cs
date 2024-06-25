@@ -43,7 +43,9 @@ namespace DarkRift.Server
             get
             {
                 lock (clients)
+                {
                     return clients.Count;
+                }
             }
         }
 
@@ -65,7 +67,7 @@ namespace DarkRift.Server
         /// <summary>
         ///     The last ID allocated on this server
         /// </summary>
-        private ushort lastIDAllocated = ushort.MaxValue;       //Start at 0
+        private ushort lastIDAllocated = ushort.MaxValue; //Start at 0
 
         /// <summary>
         ///     The lock on ID allocation
@@ -132,9 +134,10 @@ namespace DarkRift.Server
         /// <param name="clientLogger">The logger clients will use.</param>
         /// <param name="metricsCollector">The metrics collector to use.</param>
         /// <param name="clientMetricsCollector">The metrics collector clients will use.</param>
-        internal ClientManager(ServerSpawnData.ServerSettings settings, NetworkListenerManager networkListenerManager, DarkRiftThreadHelper threadHelper, Logger logger, Logger clientLogger, MetricsCollector metricsCollector, MetricsCollector clientMetricsCollector)
+        internal ClientManager(ServerSpawnData.ServerSettings settings, NetworkListenerManager networkListenerManager, DarkRiftThreadHelper threadHelper, Logger logger, Logger clientLogger, MetricsCollector metricsCollector,
+            MetricsCollector clientMetricsCollector)
         {
-            this.MaxStrikes = settings.MaxStrikes;
+            MaxStrikes = settings.MaxStrikes;
             this.networkListenerManager = networkListenerManager;
             this.threadHelper = threadHelper;
             this.logger = logger;
@@ -153,7 +156,7 @@ namespace DarkRift.Server
         /// </summary>
         internal void SubscribeToListeners()
         {
-            foreach (NetworkListener listener in networkListenerManager.GetAllNetworkListeners())
+            foreach (var listener in networkListenerManager.GetAllNetworkListeners())
             {
                 // Unsubscribe first to make sure we don't start getting duplicate calls if this method is called twice
                 listener.RegisteredConnection -= HandleNewConnection;
@@ -167,12 +170,16 @@ namespace DarkRift.Server
         /// <returns>The default Bichannel listener.</returns>
         private BichannelListenerBase GetDefaultBichannelListenerOrError()
         {
-            NetworkListener listener = networkListenerManager.GetNetworkListenerByName("DefaultNetworkListener");
+            var listener = networkListenerManager.GetNetworkListenerByName("DefaultNetworkListener");
             if (listener == null)
+            {
                 throw new InvalidOperationException("There is no listener named \"DefaultNetworkListener\" configured, use the NetworkListenerManager to retreive a NetworkListener and access this property directly instead.");
+            }
 
             if (!(listener is BichannelListenerBase bListener))
+            {
                 throw new InvalidOperationException("The listener named \"DefaultNetworkListener\" is not a BichannelListener, use the NetworkListenerManager to retreive a NetworkListener and access this property directly instead.");
+            }
 
             return bListener;
         }
@@ -217,12 +224,12 @@ namespace DarkRift.Server
 
                 connection.Disconnect();
 
-                DeallocateID(id, out int _);
+                DeallocateID(id, out var _);
 
                 return;
             }
 
-            AllocateIDToClient(id, client, out int noClients);
+            AllocateIDToClient(id, client, out var noClients);
 
             connection.Client = client;
 
@@ -231,13 +238,13 @@ namespace DarkRift.Server
             clientsConnectedGauge.Report(noClients);
 
             //Inform plugins of the new connection
-            EventHandler<ClientConnectedEventArgs> handler = ClientConnected;
+            var handler = ClientConnected;
             if (handler != null)
             {
                 threadHelper.DispatchIfNeeded(
-                    delegate ()
+                    delegate()
                     {
-                        long startTimestamp = Stopwatch.GetTimestamp();
+                        var startTimestamp = Stopwatch.GetTimestamp();
                         try
                         {
                             handler.Invoke(this, new ClientConnectedEventArgs(client));
@@ -253,7 +260,7 @@ namespace DarkRift.Server
                             return;
                         }
 
-                        double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                        var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                         clientConnectedEventTimeHistogram.Report(time);
                     },
                     (_) => client.StartListening()
@@ -281,7 +288,9 @@ namespace DarkRift.Server
             }
 
             lock (idLockObj)
+            {
                 allocatedIds.Remove(id);
+            }
         }
 
         /// <summary>
@@ -300,7 +309,9 @@ namespace DarkRift.Server
             }
 
             lock (idLockObj)
+            {
                 removed = removed || allocatedIds.Remove(id);
+            }
 
             return removed;
         }
@@ -315,7 +326,7 @@ namespace DarkRift.Server
         {
             lock (idLockObj)
             {
-                ushort toTest = lastIDAllocated;
+                var toTest = lastIDAllocated;
                 bool taken;
                 do
                 {
@@ -325,7 +336,9 @@ namespace DarkRift.Server
                     }
 
                     lock (clients)
+                    {
                         taken = clients.ContainsKey(toTest) || allocatedIds.Contains(toTest);
+                    }
 
                     //Check there are still IDs to allocate!
                     if (toTest == lastIDAllocated)
@@ -353,17 +366,19 @@ namespace DarkRift.Server
         internal void HandleDisconnection(Client client, bool localDisconnect, SocketError error, Exception exception)
         {
             // If we're not in the current list of clients we've already disconnected
-            if (!DeallocateID(client.ID, out int noClients))
+            if (!DeallocateID(client.ID, out var noClients))
+            {
                 return;
+            }
 
             //Inform plugins of the disconnection
-            EventHandler<ClientDisconnectedEventArgs> handler = ClientDisconnected;
+            var handler = ClientDisconnected;
             if (handler != null)
             {
                 threadHelper.DispatchIfNeeded(
-                    delegate ()
+                    delegate()
                     {
-                        long startTimestamp = Stopwatch.GetTimestamp();
+                        var startTimestamp = Stopwatch.GetTimestamp();
                         try
                         {
                             handler.Invoke(this, new ClientDisconnectedEventArgs(client, localDisconnect, error, exception));
@@ -377,13 +392,10 @@ namespace DarkRift.Server
                             return;
                         }
 
-                        double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                        var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                         clientDisconnectedEventTimeHistogram.Report(time);
                     },
-                    delegate (ActionDispatcherTask t)
-                    {
-                        FinaliseClientDisconnect(exception, error, client, noClients);
-                    }
+                    delegate(ActionDispatcherTask t) { FinaliseClientDisconnect(exception, error, client, noClients); }
                 );
             }
             else
@@ -407,7 +419,7 @@ namespace DarkRift.Server
             }
             else
             {
-                string reason = error == SocketError.Success ? exception.Message : error.ToString();
+                var reason = error == SocketError.Success ? exception.Message : error.ToString();
                 logger.Info($"Client [{client.ID}] disconnected: {reason}.", exception);
             }
 
@@ -422,7 +434,7 @@ namespace DarkRift.Server
         /// <param name="client">The client disconnecting.</param>
         internal void DropClient(Client client)
         {
-            DeallocateID(client.ID, out int noClients);
+            DeallocateID(client.ID, out var noClients);
 
             clientsConnectedGauge.Report(noClients);
         }
@@ -433,7 +445,9 @@ namespace DarkRift.Server
         public IClient[] GetAllClients()
         {
             lock (clients)
+            {
                 return clients.Values.ToArray();
+            }
         }
 
         /// <inheritdoc/>
@@ -443,7 +457,9 @@ namespace DarkRift.Server
         public IClient GetClient(ushort id)
         {
             lock (clients)
+            {
                 return clients[id];
+            }
         }
 
         public void Dispose()
@@ -459,8 +475,10 @@ namespace DarkRift.Server
             {
                 lock (clients)
                 {
-                    foreach (Client connection in clients.Values)
+                    foreach (var connection in clients.Values)
+                    {
                         connection.Dispose();
+                    }
                 }
             }
         }

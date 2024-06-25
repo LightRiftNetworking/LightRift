@@ -61,7 +61,7 @@ namespace DarkRift.Server
         {
             if (settings.ServerRegistryConnector?.Type != null)
             {
-                ServerRegistryConnectorLoadData loadData = new ServerRegistryConnectorLoadData(
+                var loadData = new ServerRegistryConnectorLoadData(
                     settings.ServerRegistryConnector.Type,
                     server,
                     settings.ServerRegistryConnector.Settings ?? new NameValueCollection(),
@@ -74,6 +74,7 @@ namespace DarkRift.Server
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         private void Dispose(bool disposing)
@@ -88,10 +89,12 @@ namespace DarkRift.Server
                 disposedValue = true;
             }
         }
+
         public void Dispose()
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

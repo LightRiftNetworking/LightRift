@@ -79,21 +79,21 @@ namespace DarkRift.Server
             public LockedFile(string filename, Mutex fileMutex)
             {
                 // For legacy compatibility, lock on the mutex if present
-                this.mutex = fileMutex;
-                fileMutex?.WaitOne();       // Not supported by some platforms Android
+                mutex = fileMutex;
+                fileMutex?.WaitOne(); // Not supported by some platforms Android
 
                 // Then aquire the file with no sharing for newer compatibility
-                this.stream = null;
+                stream = null;
                 do
                 {
                     try
                     {
-                        this.stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);        // Not supported by some platforms: Linux
+                        stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None); // Not supported by some platforms: Linux
 
                         try
                         {
                             // Not supported by some platforms: Mac
-                            this.stream.Lock(0, 0);     // Third option for locking, see https://stackoverflow.com/questions/35444470/how-to-lock-unlock-a-file-across-process
+                            stream.Lock(0, 0); // Third option for locking, see https://stackoverflow.com/questions/35444470/how-to-lock-unlock-a-file-across-process
                         }
                         catch (PlatformNotSupportedException)
                         {
@@ -104,11 +104,10 @@ namespace DarkRift.Server
                     {
                         Thread.Sleep(0);
                     }
-                }
-                while (this.stream == null);
+                } while (stream == null);
 
-                this.reader = new StreamReader(stream);
-                this.writer = new StreamWriter(stream);
+                reader = new StreamReader(stream);
+                writer = new StreamWriter(stream);
             }
 
             /// <summary>
@@ -146,7 +145,7 @@ namespace DarkRift.Server
 
         internal DataManager(ServerSpawnData.DataSettings settings, Logger logger)
         {
-            this.dataDirectory = settings.Directory;
+            dataDirectory = settings.Directory;
             this.logger = logger;
 
             Directory.CreateDirectory(dataDirectory);
@@ -211,11 +210,11 @@ namespace DarkRift.Server
         {
             try
             {
-                using (LockedFile file = new LockedFile(pluginsFileName, pluginsFileMutex))
+                using (var file = new LockedFile(pluginsFileName, pluginsFileMutex))
                 {
-                    XDocument doc = file.Load();
+                    var doc = file.Load();
 
-                    XElement element = doc.Root
+                    var element = doc.Root
                         .Elements()
                         .FirstOrDefault(x => x.Attribute("name").Value == name);
 
@@ -226,7 +225,7 @@ namespace DarkRift.Server
                         element = new XElement("plugin");
 
                         var idAttribute = doc.Root.Attribute("nextID");
-                        uint id = uint.Parse(idAttribute.Value);
+                        var id = uint.Parse(idAttribute.Value);
                         idAttribute.SetValue(id + 1);
 
                         element.SetAttributeValue("id", id);
@@ -254,7 +253,8 @@ namespace DarkRift.Server
             }
             catch (XmlException)
             {
-                logger.Error($"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
+                logger.Error(
+                    $"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
                 throw;
             }
         }
@@ -269,15 +269,19 @@ namespace DarkRift.Server
             try
             {
                 XDocument doc;
-                using (LockedFile file = new LockedFile(pluginsFileName, pluginsFileMutex))
+                using (var file = new LockedFile(pluginsFileName, pluginsFileMutex))
+                {
                     doc = file.Load();
+                }
 
                 var element = doc.Root
-                        .Elements()
-                        .FirstOrDefault(x => x.Attribute("name").Value == name);
+                    .Elements()
+                    .FirstOrDefault(x => x.Attribute("name").Value == name);
 
                 if (element == null)
+                {
                     return null;
+                }
 
                 return new PluginRecord(
                     uint.Parse(element.Attribute("id").Value),
@@ -287,7 +291,8 @@ namespace DarkRift.Server
             }
             catch (XmlException)
             {
-                logger.Error($"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
+                logger.Error(
+                    $"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
                 throw;
             }
         }
@@ -301,8 +306,10 @@ namespace DarkRift.Server
             try
             {
                 XDocument doc;
-                using (LockedFile file = new LockedFile(pluginsFileName, pluginsFileMutex))
+                using (var file = new LockedFile(pluginsFileName, pluginsFileMutex))
+                {
                     doc = file.Load();
+                }
 
                 return doc.Root
                     .Elements()
@@ -317,7 +324,8 @@ namespace DarkRift.Server
             }
             catch (XmlException)
             {
-                logger.Error($"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
+                logger.Error(
+                    $"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
                 throw;
             }
         }
@@ -330,9 +338,9 @@ namespace DarkRift.Server
         {
             try
             {
-                using (LockedFile file = new LockedFile(pluginsFileName, pluginsFileMutex))
+                using (var file = new LockedFile(pluginsFileName, pluginsFileMutex))
                 {
-                    XDocument doc = file.Load();
+                    var doc = file.Load();
 
                     doc.Root
                         .Elements()
@@ -344,7 +352,8 @@ namespace DarkRift.Server
             }
             catch (XmlException)
             {
-                logger.Error($"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
+                logger.Error(
+                    $"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
                 throw;
             }
         }
@@ -356,22 +365,27 @@ namespace DarkRift.Server
         {
             try
             {
-                using (LockedFile file = new LockedFile(pluginsFileName, pluginsFileMutex))
+                using (var file = new LockedFile(pluginsFileName, pluginsFileMutex))
                 {
                     // If the file contains content, it doesn't need initialising
                     if (!file.IsEmpty)
+                    {
                         return;
+                    }
 
-                    XDocument doc = new XDocument();
+                    var doc = new XDocument();
                     if (doc.Root == null)
+                    {
                         doc.Add(new XElement("plugins", new XAttribute("nextID", 0)));
+                    }
 
                     file.Save(doc);
                 }
             }
             catch (XmlException)
             {
-                logger.Error($"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
+                logger.Error(
+                    $"The plugins index file ({pluginsFileName}) was corrupt and could not be loaded. It may be possible to fix this manually by inspecting the file; otherwise, it is likely that you will need to delete the file to force DarkRift to regenerate it, however doing so will cause all plugins to reinstall.");
                 throw;
             }
         }
@@ -379,6 +393,7 @@ namespace DarkRift.Server
         #endregion
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         private void Dispose(bool disposing)
@@ -388,7 +403,9 @@ namespace DarkRift.Server
                 if (disposing)
                 {
                     if (pluginsFileMutex != null)
+                    {
                         pluginsFileMutex.Close();
+                    }
                 }
 
                 disposedValue = true;
@@ -400,6 +417,7 @@ namespace DarkRift.Server
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

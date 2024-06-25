@@ -53,9 +53,9 @@ namespace DarkRift.Server
         internal Timer(DarkRiftThreadHelper threadHelper, int delay, Action<Timer> callback)
         {
             this.threadHelper = threadHelper;
-            this.IsOneShot = true;
-            this.Callback = callback;
-            this.IntialDelay = delay;
+            IsOneShot = true;
+            Callback = callback;
+            IntialDelay = delay;
 
             timer = new System.Threading.Timer(InvokeCallback, null, delay, Timeout.Infinite);
         }
@@ -70,10 +70,10 @@ namespace DarkRift.Server
         internal Timer(DarkRiftThreadHelper threadHelper, int initialDelay, int repetitionPeriod, Action<Timer> callback)
         {
             this.threadHelper = threadHelper;
-            this.IsOneShot = false;
-            this.Callback = callback;
-            this.IntialDelay = initialDelay;
-            this.RepetitionPeriod = repetitionPeriod;
+            IsOneShot = false;
+            Callback = callback;
+            IntialDelay = initialDelay;
+            RepetitionPeriod = repetitionPeriod;
 
             timer = new System.Threading.Timer(InvokeCallback, null, initialDelay, repetitionPeriod);
         }
@@ -93,6 +93,7 @@ namespace DarkRift.Server
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         private void Dispose(bool disposing)
@@ -115,6 +116,7 @@ namespace DarkRift.Server
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

@@ -65,7 +65,8 @@ namespace DarkRift.Server
         /// <param name="remoteServerLogger">The logger to pass to created remote servers.</param>
         /// <param name="metricsCollector">The metrics collector to use.</param>
         /// <param name="remoteServerMetricsCollector">The metrics collector to pass to created remote servers.</param>
-        internal UpstreamServerGroup(string name, ServerVisibility visibility, DarkRiftThreadHelper threadHelper, ServerRegistryConnectorManager serverRegistryConnectorManager, RemoteServerManager remoteServerManager, int reconnectAttempts, Logger logger, Logger remoteServerLogger, MetricsCollector metricsCollector, MetricsCollector remoteServerMetricsCollector)
+        internal UpstreamServerGroup(string name, ServerVisibility visibility, DarkRiftThreadHelper threadHelper, ServerRegistryConnectorManager serverRegistryConnectorManager, RemoteServerManager remoteServerManager, int reconnectAttempts,
+            Logger logger, Logger remoteServerLogger, MetricsCollector metricsCollector, MetricsCollector remoteServerMetricsCollector)
             : base(name, visibility, threadHelper, logger, metricsCollector)
         {
             this.threadHelper = threadHelper;
@@ -80,7 +81,7 @@ namespace DarkRift.Server
         /// <inheritdoc />
         public override void HandleServerJoin(ushort id, string host, ushort port, IDictionary<string, string> properties)
         {
-            UpstreamRemoteServer remoteServer = new UpstreamRemoteServer(remoteServerManager, id, host, port, this, threadHelper, remoteServerLogger, remoteServerMetricsCollector);
+            var remoteServer = new UpstreamRemoteServer(remoteServerManager, id, host, port, this, threadHelper, remoteServerLogger, remoteServerMetricsCollector);
 
             AddServer(remoteServer);
 
@@ -109,7 +110,7 @@ namespace DarkRift.Server
         /// <inheritdoc />
         public override void HandleServerLeave(ushort id)
         {
-            UpstreamRemoteServer remoteServer = RemoveServer(id);
+            var remoteServer = RemoveServer(id);
 
             HandleServerLeaveEvent(id, remoteServer);
         }

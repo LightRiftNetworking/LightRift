@@ -60,9 +60,11 @@ namespace DarkRift.Server
         {
             //Ensure the resource directory is present
             if (createResourceDirectory)
+            {
                 dataManager.CreateResourceDirectory(type.Name);
+            }
 
-            T plugin = pluginFactory.Create<T>(type, pluginLoadData);
+            var plugin = pluginFactory.Create<T>(type, pluginLoadData);
 
             plugins.Add(name, plugin);
 
@@ -81,9 +83,11 @@ namespace DarkRift.Server
         {
             //Ensure the resource directory is present
             if (createResourceDirectory)
+            {
                 dataManager.CreateResourceDirectory(type);
+            }
 
-            T plugin = pluginFactory.Create<T>(type, pluginLoadData);
+            var plugin = pluginFactory.Create<T>(type, pluginLoadData);
 
             plugins.Add(name, plugin);
 
@@ -96,7 +100,9 @@ namespace DarkRift.Server
         protected IEnumerable<T> GetPlugins()
         {
             if (!server.Loaded)
+            {
                 throw new InvalidOperationException($"You cannot search for plugins during initialization, use the Loaded event instead: {server.ServerInfo.DocumentationRoot}advanced/installs_and_upgrades.html#loaded");
+            }
 
             return plugins.Values;
         }
@@ -107,7 +113,9 @@ namespace DarkRift.Server
         protected T GetPlugin(string name)
         {
             if (!server.Loaded)
+            {
                 throw new InvalidOperationException($"You cannot search for plugins during initialization, use the Loaded event instead: {server.ServerInfo.DocumentationRoot}advanced/installs_and_upgrades.html#loaded");
+            }
 
             return plugins[name];
         }
@@ -139,8 +147,10 @@ namespace DarkRift.Server
         {
             if (disposing)
             {
-                foreach (T plugin in plugins.Values)
+                foreach (var plugin in plugins.Values)
+                {
                     plugin.Dispose();
+                }
             }
         }
     }

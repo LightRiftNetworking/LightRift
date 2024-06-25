@@ -46,10 +46,10 @@ namespace DarkRift.Server
         /// <param name="handler">The event handler that should be used if the command is invoked.</param>
         public Command(string name, string description, string usage, EventHandler<CommandEventArgs> handler)
         {
-            this.Name = name;
-            this.Description = description;
-            this.Usage = usage;
-            this.Handler = handler;
+            Name = name;
+            Description = description;
+            Usage = usage;
+            Handler = handler;
         }
     }
 }

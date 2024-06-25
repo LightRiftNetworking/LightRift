@@ -44,12 +44,15 @@ namespace DarkRift.Server
         {
             AddTypes(settings.PluginTypes);
 
-            foreach (ServerSpawnData.PluginSearchSettings.PluginSearchPath path in settings.PluginSearchPaths)
+            foreach (var path in settings.PluginSearchPaths)
             {
                 if (File.Exists(path.Source))
                 {
                     if (path.DependencyResolutionStrategy == DependencyResolutionStrategy.RecursiveFromDirectory)
+                    {
                         throw new InvalidOperationException($"{nameof(DependencyResolutionStrategy)}.{nameof(DependencyResolutionStrategy.RecursiveFromDirectory)} cannot be used with path to a file.");
+                    }
+
                     AddFile(path.Source, path.DependencyResolutionStrategy, null);
                 }
                 else
@@ -71,14 +74,16 @@ namespace DarkRift.Server
             if (Directory.Exists(directory))
             {
                 //Get the names of all files to try and load
-                string[] pluginSourceFiles = Directory.GetFiles(directory, "*.dll", SearchOption.AllDirectories);
+                var pluginSourceFiles = Directory.GetFiles(directory, "*.dll", SearchOption.AllDirectories);
 
                 AddFiles(pluginSourceFiles, dependencyResolutionStrategy, directory);
             }
             else
             {
                 if (create)
+                {
                     Directory.CreateDirectory(directory);
+                }
             }
         }
 
@@ -91,8 +96,10 @@ namespace DarkRift.Server
         internal void AddFiles(IEnumerable<string> files, DependencyResolutionStrategy dependencyResolutionStrategy, string searchedDirectory)
         {
             //Load each file to a plugin
-            foreach (string pluginSourceFile in files)
+            foreach (var pluginSourceFile in files)
+            {
                 AddFile(pluginSourceFile, dependencyResolutionStrategy, searchedDirectory);
+            }
         }
 
         /// <summary>
@@ -101,8 +108,10 @@ namespace DarkRift.Server
         /// <param name="pluginTypes">The types of plugins to add.</param>
         internal void AddTypes(IEnumerable<Type> pluginTypes)
         {
-            foreach (Type pluginType in pluginTypes)
+            foreach (var pluginType in pluginTypes)
+            {
                 AddType(pluginType);
+            }
         }
 
         /// <summary>
@@ -115,11 +124,15 @@ namespace DarkRift.Server
         {
             //Check the file is a dll
             if (Path.GetExtension(file) != ".dll")
+            {
                 throw new ArgumentException("The filepath supplied was not a DLL library.");
+            }
 
             //Check the file exists
             if (!File.Exists(file))
+            {
                 throw new FileNotFoundException("The specified filepath does not exist.");
+            }
 
             //Log
             logger.Trace($"Searching '{file}' for plugins.");
@@ -143,9 +156,11 @@ namespace DarkRift.Server
                     return null;
                 }
 
-                string assemblyPath = SearchForFile(rootFolderPath, new AssemblyName(args.Name).Name + ".dll");
+                var assemblyPath = SearchForFile(rootFolderPath, new AssemblyName(args.Name).Name + ".dll");
                 if (assemblyPath == null)
+                {
                     return null;
+                }
 
                 return Assembly.LoadFrom(assemblyPath);
             }
@@ -175,7 +190,7 @@ namespace DarkRift.Server
                     e
                 );
 
-                foreach (Exception loaderException in e.LoaderExceptions)
+                foreach (var loaderException in e.LoaderExceptions)
                 {
                     logger.Error("Additional exception detail from LoaderExceptions property:", loaderException);
                 }
@@ -185,7 +200,7 @@ namespace DarkRift.Server
             }
 
             //Find the types that are plugins
-            foreach (Type enclosedType in enclosedTypes)
+            foreach (var enclosedType in enclosedTypes)
             {
                 if (enclosedType.IsSubclassOf(typeof(PluginBase)) && !enclosedType.IsAbstract)
                 {
@@ -205,16 +220,25 @@ namespace DarkRift.Server
         internal void AddType(Type plugin)
         {
             if (!plugin.IsSubclassOf(typeof(PluginBase)))
+            {
                 throw new ArgumentException($"The type supplied, '{plugin.Name}', was not a plugin. Ensure the type inherits from PluginBase.");
+            }
 
             if (plugin.IsAbstract)
+            {
                 throw new ArgumentException($"The type supplied, '{plugin.Name}', was marked as abstract. Ensure the type is not abstract.");
+            }
 
             // Add if it has not already been added (and warn if two different types with the same name are added)
             if (!types.ContainsKey(plugin.Name))
+            {
                 types.Add(plugin.Name, plugin);
+            }
             else if (types[plugin.Name] != plugin)
-                logger.Error($"A plugin '{plugin.Name}' could not be added to the plugin factory as it was already present. This is likely because two plugins have the same name or the same DLL has been loaded multiple times. Consider renaming your plugins to avoid conflicts (note, namespaces are not considered) or update the plugin search paths configuration to avoid loading the same DLL multiple times.");
+            {
+                logger.Error(
+                    $"A plugin '{plugin.Name}' could not be added to the plugin factory as it was already present. This is likely because two plugins have the same name or the same DLL has been loaded multiple times. Consider renaming your plugins to avoid conflicts (note, namespaces are not considered) or update the plugin search paths configuration to avoid loading the same DLL multiple times.");
+            }
         }
 
         /// <summary>
@@ -259,7 +283,8 @@ namespace DarkRift.Server
                 if (backupLoadData != null)
                 {
                     plugin = (T)Activator.CreateInstance(type, backupLoadData);
-                    logger.Warning($"Plugin {type.Name} was loaded using a PluginLoadData object instead of the desired {loadData.GetType().Name}. Consider replacing the constructor with one accepting a " + loadData.GetType().Name + " object instead.");
+                    logger.Warning($"Plugin {type.Name} was loaded using a PluginLoadData object instead of the desired {loadData.GetType().Name}. Consider replacing the constructor with one accepting a " + loadData.GetType().Name
+                        + " object instead.");
                 }
                 else
                 {
@@ -269,7 +294,9 @@ namespace DarkRift.Server
 
             //Log creation
             if (!plugin.Hidden)
+            {
                 logger.Trace($"Created plugin '{type.Name}'.");
+            }
 
             return plugin;
         }
@@ -289,16 +316,20 @@ namespace DarkRift.Server
         private string SearchForFile(string rootDirectory, string fileName)
         {
             // Try and find the file in this directory
-            string filePath = Path.Combine(rootDirectory, fileName);
+            var filePath = Path.Combine(rootDirectory, fileName);
             if (File.Exists(filePath))
+            {
                 return filePath;
+            }
 
             // If it's not there look in the subdirectories
-            foreach (string subDirectory in Directory.GetDirectories(rootDirectory))
+            foreach (var subDirectory in Directory.GetDirectories(rootDirectory))
             {
-                string found = SearchForFile(subDirectory, fileName);
+                var found = SearchForFile(subDirectory, fileName);
                 if (found != null)
+                {
                     return found;
+                }
             }
 
             // Otherwise it doesn't exist

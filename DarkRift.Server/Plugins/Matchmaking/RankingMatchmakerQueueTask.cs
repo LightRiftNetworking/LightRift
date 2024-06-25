@@ -35,9 +35,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         internal RankingMatchmakerQueueTask(RankingMatchmaker<T> matchmaker, EntityGroup<T> entities, EventHandler<MatchmakingStateChangedEventArgs<T>> callback)
         {
             this.matchmaker = matchmaker;
-            this.Entities = entities;
-            this.Callback = callback;
-            this.MatchmakingState = MatchmakingState.Pending;
+            Entities = entities;
+            Callback = callback;
+            MatchmakingState = MatchmakingState.Pending;
         }
 
         /// <inheritdoc/>
@@ -56,10 +56,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         {
             MatchmakingState = newState;
 
-            matchmaker.ThreadHelper.DispatchIfNeeded(() =>
-            {
-                Callback?.Invoke(this, new MatchmakingStateChangedEventArgs<T>(newState, subGroups, entities));
-            });
+            matchmaker.ThreadHelper.DispatchIfNeeded(() => { Callback?.Invoke(this, new MatchmakingStateChangedEventArgs<T>(newState, subGroups, entities)); });
         }
     }
 }

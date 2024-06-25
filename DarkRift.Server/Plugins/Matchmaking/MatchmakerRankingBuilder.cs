@@ -37,9 +37,13 @@ namespace DarkRift.Server.Plugins.Matchmaking
             get
             {
                 if (Failed)
+                {
                     return 0;
+                }
                 else
+                {
                     return ranking;
+                }
             }
         }
 
@@ -58,7 +62,6 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// </summary>
         public MatchmakerRankingBuilder()
         {
-
         }
 
         /// <summary>
@@ -70,7 +73,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="weight">The weighting to give this comparison.</param>
         public void MinimiseDifferenceLinear(float a, float b, float maxDifference, float weight)
         {
-            ranking += (1 - Math.Abs(a - b) / maxDifference) * weight;
+            ranking += (1 - (Math.Abs(a - b) / maxDifference)) * weight;
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="weight">The weighting to give this comparison.</param>
         public void MinimiseDifferenceLinear(double a, double b, double maxDifference, float weight)
         {
-            ranking += (float)((1 - Math.Abs(a - b) / maxDifference) * weight);
+            ranking += (float)((1 - (Math.Abs(a - b) / maxDifference)) * weight);
         }
 
         /// <summary>
@@ -94,7 +97,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="weight">The weighting to give this comparison.</param>
         public void MinimiseDifferenceLinear(int a, int b, int maxDifference, float weight)
         {
-            ranking += (1 - (float)Math.Abs(a - b) / maxDifference) * weight;
+            ranking += (1 - ((float)Math.Abs(a - b) / maxDifference)) * weight;
         }
 
         /// <summary>
@@ -106,7 +109,7 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="weight">The weighting to give this comparison.</param>
         public void MinimiseDifferenceLinear(long a, long b, long maxDifference, float weight)
         {
-            ranking += (1 - (float)Math.Abs(a - b) / maxDifference) * weight;
+            ranking += (1 - ((float)Math.Abs(a - b) / maxDifference)) * weight;
         }
 
         /// <summary>
@@ -166,7 +169,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void Equal(float a, float b, float weight)
         {
             if (a == b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -178,7 +183,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void Equal(double a, double b, float weight)
         {
             if (a == b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -190,7 +197,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void Equal(int a, int b, float weight)
         {
             if (a == b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -202,7 +211,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void Equal(long a, long b, float weight)
         {
             if (a == b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -214,7 +225,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void Equal<T>(IEquatable<T> a, IEquatable<T> b, float weight)
         {
             if (a.Equals(b))
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -226,7 +239,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void NotEqual(float a, float b, float weight)
         {
             if (a != b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -238,7 +253,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void NotEqual(double a, double b, float weight)
         {
             if (a != b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -250,7 +267,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void NotEqual(int a, int b, float weight)
         {
             if (a != b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -262,7 +281,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void NotEqual(long a, long b, float weight)
         {
             if (a != b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -274,7 +295,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void NotEqual<T>(IEquatable<T> a, IEquatable<T> b, float weight)
         {
             if (!a.Equals(b))
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -285,7 +308,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void IsTrue(bool b, float weight)
         {
             if (b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>
@@ -296,7 +321,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public void IsFalse(bool b, float weight)
         {
             if (!b)
+            {
                 ranking += weight;
+            }
         }
 
         /// <summary>

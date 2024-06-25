@@ -36,15 +36,20 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         public static IHistogramMetric Histogram(this MetricsCollector metricsCollector, string name, string description, double[] buckets)
         {
             if (!metricsCollector.IsWritingToPrometheus())
+            {
                 throw new InvalidOperationException("Prometheus metrics extensions cannot be used without a non-prometheus metric writer. Consider using core metric types, exensions for your chosen writer or switch to the Promethus metrics writer.");
+            }
 
 
             // Ensure buckets always get larger
-            double lastBucket = double.NegativeInfinity;
-            foreach (double bucket in buckets)
+            var lastBucket = double.NegativeInfinity;
+            foreach (var bucket in buckets)
             {
                 if (lastBucket >= bucket)
+                {
                     throw new ArgumentException("Buckets must be in ascending order and not start at double.NegativeInfinity.");
+                }
+
                 lastBucket = bucket;
             }
 
@@ -70,16 +75,21 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         public static TaggedMetricBuilder<IHistogramMetric> Histogram(this MetricsCollector metricsCollector, string name, string description, double[] buckets, params string[] tags)
         {
             if (!metricsCollector.IsWritingToPrometheus())
+            {
                 throw new InvalidOperationException("Prometheus metrics extensions cannot be used without a non-prometheus metric writer. Consider using core metric types, exensions for your chosen writer or switch to the Promethus metrics writer.");
+            }
 
             ValidateTags(tags);
 
             // Ensure buckets always get larger
-            double lastBucket = double.NegativeInfinity;
-            foreach (double bucket in buckets)
+            var lastBucket = double.NegativeInfinity;
+            foreach (var bucket in buckets)
             {
                 if (lastBucket >= bucket)
+                {
                     throw new ArgumentException("Buckets must be in ascending order and not start at double.NegativeInfinity.");
+                }
+
                 lastBucket = bucket;
             }
 
@@ -102,12 +112,16 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
         private static void ValidateTags(string[] tags)
         {
             if (tags == null)
+            {
                 throw new ArgumentNullException("Tags must not be null, use an empty array instead.");
+            }
 
-            foreach (string tag in tags)
+            foreach (var tag in tags)
             {
                 if (!Regex.IsMatch(tag, @"\w+:\w+"))
+                {
                     throw new ArgumentException($@"Tag '{tag}' must match regex '^[a-zA-Z_][a-zA-Z0-9_]*'. For example: 'tag_name_here'.");
+                }
             }
         }
     }

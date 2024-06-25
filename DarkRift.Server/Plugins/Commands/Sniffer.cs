@@ -36,7 +36,6 @@ namespace DarkRift.Server.Plugins.Commands
 
         public Sniffer(PluginLoadData pluginLoadData) : base(pluginLoadData)
         {
-
         }
 
         private void ClientManager_ClientConnected(object sender, ClientConnectedEventArgs e)
@@ -46,30 +45,32 @@ namespace DarkRift.Server.Plugins.Commands
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            using (Message message = e.GetMessage())
+            using (var message = e.GetMessage())
             {
                 lock (rules)
                 {
-                    foreach (RuleGroup group in rules)
+                    foreach (var group in rules)
                     {
                         if (group.Accepts(message, (Client)sender))
                         {
-                            StringBuilder builder = new StringBuilder();
+                            var builder = new StringBuilder();
                             builder.Append('[');
                             builder.Append(e.Client.ID);
                             builder.Append("]");
 
                             if (group.OutputData)
                             {
-                                using (DarkRiftReader reader = message.GetReader())
+                                using (var reader = message.GetReader())
                                 {
-                                    for (int i = 0; i < reader.Length; i++)
+                                    for (var i = 0; i < reader.Length; i++)
                                     {
                                         builder.Append(" ");
                                         builder.Append(reader.ReadByte().ToString("X2"));
 
                                         if (i % 4 == 3)
+                                        {
                                             builder.Append(" ");
+                                        }
                                     }
                                 }
                             }
@@ -91,9 +92,11 @@ namespace DarkRift.Server.Plugins.Commands
         {
             //Check args length
             if (e.Arguments.Length != 1)
+            {
                 throw new CommandSyntaxException($"Expected 1 argument but found {e.Arguments.Length}.");
+            }
 
-            RuleGroup group = BuildRuleGroup(e.Flags);
+            var group = BuildRuleGroup(e.Flags);
 
             lock (rules)
             {
@@ -102,9 +105,11 @@ namespace DarkRift.Server.Plugins.Commands
                     //Add rule groups
                     case "add":
                         if (group.Count == 0)
+                        {
                             throw new CommandSyntaxException("Found no conditions to define rule. Use -a to sniff all messages.");
+                        }
 
-                        bool added = rules.Add(group);
+                        var added = rules.Add(group);
 
                         if (added)
                         {
@@ -114,7 +119,9 @@ namespace DarkRift.Server.Plugins.Commands
                                 ClientManager.ClientConnected += ClientManager_ClientConnected;
 
                                 foreach (Client client in ClientManager.GetAllClients())
+                                {
                                     client.MessageReceived += Client_MessageReceived;
+                                }
                             }
 
                             Logger.Info("Now sniffing " + group.ToString());
@@ -129,9 +136,11 @@ namespace DarkRift.Server.Plugins.Commands
                     //Remove rule groups
                     case "remove":
                         if (group.Count == 0)
+                        {
                             throw new CommandSyntaxException("Found not conditions to define rule. Use -a to remove a sniff for all messages or 'sniffer clear' to remove all.");
+                        }
 
-                        bool removed = rules.Remove(group);
+                        var removed = rules.Remove(group);
 
                         if (removed)
                         {
@@ -141,7 +150,9 @@ namespace DarkRift.Server.Plugins.Commands
                                 ClientManager.ClientConnected -= ClientManager_ClientConnected;
 
                                 foreach (Client client in ClientManager.GetAllClients())
+                                {
                                     client.MessageReceived -= Client_MessageReceived;
+                                }
                             }
 
                             Logger.Info("No longer sniffing " + group.ToString());
@@ -156,14 +167,18 @@ namespace DarkRift.Server.Plugins.Commands
                     //Clear all rule groups
                     case "clear":
                         if (group.Count != 0)
+                        {
                             throw new CommandSyntaxException();
+                        }
 
                         rules.Clear();
 
                         ClientManager.ClientConnected -= ClientManager_ClientConnected;
 
                         foreach (Client client in ClientManager.GetAllClients())
+                        {
                             client.MessageReceived -= Client_MessageReceived;
+                        }
 
                         Logger.Info("All sniffing rules cleared.");
 
@@ -171,11 +186,13 @@ namespace DarkRift.Server.Plugins.Commands
 
                     //List sniffing rules
                     case "list":
-                        StringBuilder builder = new StringBuilder();
+                        var builder = new StringBuilder();
                         builder.Append("Found " + rules.Count + " rules defined.");
-                        int i = 1;
-                        foreach (RuleGroup rule in rules)
+                        var i = 1;
+                        foreach (var rule in rules)
+                        {
                             builder.Append("\n" + i++ + "\t" + rule.ToString());
+                        }
 
                         Logger.Info(builder.ToString());
 
@@ -191,9 +208,9 @@ namespace DarkRift.Server.Plugins.Commands
         private RuleGroup BuildRuleGroup(NameValueCollection flags)
         {
             //Should we output data?
-            bool outputData = flags.AllKeys.Contains("h");
+            var outputData = flags.AllKeys.Contains("h");
 
-            RuleGroup group = new RuleGroup(outputData);
+            var group = new RuleGroup(outputData);
 
             //Load all rules
             if (flags.AllKeys.Contains("a") || flags.AllKeys.Contains("all"))
@@ -207,9 +224,13 @@ namespace DarkRift.Server.Plugins.Commands
             try
             {
                 if (flags.AllKeys.Contains("t"))
+                {
                     group.Add(new TagRule(ushort.Parse(flags["t"])));
+                }
                 else if (flags.AllKeys.Contains("tag"))
+                {
                     group.Add(new TagRule(ushort.Parse(flags["tag"])));
+                }
             }
             catch (FormatException)
             {
@@ -220,7 +241,9 @@ namespace DarkRift.Server.Plugins.Commands
             try
             {
                 if (flags.AllKeys.Contains("id"))
+                {
                     group.Add(new IDRule(uint.Parse(flags["id"])));
+                }
             }
             catch (FormatException)
             {
@@ -231,7 +254,9 @@ namespace DarkRift.Server.Plugins.Commands
             try
             {
                 if (flags.AllKeys.Contains("ip"))
+                {
                     group.Add(new IPRule(IPAddress.Parse(flags["ip"])));
+                }
             }
             catch (FormatException)
             {

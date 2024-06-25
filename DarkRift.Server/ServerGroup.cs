@@ -26,7 +26,9 @@ namespace DarkRift.Server
             get
             {
                 lock (servers)
+                {
                     return servers.Count;
+                }
             }
         }
 
@@ -91,8 +93,8 @@ namespace DarkRift.Server
 
         public ServerGroup(string name, ServerVisibility visibility, DarkRiftThreadHelper threadHelper, Logger logger, MetricsCollector metricsCollector)
         {
-            this.Name = name;
-            this.Visibility = visibility;
+            Name = name;
+            Visibility = visibility;
 
             this.threadHelper = threadHelper;
             this.logger = logger;
@@ -108,14 +110,18 @@ namespace DarkRift.Server
         public IRemoteServer[] GetAllRemoteServers()
         {
             lock (servers)
+            {
                 return servers.Values.Cast<IRemoteServer>().ToArray();
+            }
         }
 
         /// <inheritdoc/>
         public IRemoteServer GetRemoteServer(ushort id)
         {
             lock (servers)
+            {
                 return servers[id];
+            }
         }
 
         /// <inheritdoc />
@@ -128,12 +134,12 @@ namespace DarkRift.Server
         /// <param name="remoteServer">The server joining.</param>
         protected void HandleServerJoinEvent(ushort id, IRemoteServer remoteServer)
         {
-            EventHandler<ServerJoinedEventArgs> handler = ServerJoined;
+            var handler = ServerJoined;
             if (handler != null)
             {
                 void DoServerJoinEvent()
                 {
-                    long startTimestamp = Stopwatch.GetTimestamp();
+                    var startTimestamp = Stopwatch.GetTimestamp();
 
                     try
                     {
@@ -147,7 +153,7 @@ namespace DarkRift.Server
                         logger.Error("A plugin encountered an error whilst handling the ServerJoined event. The server will still be connected. (See logs for exception)", e);
                     }
 
-                    double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                    var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                     serverJoinedEventTimeHistogram.Report(time);
                 }
 
@@ -165,12 +171,12 @@ namespace DarkRift.Server
         /// <param name="remoteServer">The server leaving.</param>
         protected void HandleServerLeaveEvent(ushort id, IRemoteServer remoteServer)
         {
-            EventHandler<ServerLeftEventArgs> handler = ServerLeft;
+            var handler = ServerLeft;
             if (handler != null)
             {
                 void DoServerLeaveEvent()
                 {
-                    long startTimestamp = Stopwatch.GetTimestamp();
+                    var startTimestamp = Stopwatch.GetTimestamp();
 
                     try
                     {
@@ -183,7 +189,7 @@ namespace DarkRift.Server
                         logger.Error("A plugin encountered an error whilst handling the ServerLeft event. (See logs for exception)", e);
                     }
 
-                    double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                    var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                     serverLeftEventTimeHistogram.Report(time);
                 }
 
@@ -228,6 +234,7 @@ namespace DarkRift.Server
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -238,8 +245,10 @@ namespace DarkRift.Server
                 {
                     lock (servers)
                     {
-                        foreach (T server in servers.Values)
+                        foreach (var server in servers.Values)
+                        {
                             server.Dispose();
+                        }
                     }
                 }
 
@@ -251,6 +260,7 @@ namespace DarkRift.Server
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

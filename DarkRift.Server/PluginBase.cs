@@ -66,13 +66,13 @@ namespace DarkRift.Server
         /// <param name="pluginLoadData"></param>
         public PluginBase(PluginBaseLoadData pluginLoadData)
         {
-            this.Name = pluginLoadData.Name;
-            this.Dispatcher = pluginLoadData.Dispatcher;
-            this.ServerInfo = pluginLoadData.ServerInfo;
-            this.ThreadHelper = pluginLoadData.ThreadHelper;
-            this.LogManager = pluginLoadData.LogManager;
-            this.Logger = pluginLoadData.Logger;
-            this.Server = pluginLoadData.Server;
+            Name = pluginLoadData.Name;
+            Dispatcher = pluginLoadData.Dispatcher;
+            ServerInfo = pluginLoadData.ServerInfo;
+            ThreadHelper = pluginLoadData.ThreadHelper;
+            LogManager = pluginLoadData.LogManager;
+            Logger = pluginLoadData.Logger;
+            Server = pluginLoadData.Server;
         }
 
         /// <summary>
@@ -99,6 +99,7 @@ namespace DarkRift.Server
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         /// <summary>
@@ -111,7 +112,6 @@ namespace DarkRift.Server
             {
                 if (disposing)
                 {
-
                 }
 
                 disposedValue = true;
@@ -125,6 +125,7 @@ namespace DarkRift.Server
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

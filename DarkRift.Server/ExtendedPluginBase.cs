@@ -58,20 +58,23 @@ namespace DarkRift.Server
         /// </summary>
         /// <param name="args">The details of the load.</param>
         protected internal virtual void Loaded(LoadedEventArgs args)
-        { }
+        {
+        }
 
         /// <summary>
         ///     Method that will be called when the plugin is installed.
         /// </summary>
         /// <param name="args">The details of the installation.</param>
         protected internal virtual void Install(InstallEventArgs args)
-        { }
+        {
+        }
 
         /// <summary>
         ///     Method that will be called when the plugin is upgraded.
         /// </summary>
         /// <param name="args">The details of the upgrade.</param>
         protected internal virtual void Upgrade(UpgradeEventArgs args)
-        { }
+        {
+        }
     }
 }

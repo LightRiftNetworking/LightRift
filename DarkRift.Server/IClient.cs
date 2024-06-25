@@ -36,11 +36,7 @@ namespace DarkRift.Server
         /// <remarks>
         ///     <legacyBold>Setter only available in Pro.</legacyBold>
         /// </remarks>
-        byte Strikes
-        {
-            get;
-            set;
-        }
+        byte Strikes { get; set; }
 
         /// <summary>
         ///     The time this client connected to the server.

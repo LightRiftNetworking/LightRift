@@ -33,7 +33,7 @@ namespace DarkRift.Server.Metrics
         internal MetricsManager(DarkRiftServer server, ServerSpawnData.MetricsSettings settings)
         {
             this.server = server;
-            this.EnablePerMessageMetrics = settings.EnablePerMessageMetrics;
+            EnablePerMessageMetrics = settings.EnablePerMessageMetrics;
         }
 
         /// <summary>
@@ -45,11 +45,14 @@ namespace DarkRift.Server.Metrics
         internal void LoadWriters(ServerSpawnData.MetricsSettings settings, PluginFactory pluginFactory, LogManager logManager)
         {
             if (MetricsWriter != null)
-                throw new InvalidOperationException("Cannot load writers if writer is already present. This suggests that writers have already been loaded into the server.\n\nThis is likely an internal DR issue, please consider creating an issue here: https://github.com/DarkRiftNetworking/DarkRift/issues");
+            {
+                throw new InvalidOperationException(
+                    "Cannot load writers if writer is already present. This suggests that writers have already been loaded into the server.\n\nThis is likely an internal DR issue, please consider creating an issue here: https://github.com/DarkRiftNetworking/DarkRift/issues");
+            }
 
             if (settings.MetricsWriter != null && settings.MetricsWriter.Type != null)
             {
-                MetricsWriterLoadData loadData = new MetricsWriterLoadData(settings.MetricsWriter.Type, server, settings.MetricsWriter.Settings, logManager.GetLoggerFor(settings.MetricsWriter.Type));
+                var loadData = new MetricsWriterLoadData(settings.MetricsWriter.Type, server, settings.MetricsWriter.Settings, logManager.GetLoggerFor(settings.MetricsWriter.Type));
 
                 MetricsWriter = pluginFactory.Create<MetricsWriter>(settings.MetricsWriter.Type, loadData, null);
             }
@@ -71,12 +74,17 @@ namespace DarkRift.Server.Metrics
         public MetricsCollector GetPerMessageMetricsCollectorFor(string name)
         {
             if (EnablePerMessageMetrics)
+            {
                 return GetMetricsCollectorFor(name);
+            }
             else
+            {
                 return GetNoOpMetricsCollectorFor(name);
+            }
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         private void Dispose(bool disposing)

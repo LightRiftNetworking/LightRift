@@ -32,24 +32,29 @@ namespace DarkRift.Server.Plugins.Commands
 
         public ClientCommand(PluginLoadData pluginLoadData) : base(pluginLoadData)
         {
-
         }
 
         private void ClientCommandHandler(object sender, CommandEventArgs e)
         {
             if (e.Arguments.Length < 1)
+            {
                 throw new CommandSyntaxException();
+            }
 
             if (e.Arguments[0].ToLower() == "add")
             {
                 if (e.Arguments.Length != 1)
+                {
                     throw new CommandSyntaxException($"Expected 1 argument to client command but found {e.Arguments.Length}.");
+                }
 
                 IPAddress ip;
                 if (e.Flags["ip"] != null)
                 {
                     if (!IPAddress.TryParse(e.Flags["ip"], out ip))
+                    {
                         throw new CommandSyntaxException("Could not parse the IP address of the client to create.");
+                    }
                 }
                 else
                 {
@@ -60,34 +65,44 @@ namespace DarkRift.Server.Plugins.Commands
                 if (e.Flags["port"] != null)
                 {
                     if (!ushort.TryParse(e.Flags["port"], out port))
+                    {
                         throw new CommandSyntaxException("Could not parse the port of the client to create.");
+                    }
                 }
                 else if (e.Flags["p"] != null)
                 {
                     if (!ushort.TryParse(e.Flags["p"], out port))
+                    {
                         throw new CommandSyntaxException("Could not parse the port of the client to create.");
+                    }
                 }
                 else
                 {
                     port = 0;
                 }
 
-                bool outputData = e.HasFlag("h");
+                var outputData = e.HasFlag("h");
 
-                MockedNetworkServerConnection connection = new MockedNetworkServerConnection(this, ip, port, outputData);
+                var connection = new MockedNetworkServerConnection(this, ip, port, outputData);
                 Server.InternalClientManager.HandleNewConnection(connection);
                 connections.Add(connection.Client.ID, connection);
             }
             else if (e.Arguments[0].ToLower() == "remove")
             {
                 if (e.Arguments.Length != 2)
+                {
                     throw new CommandSyntaxException($"Expected 2 arguments to client command but found {e.Arguments.Length}.");
+                }
 
-                if (!int.TryParse(e.Arguments[1], out int id))
+                if (!int.TryParse(e.Arguments[1], out var id))
+                {
                     throw new CommandSyntaxException("Could not parse the ID of the client to disconnect.");
+                }
 
-                if (!connections.TryGetValue(id, out MockedNetworkServerConnection connection))
+                if (!connections.TryGetValue(id, out var connection))
+                {
                     throw new CommandSyntaxException("You can only disconnect clients previously created with the client command.");
+                }
 
                 Server.InternalClientManager.HandleDisconnection(connection.Client, true, SocketError.Success, null);
             }
@@ -110,20 +125,22 @@ namespace DarkRift.Server.Plugins.Commands
         /// </summary>
         internal void HandleSend(MockedNetworkServerConnection connection, SendMode sendMode, MessageBuffer message, bool outputData)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append(sendMode == SendMode.Reliable ? "Reliable" : "Unreliable");
             builder.Append(" message sent to ");
             builder.Append(connection.Client.ID);
 
             if (outputData)
             {
-                for (int i = 0; i < message.Count; i++)
+                for (var i = 0; i < message.Count; i++)
                 {
                     builder.Append(" ");
                     builder.Append(message.Buffer[message.Offset + i].ToString("X2"));
 
                     if (i % 4 == 3)
+                    {
                         builder.Append(" ");
+                    }
                 }
             }
 

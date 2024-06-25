@@ -36,9 +36,9 @@ namespace DarkRift.Server
         /// <param name="version">The version of the plugin currently installed.</param>
         public PluginRecord(uint id, string name, Version version)
         {
-            this.ID = id;
-            this.Name = name;
-            this.Version = version;
+            ID = id;
+            Name = name;
+            Version = version;
         }
     }
 }

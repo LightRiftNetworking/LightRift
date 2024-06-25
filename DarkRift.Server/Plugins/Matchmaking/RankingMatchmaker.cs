@@ -17,18 +17,18 @@ namespace DarkRift.Server.Plugins.Matchmaking
     public abstract class RankingMatchmaker<T> : Plugin, IMatchmaker<T>
     {
         /*
-        * .--------------------------------------- !!! BEWARE !!! ---------------------------------------.
-        * | This plugin DOES NOT abide by the usual thread safe rule other DarkRift plugins do. It uses  |
-        * | threads regardless of whether others are or are not.                                         |
-        * '----------------------------------------------------------------------------------------------'
-        */
+         * .--------------------------------------- !!! BEWARE !!! ---------------------------------------.
+         * | This plugin DOES NOT abide by the usual thread safe rule other DarkRift plugins do. It uses  |
+         * | threads regardless of whether others are or are not.                                         |
+         * '----------------------------------------------------------------------------------------------'
+         */
 
         /// <summary>
         ///     Holder for matches with other entities.
         /// </summary>
         private struct Match : IEquatable<Match>
         {
-            public QueueGroup other;                //Rankings are Distributive so can be associated to a group
+            public QueueGroup other; //Rankings are Distributive so can be associated to a group
             public float value;
 
             public override int GetHashCode()
@@ -39,9 +39,13 @@ namespace DarkRift.Server.Plugins.Matchmaking
             public override bool Equals(object obj)
             {
                 if (obj is Match)
+                {
                     return other.Equals(((Match)obj).other);
+                }
                 else
+                {
                     return false;
+                }
             }
 
             public bool Equals(Match otherMatch)
@@ -62,17 +66,17 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /*
          * This matchmaker queues up enqueue and dequeue requests so that the collection of entities
          * doesn't change while the matchmaker is operating on the background thread. A snapshot of
-         * the collection is stored for GetSuitabilityMetric so that it can still be invoked on 
+         * the collection is stored for GetSuitabilityMetric so that it can still be invoked on
          * whichever thread performed the enqueue.
-         * 
+         *
          * This looks something like this:
-         * 
+         *
          *                  |- Flush -|- Matchmake -|
          * outQueue      __________    ______________
          * inQueue       _______   \   ______________
          * queue         _______\___\________________
          * queueSnapshot _____________ \_____________
-         * 
+         *
          * 1. InQueue is merged into queue
          * 2. OutQueue is merged into queue
          * 3. QueueSnapshot is taken from queue
@@ -157,58 +161,58 @@ namespace DarkRift.Server.Plugins.Matchmaking
         public RankingMatchmaker(PluginLoadData pluginLoadData)
             : base(pluginLoadData)
         {
-            if (float.TryParse(pluginLoadData.Settings["discardThreshold"], out float discardThreshold))
+            if (float.TryParse(pluginLoadData.Settings["discardThreshold"], out var discardThreshold))
             {
                 if (discardThreshold >= 0 && discardThreshold <= 1)
                 {
-                    this.DiscardThreshold = discardThreshold;
+                    DiscardThreshold = discardThreshold;
                 }
                 else
                 {
-                    this.DiscardThreshold = 1;
+                    DiscardThreshold = 1;
                     Logger.Error("Discard threshold was outside of the [0-1] range. Using a value of 1 instead.");
                 }
             }
             else
             {
-                this.DiscardThreshold = 1;
+                DiscardThreshold = 1;
                 Logger.Error("Discard threshold not parsable to a float value, using a value of 1 instead.");
             }
 
-            if (float.TryParse(pluginLoadData.Settings["groupDiscardThreshold"], out float groupDiscardThreshold))
+            if (float.TryParse(pluginLoadData.Settings["groupDiscardThreshold"], out var groupDiscardThreshold))
             {
                 if (groupDiscardThreshold >= 0 && groupDiscardThreshold <= 1)
                 {
-                    this.GroupDiscardThreshold = groupDiscardThreshold;
+                    GroupDiscardThreshold = groupDiscardThreshold;
                 }
                 else
                 {
-                    this.GroupDiscardThreshold = 1;
+                    GroupDiscardThreshold = 1;
                     Logger.Error("Group discard threshold was outside of the [0-1] range. Using a value of 1 instead.");
                 }
             }
             else
             {
-                this.GroupDiscardThreshold = 1;
+                GroupDiscardThreshold = 1;
                 Logger.Error("Group discard threshold not parsable to a float value, using a value of 1 instead.");
             }
 
-            if (int.TryParse(pluginLoadData.Settings["entitiesPerGroup"], out int entitiesPerGroup))
+            if (int.TryParse(pluginLoadData.Settings["entitiesPerGroup"], out var entitiesPerGroup))
             {
-                this.EntitiesPerGroup = entitiesPerGroup;
+                EntitiesPerGroup = entitiesPerGroup;
             }
             else
             {
                 Logger.Fatal("Entities per group not parsable to an int value.");
             }
 
-            if (int.TryParse(pluginLoadData.Settings["tickPeriod"], out int tickPeriod) && tickPeriod > 0)
+            if (int.TryParse(pluginLoadData.Settings["tickPeriod"], out var tickPeriod) && tickPeriod > 0)
             {
-                this.TickPeriod = tickPeriod;
+                TickPeriod = tickPeriod;
             }
             else
             {
-                this.TickPeriod = 500;
+                TickPeriod = 500;
                 Logger.Error("Tick period not parsable to an int value, using a value of 500ms instead.");
             }
         }
@@ -253,14 +257,16 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <inheritdoc/>
         public IMatchmakerQueueTask<T> EnqueueGroup(EntityGroup<T> entities, EventHandler<MatchmakingStateChangedEventArgs<T>> callback = null)
         {
-            RankingMatchmakerQueueTask<T> task = new RankingMatchmakerQueueTask<T>(this, entities, callback);
-            QueueGroup queueGroup = new QueueGroup { task = task };
+            var task = new RankingMatchmakerQueueTask<T>(this, entities, callback);
+            var queueGroup = new QueueGroup { task = task };
 
-            MatchRankingContext<T> context = new MatchRankingContext<T>(DiscardThreshold);
+            var context = new MatchRankingContext<T>(DiscardThreshold);
 
             //Look at all other entities in queue and rate them
             lock (queueSnapshot)
+            {
                 AddMatchesToQueueGroup(queueGroup, queueSnapshot, context);
+            }
 
             lock (inQueue)
             {
@@ -282,16 +288,16 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="context">The context for the matchmaker.</param>
         private void AddMatchesToQueueGroup(QueueGroup group, IEnumerable<QueueGroup> groups, MatchRankingContext<T> context)
         {
-            foreach (QueueGroup other in groups)
+            foreach (var other in groups)
             {
                 float outerAcc = 0;
-                bool failed = false;
-                foreach (T entity in group.task.Entities)
+                var failed = false;
+                foreach (var entity in group.task.Entities)
                 {
                     float acc = 0;
-                    foreach (T otherEntity in other.task.Entities)
+                    foreach (var otherEntity in other.task.Entities)
                     {
-                        float value = GetSuitabilityMetric(entity, otherEntity, context);
+                        var value = GetSuitabilityMetric(entity, otherEntity, context);
 
                         //Check individual discard threshold, if not enough ignore the group
                         if (value < DiscardThreshold)
@@ -305,20 +311,26 @@ namespace DarkRift.Server.Plugins.Matchmaking
 
                     //If we've already failed then just skip the reset
                     if (failed)
+                    {
                         break;
+                    }
 
                     outerAcc += acc / other.task.Entities.Count;
                 }
 
                 //Already failed, don't add match 
                 if (failed)
+                {
                     continue;
+                }
 
                 outerAcc /= group.task.Entities.Count;
 
                 //If a good enough match then add to our list of posible matches
                 if (outerAcc >= GroupDiscardThreshold)
+                {
                     group.matches.AddLast(new Match { other = other, value = outerAcc });
+                }
             }
         }
 
@@ -330,7 +342,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         {
             //Add to out queue for next tick/flush
             lock (outQueue)
+            {
                 outQueue.Enqueue(task);
+            }
         }
 
         /// <summary>
@@ -402,17 +416,19 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <returns>The groups inserted into the queue.</returns>
         private IEnumerable<QueueGroup> FlushInQueue()
         {
-            Queue<QueueGroup> toInform = new Queue<QueueGroup>();
+            var toInform = new Queue<QueueGroup>();
 
             lock (inQueue)
             {
                 while (inQueue.Count > 0)
                 {
-                    QueueGroup queueGroup = inQueue.Dequeue();
+                    var queueGroup = inQueue.Dequeue();
 
                     //Copy suitability metrics into the other entities
-                    foreach (Match match in queueGroup.matches)
+                    foreach (var match in queueGroup.matches)
+                    {
                         match.other.matches.AddLast(new Match { other = queueGroup, value = match.value });
+                    }
 
                     queue.AddLast(queueGroup);
 
@@ -429,24 +445,26 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <returns>The groups removed from the queue.</returns>
         private IEnumerable<QueueGroup> FlushOutQueue()
         {
-            Queue<QueueGroup> toInform = new Queue<QueueGroup>();
+            var toInform = new Queue<QueueGroup>();
 
             lock (outQueue)
             {
                 while (outQueue.Count > 0)
                 {
-                    RankingMatchmakerQueueTask<T> task = outQueue.Dequeue();
+                    var task = outQueue.Dequeue();
 
                     //Get group and check it exists
-                    QueueGroup queueGroup = queue.FirstOrDefault((g) => g.task == task);
+                    var queueGroup = queue.FirstOrDefault((g) => g.task == task);
                     if (queueGroup != null)
                     {
                         //Remove the group
                         queue.Remove(queueGroup);
 
                         //Remove all matches it had so we don't consider it in matchmaking
-                        foreach (QueueGroup other in queue)
+                        foreach (var other in queue)
+                        {
                             other.matches.Remove(new Match { other = queueGroup });
+                        }
 
                         //If removed, inform it that it was cancelled
                         toInform.Enqueue(queueGroup);
@@ -470,24 +488,26 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// </summary>
         private IEnumerable<IEnumerable<QueueGroup>> DoFullSearch()
         {
-            Queue<IEnumerable<QueueGroup>> groupsFormed = new Queue<IEnumerable<QueueGroup>>();
+            var groupsFormed = new Queue<IEnumerable<QueueGroup>>();
 
-            LinkedListNode<QueueGroup> next = queue.First;
+            var next = queue.First;
             while (next != null)
             {
-                IEnumerable<QueueGroup> group = PerformSearch(new QueueGroup[] { next.Value });
+                var group = PerformSearch(new QueueGroup[] { next.Value });
 
                 if (group != null)
                 {
                     //Remove them from queue
-                    foreach (QueueGroup subGroup in group)
+                    foreach (var subGroup in group)
                     {
                         //Remove the entity
                         queue.Remove(subGroup);
 
                         //Remove all matches it had so we don't consider it in future matchmaking
-                        foreach (Match match in subGroup.matches)
+                        foreach (var match in subGroup.matches)
+                        {
                             match.other.matches.Remove(new Match { other = subGroup });
+                        }
                     }
 
                     groupsFormed.Enqueue(group);
@@ -506,8 +526,10 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="newState">The new state of the groups.</param>
         private void InformInsertedOrRemoved(IEnumerable<QueueGroup> toInform, MatchmakingState newState)
         {
-            foreach (QueueGroup queueGroup in toInform)
+            foreach (var queueGroup in toInform)
+            {
                 queueGroup.task.SetMatchmakingState(newState, new EntityGroup<T>[1] { queueGroup.task.Entities }, queueGroup.task.Entities);
+            }
         }
 
         /// <summary>
@@ -516,22 +538,21 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="toInform">The groups formed.</param>
         private void InformGroupsFormed(IEnumerable<IEnumerable<QueueGroup>> toInform)
         {
-            foreach (IEnumerable<QueueGroup> group in toInform)
+            foreach (var group in toInform)
             {
                 //Inform individual groups
-                IEnumerable<T> entities = group.SelectMany(g => g.task.Entities);
-                IEnumerable<EntityGroup<T>> subGroups = group.Select(p => p.task.Entities);
+                var entities = group.SelectMany(g => g.task.Entities);
+                var subGroups = group.Select(p => p.task.Entities);
 
                 //Inform all entities they've been cancelled
-                foreach (QueueGroup queueGroup in group)
+                foreach (var queueGroup in group)
+                {
                     queueGroup.task.SetMatchmakingState(MatchmakingState.Success, subGroups, entities);
+                }
 
                 //Invoke group formed callback
-                GroupFormedEventArgs<T> args = new GroupFormedEventArgs<T>(subGroups, entities);
-                ThreadHelper.DispatchIfNeeded(() =>
-                {
-                    GroupFormed?.Invoke(this, args);
-                });
+                var args = new GroupFormedEventArgs<T>(subGroups, entities);
+                ThreadHelper.DispatchIfNeeded(() => { GroupFormed?.Invoke(this, args); });
             }
         }
 
@@ -541,36 +562,38 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="startGroup">The starting group.</param>
         private IEnumerable<QueueGroup> PerformSearch(IEnumerable<QueueGroup> startGroup)
         {
-            Stack<IEnumerable<QueueGroup>> toTry = new Stack<IEnumerable<QueueGroup>>();
+            var toTry = new Stack<IEnumerable<QueueGroup>>();
             toTry.Push(startGroup);
 
             while (toTry.Count > 0)
             {
                 //Pop next off
-                IEnumerable<QueueGroup> group = toTry.Pop();
+                var group = toTry.Pop();
 
                 //Count number of entities currently in the group
-                int currentCount = group.Sum(g => g.task.Entities.Count);
+                var currentCount = group.Sum(g => g.task.Entities.Count);
 
                 //If we have a complete group return it
                 if (currentCount == EntitiesPerGroup)
+                {
                     return group;
+                }
 
                 //Calculate the matches available for this group
-                IEnumerable<Match> matches = group                  //TODO 2 Possibly able to use previous frame's match list here
-                    .SelectMany(m => m.matches)                     //Get all group-group matches available
-                    .Where(m => currentCount + m.other.task.Entities.Count <= EntitiesPerGroup)    //Ensure this match doesn't take us over the room capacity
-                    .Where(m => !group.Contains(m.other))           //Remove matches to entity groups already in the group
-                    .GroupBy(m => m.other)                          //Put matches into groups about the same entity group
-                    .Where(g => g.Count() == group.Count())         //Remove any matches that have been discarded by any member (i.e. score was less than one of the discard thresholds)
-                    .Select((g) => new Match { other = g.First().other, value = g.Sum(m => m.value) })      //Take match groups to a single group-entity group match object using summation to calculate new score
-                    .OrderBy(m => -m.value);                        //Order by ascending as we're pushing onto a stack so the order will be reversed!
+                IEnumerable<Match> matches = group //TODO 2 Possibly able to use previous frame's match list here
+                    .SelectMany(m => m.matches) //Get all group-group matches available
+                    .Where(m => currentCount + m.other.task.Entities.Count <= EntitiesPerGroup) //Ensure this match doesn't take us over the room capacity
+                    .Where(m => !group.Contains(m.other)) //Remove matches to entity groups already in the group
+                    .GroupBy(m => m.other) //Put matches into groups about the same entity group
+                    .Where(g => g.Count() == group.Count()) //Remove any matches that have been discarded by any member (i.e. score was less than one of the discard thresholds)
+                    .Select((g) => new Match { other = g.First().other, value = g.Sum(m => m.value) }) //Take match groups to a single group-entity group match object using summation to calculate new score
+                    .OrderBy(m => -m.value); //Order by ascending as we're pushing onto a stack so the order will be reversed!
 
                 //Iterate over the matches
-                foreach (Match match in matches)
+                foreach (var match in matches)
                 {
                     //Recurse with new group
-                    IEnumerable<QueueGroup> newGroup = group.Union(new QueueGroup[] { match.other });
+                    var newGroup = group.Union(new QueueGroup[] { match.other });
                     toTry.Push(newGroup);
                 }
             }
@@ -586,7 +609,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 timer.Dispose();
+            }
 
             base.Dispose(disposing);
         }

@@ -35,7 +35,6 @@ namespace DarkRift.Server
         ///     have been loaded at that point, consider using the 
         ///     <see cref="ExtendedPluginBase.Loaded(LoadedEventArgs)"/> event instead.
         /// </remarks>
-
         Plugin[] ActuallyGetAllPlugins();
 
         /// <summary>

@@ -72,10 +72,10 @@ namespace DarkRift.Server
         /// <param name="threadHelper">The server's thread helper.</param>
         public PluginBaseLoadData(string name, NameValueCollection settings, DarkRiftInfo serverInfo, DarkRiftThreadHelper threadHelper)
         {
-            this.Name = name;
-            this.Settings = settings;
-            this.ServerInfo = serverInfo;
-            this.ThreadHelper = threadHelper;
+            Name = name;
+            Settings = settings;
+            ServerInfo = serverInfo;
+            ThreadHelper = threadHelper;
         }
     }
 }

@@ -120,7 +120,7 @@ namespace DarkRift.Server
         /// <param name="metricsCollector">The metrics collector this client will use.</param>
         internal static Client Create(NetworkServerConnection connection, ushort id, ClientManager clientManager, DarkRiftThreadHelper threadHelper, Logger logger, MetricsCollector metricsCollector)
         {
-            Client client = new Client(connection, id, clientManager, threadHelper, logger, metricsCollector);
+            var client = new Client(connection, id, clientManager, threadHelper, logger, metricsCollector);
 
             return client;
         }
@@ -137,19 +137,19 @@ namespace DarkRift.Server
         private Client(NetworkServerConnection connection, ushort id, ClientManager clientManager, DarkRiftThreadHelper threadHelper, Logger logger, MetricsCollector metricsCollector)
         {
             this.connection = connection;
-            this.ID = id;
+            ID = id;
             this.clientManager = clientManager;
             this.threadHelper = threadHelper;
             this.logger = logger;
 
             // TODO make a UTC version of this as this is local date time
-            this.ConnectionTime = DateTime.Now;
+            ConnectionTime = DateTime.Now;
 
             connection.MessageReceived = HandleIncomingDataBuffer;
             connection.Disconnected = Disconnected;
 
             //TODO make configurable
-            this.RoundTripTime = new RoundTripTimeHelper(10, 10);
+            RoundTripTime = new RoundTripTimeHelper(10, 10);
 
             messagesSentCounter = metricsCollector.Counter("messages_sent", "The number of messages sent to clients.");
             messagesReceivedCounter = metricsCollector.Counter("messages_received", "The number of messages received from clients.");
@@ -162,11 +162,11 @@ namespace DarkRift.Server
         /// </summary>
         private void SendID()
         {
-            using (DarkRiftWriter writer = DarkRiftWriter.Create())
+            using (var writer = DarkRiftWriter.Create())
             {
                 writer.Write(ID);
 
-                using (Message command = Message.Create((ushort)CommandCode.Configure, writer))
+                using (var command = Message.Create((ushort)CommandCode.Configure, writer))
                 {
                     command.IsCommandMessage = true;
                     PushBuffer(command.ToBuffer(), SendMode.Reliable);
@@ -199,10 +199,14 @@ namespace DarkRift.Server
         {
             //Send frame
             if (!PushBuffer(message.ToBuffer(), sendMode))
+            {
                 return false;
+            }
 
             if (message.IsPingMessage)
+            {
                 RoundTripTime.RecordOutboundPing(message.PingCode);
+            }
 
             //Increment counter
             Interlocked.Increment(ref messagesSent);
@@ -215,7 +219,9 @@ namespace DarkRift.Server
         public bool Disconnect()
         {
             if (!connection.Disconnect())
+            {
                 return false;
+            }
 
             clientManager.HandleDisconnection(this, true, SocketError.Disconnecting, null);
 
@@ -304,23 +310,24 @@ namespace DarkRift.Server
                 }
                 catch (KeyNotFoundException)
                 {
-                    Strike(StrikeReason.UnidentifiedPing, "Received a ping acknowledgement for a ping code that does not exist. This may be because too many sent pings were unanswered at the same time and so some were dropped before this response was returned.", 1);
+                    Strike(StrikeReason.UnidentifiedPing,
+                        "Received a ping acknowledgement for a ping code that does not exist. This may be because too many sent pings were unanswered at the same time and so some were dropped before this response was returned.", 1);
                 }
             }
 
             // Get another reference to the message so 1. we can control the backing array's lifecycle and thus it won't get disposed of before we dispatch, and
             // 2. because the current message will be disposed of when this method returns.
-            Message messageReference = message.Clone();
+            var messageReference = message.Clone();
 
             void DoMessageReceived()
             {
-                MessageReceivedEventArgs args = MessageReceivedEventArgs.Create(
+                var args = MessageReceivedEventArgs.Create(
                     messageReference,
                     sendMode,
                     this
                 );
 
-                long startTimestamp = Stopwatch.GetTimestamp();
+                var startTimestamp = Stopwatch.GetTimestamp();
                 try
                 {
                     MessageReceived?.Invoke(this, args);
@@ -339,7 +346,7 @@ namespace DarkRift.Server
                     messageReference.Dispose();
                 }
 
-                double time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
+                var time = (double)(Stopwatch.GetTimestamp() - startTimestamp) / Stopwatch.Frequency;
                 messageReceivedEventTimeHistogram.Report(time);
             }
 
@@ -356,7 +363,9 @@ namespace DarkRift.Server
         private bool PushBuffer(MessageBuffer buffer, SendMode sendMode)
         {
             if (!connection.SendMessage(buffer, sendMode))
+            {
                 return false;
+            }
 
             Interlocked.Increment(ref messagesPushed);
 
@@ -385,10 +394,10 @@ namespace DarkRift.Server
         /// <param name="weight">The number of strikes this accounts for.</param>
         internal void Strike(StrikeReason reason, string message, int weight)
         {
-            EventHandler<StrikeEventArgs> handler = StrikeOccured;
+            var handler = StrikeOccured;
             if (handler != null)
             {
-                StrikeEventArgs args = new StrikeEventArgs(reason, message, weight);
+                var args = new StrikeEventArgs(reason, message, weight);
 
                 void DoInvoke()
                 {
@@ -407,7 +416,9 @@ namespace DarkRift.Server
                     if (t == null || t.Exception == null)
                     {
                         if (args.Forgiven)
+                        {
                             return;
+                        }
                     }
 
                     EnforceStrike(reason, message, args.Weight);
@@ -429,7 +440,7 @@ namespace DarkRift.Server
         /// <param name="weight">The number of strikes this accounts for.</param>
         private void EnforceStrike(StrikeReason reason, string message, int weight)
         {
-            int newValue = Interlocked.Add(ref strikes, weight);
+            var newValue = Interlocked.Add(ref strikes, weight);
 
             logger.Trace($"Client received strike of weight {weight} for {reason}{(message == null ? "" : ": " + message)}.");
 
@@ -440,6 +451,7 @@ namespace DarkRift.Server
                 logger.Info($"Client was disconnected as the total weight of accumulated strikes exceeded the allowed number ({newValue}/{clientManager.MaxStrikes}).");
             }
         }
+
         #endregion
 
         /// <summary>
@@ -455,7 +467,9 @@ namespace DarkRift.Server
         protected void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 connection.Dispose();
+            }
         }
 #pragma warning restore CS0628
     }

@@ -49,9 +49,9 @@ namespace DarkRift.Server
         /// <param name="exception">The exception that caused the disconenct.</param>
         public ServerDisconnectedEventArgs(IRemoteServer remoteServer, SocketError error, Exception exception)
         {
-            this.RemoteServer = remoteServer;
-            this.Exception = exception;
-            this.Error = error;
+            RemoteServer = remoteServer;
+            Exception = exception;
+            Error = error;
         }
 
         /// <summary>

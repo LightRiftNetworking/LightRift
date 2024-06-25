@@ -62,13 +62,13 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
 
         public HistogramMetric(string name, string description, double[] buckets, string[] preformattedBuckets, string preformattedSum, string preformattedCount)
         {
-            this.Name = name;
-            this.Description = description;
-            this.PreformattedBuckets = preformattedBuckets;
-            this.PreformattedSum = preformattedSum;
-            this.PreformattedCount = preformattedCount;
-            this.bucketUpperBounds = buckets;
-            this.bucketCounts = new long[buckets.Length];
+            Name = name;
+            Description = description;
+            PreformattedBuckets = preformattedBuckets;
+            PreformattedSum = preformattedSum;
+            PreformattedCount = preformattedCount;
+            bucketUpperBounds = buckets;
+            bucketCounts = new long[buckets.Length];
         }
 
         /// <inheritDoc/>
@@ -78,10 +78,12 @@ namespace DarkRift.Server.Plugins.Metrics.Prometheus
             // until proven otherwise
             InterlockedDouble.Add(ref sum, value);
 
-            for (int i = 0; i < bucketUpperBounds.Length; i++)
+            for (var i = 0; i < bucketUpperBounds.Length; i++)
             {
                 if (value < bucketUpperBounds[i])
+                {
                     Interlocked.Increment(ref bucketCounts[i]);
+                }
             }
         }
 

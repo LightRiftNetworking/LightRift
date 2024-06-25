@@ -18,7 +18,6 @@ namespace DarkRift.Server
         public LogWriter(LogWriterLoadData logWriterLoadData)
             : base(logWriterLoadData)
         {
-
         }
 
         /// <summary>

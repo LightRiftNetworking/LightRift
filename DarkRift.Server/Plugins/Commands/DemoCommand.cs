@@ -28,7 +28,6 @@ namespace DarkRift.Server.Plugins.Commands
 
         public DemoCommand(PluginLoadData pluginLoadData) : base(pluginLoadData)
         {
-
         }
 
         private void CommandHandler(object sender, CommandEventArgs e)
@@ -40,7 +39,9 @@ namespace DarkRift.Server.Plugins.Commands
                 ClientManager.ClientConnected += ClientManager_ClientConnected;
 
                 foreach (Client client in ClientManager.GetAllClients())
+                {
                     client.MessageReceived += Client_MessageReceived;
+                }
 
                 Logger.Info("Enabled demonstration mode.\n\nAll messages received by the server will now be broadcast out to all clients.\n\nThis should not be use in production code.");
             }
@@ -49,7 +50,9 @@ namespace DarkRift.Server.Plugins.Commands
                 ClientManager.ClientConnected -= ClientManager_ClientConnected;
 
                 foreach (Client client in ClientManager.GetAllClients())
+                {
                     client.MessageReceived -= Client_MessageReceived;
+                }
 
                 Logger.Info("Disabled demonstration mode.");
             }
@@ -64,10 +67,12 @@ namespace DarkRift.Server.Plugins.Commands
         {
             if (demo)
             {
-                using (Message message = e.GetMessage())
+                using (var message = e.GetMessage())
                 {
                     foreach (Client client in ClientManager.GetAllClients())
+                    {
                         client.SendMessage(message, e.SendMode);
+                    }
                 }
             }
         }

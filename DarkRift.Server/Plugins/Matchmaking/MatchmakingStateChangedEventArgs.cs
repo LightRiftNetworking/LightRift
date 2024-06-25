@@ -38,9 +38,9 @@ namespace DarkRift.Server.Plugins.Matchmaking
         /// <param name="entities">The entities the matchmaking state change occurred for.</param>
         public MatchmakingStateChangedEventArgs(MatchmakingState matchmakingState, IEnumerable<EntityGroup<T>> subGroups, IEnumerable<T> entities)
         {
-            this.MatchmakingState = matchmakingState;
-            this.SubGroups = subGroups;
-            this.Entities = entities;
+            MatchmakingState = matchmakingState;
+            SubGroups = subGroups;
+            Entities = entities;
         }
     }
 }

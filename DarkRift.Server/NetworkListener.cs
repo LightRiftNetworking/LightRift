@@ -60,14 +60,15 @@ namespace DarkRift.Server
         /// <param name="connection">The new connection.</param>
         protected void RegisterConnection(NetworkServerConnection connection)
         {
-            Action<NetworkServerConnection> handler = RegisteredConnection;
+            var handler = RegisteredConnection;
             if (handler != null)
             {
                 handler.Invoke(connection);
             }
             else
             {
-                Logger.Error("A connection was registered by the network listener while no hooks were subscribed to handle the registration. The connection has been dropped. This suggests the network listener is erroneously accepting connections before the StartListening() method has been called.");
+                Logger.Error(
+                    "A connection was registered by the network listener while no hooks were subscribed to handle the registration. The connection has been dropped. This suggests the network listener is erroneously accepting connections before the StartListening() method has been called.");
 
                 connection.Disconnect();
             }
