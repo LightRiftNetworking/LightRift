@@ -37,8 +37,8 @@ namespace DarkRift.Server
         ///     A formatted version of the event.
         /// </summary>
         /// <remarks>
-        ///     For efficiency you should log this whereever possible rather than re build your own formatted
-        ///     string for the message as this will be precomputed once for all log writers and it well optimized.
+        ///     For efficiency, you should log this wherever possible rather than re-build your own formatted
+        ///     string for the message as this will be precomputed once for all log writers, and it well optimized.
         ///     It is also more consistent to those reading logs if tey are all the same format.
         /// </remarks>
         public string FormattedMessage { get; }
@@ -55,7 +55,7 @@ namespace DarkRift.Server
         /// <param name="message">The message logged.</param>
         /// <param name="logType">The log level of the message logged.</param>
         /// <param name="exception">The exception triggering the message, if one occured.</param>
-        /// <param name="formattedMessage">A forrmatted string of the message details.</param>
+        /// <param name="formattedMessage">A formatted string of the message details.</param>
         /// <param name="logTime">The time the message was logged.</param>
         public WriteEventArgs(string sender, string message, LogType logType, Exception exception, string formattedMessage, DateTime logTime)
         {

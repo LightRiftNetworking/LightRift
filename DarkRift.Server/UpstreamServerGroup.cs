@@ -56,11 +56,11 @@ namespace DarkRift.Server
         ///     Creates a new upstream connected server group
         /// </summary>
         /// <param name="name">The name of the group.</param>
-        /// <param name="visibility">The groups visibility.</param>
+        /// <param name="visibility">The groups' visibility.</param>
         /// <param name="threadHelper">The server's thread helper.</param>
         /// <param name="serverRegistryConnectorManager">The server's registry connector manager</param>
         /// <param name="remoteServerManager">The remote server manager for the server.</param>
-        /// <param name="reconnectAttempts">The number of times to attempt to reconnect to a server before considering it unconnectable.</param>
+        /// <param name="reconnectAttempts">The number of times to attempt to reconnect to a server before considering it unreachable.</param>
         /// <param name="logger">The logger to use.</param>
         /// <param name="remoteServerLogger">The logger to pass to created remote servers.</param>
         /// <param name="metricsCollector">The metrics collector to use.</param>
