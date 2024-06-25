@@ -348,8 +348,7 @@ namespace DarkRift.Server
             GC.SuppressFinalize(this);
         }
 
-#pragma warning disable CS0628
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -370,6 +369,5 @@ namespace DarkRift.Server
                 }
             }
         }
-#pragma warning restore CS0628
     }
 }
