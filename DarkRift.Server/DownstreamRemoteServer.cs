@@ -349,6 +349,6 @@ namespace DarkRift.Server
                     connection.Dispose();
                 }
             }
-        }8
+        }
     }
 }
