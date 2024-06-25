@@ -37,7 +37,7 @@ namespace DarkRift.Server
         /// </summary>
         /// <param name="server">The server that owns this plugin manager.</param>
         /// <param name="logManager">The server's log manager.</param>
-        /// <param name="dataManager">The server's datamanager.</param>
+        /// <param name="dataManager">The server's data manager.</param>
         /// <param name="pluginFactory">The server's plugin factory.</param>
         /// <param name="metricsManager">The server's metrics manager.</param>
         internal NetworkListenerManager(DarkRiftServer server, LogManager logManager, MetricsManager metricsManager, DataManager dataManager, PluginFactory pluginFactory)

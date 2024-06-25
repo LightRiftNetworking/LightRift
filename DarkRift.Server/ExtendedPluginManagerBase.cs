@@ -20,7 +20,7 @@ namespace DarkRift.Server
         private readonly DarkRiftServer server;
 
         /// <summary>
-        ///     The server's datamanager.
+        ///     The server's data manager.
         /// </summary>
         private readonly DataManager dataManager;
 
@@ -33,7 +33,7 @@ namespace DarkRift.Server
         ///     Creates a new ExtendedPluginManagerBase.
         /// </summary>
         /// <param name="server">The server that owns this plugin manager.</param>
-        /// <param name="dataManager">The server's datamanager.</param>
+        /// <param name="dataManager">The server's data manager.</param>
         /// <param name="pluginFactory">The server's plugin factory.</param>
         /// <param name="logger">The logger for this manager.</param>
         internal ExtendedPluginManagerBase(DarkRiftServer server, DataManager dataManager, PluginFactory pluginFactory, Logger logger)

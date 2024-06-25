@@ -39,7 +39,7 @@ namespace DarkRift.Server
         ///     Creates a new downstream connected server group
         /// </summary>
         /// <param name="name">The name of the group.</param>
-        /// <param name="visibility">The groups visibility.</param>
+        /// <param name="visibility">The groups' visibility.</param>
         /// <param name="threadHelper">The server's thread helper.</param>
         /// <param name="logger">The logger to use.</param>
         /// <param name="remoteServerLogger">The logger to pass to created remote servers.</param>

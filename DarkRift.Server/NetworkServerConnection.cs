@@ -37,7 +37,7 @@ namespace DarkRift.Server
         internal Action<SocketError, Exception> Disconnected { get; set; }
 
         /// <summary>
-        ///     Get's an end point of the remote client.
+        ///     Gets an end point of the remote client.
         /// </summary>
         public abstract IPEndPoint GetRemoteEndPoint(string name);
 
@@ -65,7 +65,7 @@ namespace DarkRift.Server
         /// <remarks>
         ///     <see cref="MessageBuffer"/> is an IDisposable type and therefore once you are done 
         ///     using it you should call <see cref="MessageBuffer.Dispose"/> to release resources.
-        ///     Not doing this will result in memnory leaks.
+        ///     Not doing this will result in memory leaks.
         /// </remarks>
         public virtual bool SendMessage(MessageBuffer message, SendMode sendMode)
         {
@@ -92,7 +92,7 @@ namespace DarkRift.Server
         /// <remarks>
         ///     <see cref="MessageBuffer"/> is an IDisposable type and therefore once you are done 
         ///     using it you should call <see cref="MessageBuffer.Dispose"/> to release resources.
-        ///     Not doing this will result in memnory leaks.
+        ///     Not doing this will result in memory leaks.
         /// </remarks>
         public abstract bool SendMessageReliable(MessageBuffer message);
 
@@ -104,7 +104,7 @@ namespace DarkRift.Server
         /// <remarks>
         ///     <see cref="MessageBuffer"/> is an IDisposable type and therefore once you are done 
         ///     using it you should call <see cref="MessageBuffer.Dispose"/> to release resources.
-        ///     Not doing this will result in memnory leaks.
+        ///     Not doing this will result in memory leaks.
         /// </remarks>
         public abstract bool SendMessageUnreliable(MessageBuffer message);
 

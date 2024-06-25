@@ -18,7 +18,7 @@ namespace DarkRift.Server
         ///     The connection to the remote server.
         /// </summary>
         /// <remarks>
-        ///     Will change reference on reconnections. Currently this is not marked volatile as that is a very exceptional circumstance and at that point
+        ///     Will change reference on reconnections. Currently, this is not marked volatile as that is a very exceptional circumstance and at that point
         ///     was can likely tolerate just waiting for something else to synchronise caches later.
         /// </remarks>
         internal NetworkServerConnection Connection { get; }
@@ -34,7 +34,7 @@ namespace DarkRift.Server
         public Action<PendingDownstreamRemoteServer> Dropped { get; }
 
         /// <summary>
-        ///     Queue of messages accumulated before the server identifed itself and was assigned to the correct remote server.
+        ///     Queue of messages accumulated before the server identified itself and was assigned to the correct remote server.
         /// </summary>
         private readonly Queue<QueuedMessage> queuedMessages = new Queue<QueuedMessage>();
 
@@ -92,7 +92,7 @@ namespace DarkRift.Server
         }
 
         /// <summary>
-        /// Retreives the messages that have been queued while this server was pending.
+        /// Retrieves the messages that have been queued while this server was pending.
         /// </summary>
         /// <returns>The queued messages.</returns>
         internal List<QueuedMessage> GetQueuedMessages()
@@ -106,7 +106,7 @@ namespace DarkRift.Server
         /// <summary>
         ///     Callback for when data is received.
         /// </summary>
-        /// <param name="buffer">The data recevied.</param>
+        /// <param name="buffer">The data received.</param>
         /// <param name="sendMode">The SendMode used to send the data.</param>
         private void MessageReceivedHandler(MessageBuffer buffer, SendMode sendMode)
         {
@@ -139,7 +139,7 @@ namespace DarkRift.Server
                     break;
 
                 default:
-                    logger.Warning("Pending server sent a command message before identifiying itself. The connection was dropped.");
+                    logger.Warning("Pending server sent a command message before identifying itself. The connection was dropped.");
 
                     DropConnection();
                     break;
@@ -220,8 +220,7 @@ namespace DarkRift.Server
         ///     Handles disposing of the connection.
         /// </summary>
         /// <param name="disposing"></param>
-#pragma warning disable CS0628
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing && !disposed)
             {
@@ -233,6 +232,5 @@ namespace DarkRift.Server
                 }
             }
         }
-#pragma warning restore CS0628
     }
 }

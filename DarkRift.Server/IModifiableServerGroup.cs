@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace DarkRift.Server
 {
     /// <summary>
-    ///     Internal varient of IServerGroup that allows servers to join and leave.
+    ///     Internal variant of IServerGroup that allows servers to join and leave.
     /// </summary>
     internal interface IModifiableServerGroup : IServerGroup, IDisposable
     {
