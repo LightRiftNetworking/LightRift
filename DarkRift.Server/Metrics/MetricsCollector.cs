@@ -158,7 +158,7 @@ namespace DarkRift.Server.Metrics
         {
             if (name == null)
             {
-                throw new ArgumentNullException("name", "Name must not be null. Metric names cannot be null and must be in snake case format: 'metric_name_here'.");
+                throw new ArgumentNullException(nameof(name), "Name must not be null. Metric names cannot be null and must be in snake case format: 'metric_name_here'.");
             }
 
             if (!Regex.IsMatch(name, @"^[a-zA-Z_][a-zA-Z0-9_]*$"))
@@ -175,7 +175,7 @@ namespace DarkRift.Server.Metrics
         {
             if (tags == null)
             {
-                throw new ArgumentNullException("tags", "Tags must not be null, use an empty array instead.");
+                throw new ArgumentNullException(nameof(tags), "Tags must not be null, use an empty array instead.");
             }
 
             foreach (var tag in tags)
