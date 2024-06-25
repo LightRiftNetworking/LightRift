@@ -16,7 +16,7 @@ namespace DarkRift.Client
     /// <remarks>
     ///     This exception is here to provide more information about the operation the client
     ///     was performing during at the point of connection failure rather than a non-descript
-    ///     <see cref="SocketException"/>. In general you should prefer catching a
+    ///     <see cref="SocketException"/>. In general, you should prefer catching a
     ///     <see cref="SocketException"/> over this as not all failures may be emitted as a
     ///     <see cref="DarkRiftConnectionException"/>.
     /// </remarks>
