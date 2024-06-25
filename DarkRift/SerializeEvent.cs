@@ -7,7 +7,7 @@
 namespace DarkRift
 {
     /// <summary>
-    ///     DEscribes the serialization in progress.
+    ///     Describes the serialization in progress.
     /// </summary>
     public class SerializeEvent
     {
