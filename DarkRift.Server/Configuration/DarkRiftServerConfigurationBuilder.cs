@@ -22,10 +22,6 @@ namespace DarkRift.Server.Configuration
 
         // TODO Cache (not added yet as likely to change in an upcoming version)
 
-        // TODO add to docs
-
-        // TODO test
-
         private DarkRiftServerConfigurationBuilder(ServerSpawnData serverSpawnData)
         {
             ServerSpawnData = serverSpawnData;

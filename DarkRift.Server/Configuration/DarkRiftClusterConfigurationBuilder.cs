@@ -18,10 +18,6 @@ namespace DarkRift.Server.Configuration
         /// </summary>
         public ClusterSpawnData ClusterSpawnData { get; }
 
-        // TODO add to docs
-
-        // TODO test
-
         private DarkRiftClusterConfigurationBuilder(ClusterSpawnData clusterSpawnData)
         {
             ClusterSpawnData = clusterSpawnData;
