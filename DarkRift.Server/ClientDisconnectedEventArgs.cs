@@ -59,7 +59,7 @@ namespace DarkRift.Server
         /// <param name="clientConnection">The ClientConnection of the client.</param>
         /// <param name="localDisconnect">Whether it was a local call that caused the disconnection.</param>
         /// <param name="error">The error that caused the disconnect.</param>
-        /// <param name="exception">The exception that caused the disconenct.</param>
+        /// <param name="exception">The exception that caused the disconnect.</param>
         public ClientDisconnectedEventArgs(IClient clientConnection, bool localDisconnect, SocketError error, Exception exception)
         {
             Client = clientConnection;

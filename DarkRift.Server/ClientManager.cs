@@ -220,7 +220,7 @@ namespace DarkRift.Server
             }
             catch (Exception e)
             {
-                logger.Error("An exception ocurred while connecting a client. The client has been dropped.", e);
+                logger.Error("An exception occurred while connecting a client. The client has been dropped.", e);
 
                 connection.Disconnect();
 
@@ -468,8 +468,7 @@ namespace DarkRift.Server
             GC.SuppressFinalize(this);
         }
 
-#pragma warning disable CS0628
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -482,6 +481,5 @@ namespace DarkRift.Server
                 }
             }
         }
-#pragma warning restore CS0628
     }
 }
