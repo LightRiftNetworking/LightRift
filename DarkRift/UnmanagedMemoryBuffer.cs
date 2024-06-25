@@ -28,9 +28,9 @@ namespace DarkRift
         /// <param name="count">The count to wrap.</param>
         public UnmanagedMemoryBuffer(byte[] buffer, int offset, int count)
         {
-            this.Buffer = buffer;
-            this.Offset = offset;
-            this.Count = count;
+            Buffer = buffer;
+            Offset = offset;
+            Count = count;
         }
 
         /// <inheritdoc/>
@@ -46,7 +46,6 @@ namespace DarkRift
 
         public void Dispose()
         {
-
         }
 
         #endregion

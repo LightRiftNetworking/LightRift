@@ -96,6 +96,7 @@ namespace DarkRift
         {
             Interlocked.Increment(ref finalizedDarkRiftWriters);
         }
+
         /// <summary>
         ///     Indcates an <see cref="Message"/> did not get recycled properly.
         /// </summary>
@@ -103,6 +104,7 @@ namespace DarkRift
         {
             Interlocked.Increment(ref finalizedMessages);
         }
+
         /// <summary>
         ///     Indcates an <see cref="MessageBuffer"/> did not get recycled properly.
         /// </summary>
@@ -110,6 +112,7 @@ namespace DarkRift
         {
             Interlocked.Increment(ref finalizedMessageBuffers);
         }
+
         /// <summary>
         ///     Indcates an <see cref="Dispatching.ActionDispatcherTask"/> did not get recycled properly.
         /// </summary>

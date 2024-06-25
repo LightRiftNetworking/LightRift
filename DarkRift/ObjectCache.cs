@@ -21,56 +21,47 @@ namespace DarkRift
         /// <summary>
         ///     Whether this cache has been initialized yet.
         /// </summary>
-        [ThreadStatic]
-        private static bool initialized;
+        [ThreadStatic] private static bool initialized;
 
         /// <summary>
         ///     Object pool of <see cref="DarkRiftWriter"/> objects.
         /// </summary>
-        [ThreadStatic]
-        private static ObjectPool<DarkRiftWriter> writerPool;
+        [ThreadStatic] private static ObjectPool<DarkRiftWriter> writerPool;
 
         /// <summary>
         ///     Object pool of <see cref="DarkRiftReader"/> objects.
         /// </summary>
-        [ThreadStatic]
-        private static ObjectPool<DarkRiftReader> readerPool;
+        [ThreadStatic] private static ObjectPool<DarkRiftReader> readerPool;
 
         /// <summary>
         ///     Object pool of <see cref="Message"/> objects.
         /// </summary>
-        [ThreadStatic]
-        private static ObjectPool<Message> messagePool;
+        [ThreadStatic] private static ObjectPool<Message> messagePool;
 
         /// <summary>
         ///     Object pool of <see cref="MessageBuffer"/> objects.
         /// </summary>
-        [ThreadStatic]
-        private static ObjectPool<MessageBuffer> messageBufferPool;
+        [ThreadStatic] private static ObjectPool<MessageBuffer> messageBufferPool;
 
         /// <summary>
         ///     Object pool of <see cref="SocketAsyncEventArgs"/> objects.
         /// </summary>
-        [ThreadStatic]
-        private static ObjectPool<SocketAsyncEventArgs> socketAsyncEventArgsPool;
+        [ThreadStatic] private static ObjectPool<SocketAsyncEventArgs> socketAsyncEventArgsPool;
 
         /// <summary>
         ///     Object pool of <see cref="ActionDispatcherTask"/> objects.
         /// </summary>
-        [ThreadStatic]
-        private static ObjectPool<ActionDispatcherTask> actionDispatcherTaskPool;
+        [ThreadStatic] private static ObjectPool<ActionDispatcherTask> actionDispatcherTaskPool;
 
         /// <summary>
         ///     Object pool of <see cref="AutoRecyclingArray"/> objects.
         /// </summary>
-        [ThreadStatic]
-        private static ObjectPool<AutoRecyclingArray> autoRecyclingArrayPool;
+        [ThreadStatic] private static ObjectPool<AutoRecyclingArray> autoRecyclingArrayPool;
 
         /// <summary>
         ///     Pool of byte arrays.
         /// </summary>
-        [ThreadStatic]
-        private static MemoryPool memoryPool;
+        [ThreadStatic] private static MemoryPool memoryPool;
 
         /// <summary>
         ///     The settings for all object caches.
@@ -141,7 +132,9 @@ namespace DarkRift
         public static DarkRiftWriter GetWriter()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.DarkRiftWriterWasRetrieved();
@@ -160,7 +153,9 @@ namespace DarkRift
         public static void ReturnWriter(DarkRiftWriter writer)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.DarkRiftWriterWasReturned();
@@ -178,7 +173,9 @@ namespace DarkRift
         public static DarkRiftReader GetReader()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.DarkRiftReaderWasRetrieved();
@@ -196,7 +193,9 @@ namespace DarkRift
         public static void ReturnReader(DarkRiftReader reader)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.DarkRiftReaderWasReturned();
@@ -215,7 +214,9 @@ namespace DarkRift
         public static Message GetMessage()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.MessageWasRetrieved();
@@ -234,7 +235,9 @@ namespace DarkRift
         public static void ReturnMessage(Message message)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.MessageWasReturned();
@@ -253,7 +256,9 @@ namespace DarkRift
         public static MessageBuffer GetMessageBuffer()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.MessageBufferWasRetrieved();
@@ -272,7 +277,9 @@ namespace DarkRift
         public static void ReturnMessageBuffer(MessageBuffer messageBuffer)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.MessageBufferWasReturned();
@@ -291,7 +298,9 @@ namespace DarkRift
         public static SocketAsyncEventArgs GetSocketAsyncEventArgs()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.SocketAsyncEventArgsWasRetrieved();
@@ -310,14 +319,18 @@ namespace DarkRift
         public static void ReturnSocketAsyncEventArgs(SocketAsyncEventArgs socketAsyncEventArgs)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.SocketAsyncEventArgsWasReturned();
 #endif
 
             if (!socketAsyncEventArgsPool.ReturnInstance(socketAsyncEventArgs))
+            {
                 socketAsyncEventArgs.Dispose();
+            }
         }
 
         /// <summary>
@@ -330,7 +343,9 @@ namespace DarkRift
         public static ActionDispatcherTask GetActionDispatcherTask()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.ActionDispatcherTaskWasRetrieved();
@@ -348,14 +363,18 @@ namespace DarkRift
         public static void ReturnActionDispatcherTask(ActionDispatcherTask task)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.ActionDispatcherTaskWasReturned();
 #endif
 
             if (!actionDispatcherTaskPool.ReturnInstance(task))
+            {
                 task.ActuallyDispose();
+            }
         }
 
         /// <summary>
@@ -368,7 +387,9 @@ namespace DarkRift
         public static AutoRecyclingArray GetAutoRecyclingArray()
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.AutoRecyclingArrayWasRetrieved();
@@ -387,7 +408,9 @@ namespace DarkRift
         public static void ReturnAutoRecyclingArray(AutoRecyclingArray autoRecyclingArray)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.AutoRecyclingArrayWasReturned();
@@ -407,7 +430,9 @@ namespace DarkRift
         public static byte[] GetMemory(int minLength)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.MemoryWasRetrieved();
@@ -426,7 +451,9 @@ namespace DarkRift
         public static void ReturnMemory(byte[] memory)
         {
             if (!initialized)
+            {
                 ThreadInitialize();
+            }
 
 #if DEBUG
             ObjectCacheTestHelper.MemoryWasReturned();

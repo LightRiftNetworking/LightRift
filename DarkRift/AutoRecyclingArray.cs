@@ -38,7 +38,7 @@ namespace DarkRift
         // TODO DR3 use Caller Information Attributes to improve debugging
         internal static AutoRecyclingArray Create(int minLength)
         {
-            AutoRecyclingArray array = ObjectCache.GetAutoRecyclingArray();
+            var array = ObjectCache.GetAutoRecyclingArray();
 
             array.isCurrentlyLoungingInAPool = false;
             array.Buffer = ObjectCache.GetMemory(minLength);
@@ -52,7 +52,6 @@ namespace DarkRift
         /// </summary>
         internal AutoRecyclingArray()
         {
-
         }
 
         /// <summary>
@@ -90,7 +89,7 @@ namespace DarkRift
                 throw new InvalidOperationException();
 #endif
 
-            int newRefCount = Interlocked.Decrement(ref referenceCount);
+            var newRefCount = Interlocked.Decrement(ref referenceCount);
 
             if (newRefCount == 0)
             {
@@ -109,7 +108,9 @@ namespace DarkRift
         ~AutoRecyclingArray()
         {
             if (!isCurrentlyLoungingInAPool)
+            {
                 ObjectCacheHelper.AutoRecyclingArrayWasFinalized();
+            }
         }
     }
 }

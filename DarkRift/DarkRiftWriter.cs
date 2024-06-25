@@ -68,7 +68,7 @@ namespace DarkRift
         /// </summary>
         public static DarkRiftWriter Create()
         {
-            return Create(16, Encoding.Unicode);     // TODO DR3 Default to UTF-8
+            return Create(16, Encoding.Unicode); // TODO DR3 Default to UTF-8
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace DarkRift
         /// <param name="encoding">The encoding to serialize strings and characters using.</param>
         public static DarkRiftWriter Create(int initialCapacity, Encoding encoding)
         {
-            DarkRiftWriter writer = ObjectCache.GetWriter();
+            var writer = ObjectCache.GetWriter();
 
             writer.isCurrentlyLoungingInAPool = false;
 
@@ -133,7 +133,7 @@ namespace DarkRift
         public void Write(char value)
         {
             singleCharArray[0] = value;
-            Write(singleCharArray);        //Write as array so we have a length (sorts encoding issues)
+            Write(singleCharArray); //Write as array so we have a length (sorts encoding issues)
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace DarkRift
         public void Write(string value, Encoding encoding)
         {
             //Legacy implementation means we need to send number of bytes not chars
-            int length = encoding.GetByteCount(value);
+            var length = encoding.GetByteCount(value);
 
             buffer.EnsureLength(Position + 4 + length);
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, length);
@@ -294,7 +294,7 @@ namespace DarkRift
         {
             buffer.EnsureLength(Position + 4 + value.Length);
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
-            System.Buffer.BlockCopy(value, 0, buffer.Buffer, Position + 4, value.Length);
+            Buffer.BlockCopy(value, 0, buffer.Buffer, Position + 4, value.Length);
             Position += 4 + value.Length;
             buffer.Count = Math.Max(Length, Position);
         }
@@ -316,7 +316,7 @@ namespace DarkRift
         public void Write(char[] value, Encoding encoding)
         {
             //Legacy implementation means we need to send number of bytes not chars
-            int length = encoding.GetByteCount(value);
+            var length = encoding.GetByteCount(value);
 
             buffer.EnsureLength(Position + 4 + length);
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, length);
@@ -331,23 +331,25 @@ namespace DarkRift
         /// <param name="value">The array of booleans to write.</param>
         public void Write(bool[] value)
         {
-            int total = (int)Math.Ceiling(value.Length / 8.0);   //Total number of bytes that will be needed
+            var total = (int)Math.Ceiling(value.Length / 8.0); //Total number of bytes that will be needed
 
             buffer.EnsureLength(Position + 4 + total);
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
-            int ptr = 0;                                    //Pointer to current boolean in value array
+            var ptr = 0; //Pointer to current boolean in value array
 
             //Repeat for each byte we will need
-            for (int i = 0; i < total; i++)
+            for (var i = 0; i < total; i++)
             {
-                byte b = 0;                                     //Temp holder of booleans being packed
+                byte b = 0; //Temp holder of booleans being packed
 
                 //Repeat for each bit in that byte
-                for (int k = 7; k >= 0 && ptr < value.Length; k--)
+                for (var k = 7; k >= 0 && ptr < value.Length; k--)
                 {
                     if (value[ptr])
+                    {
                         b |= (byte)(1 << k);
+                    }
 
                     ptr++;
                 }
@@ -365,19 +367,21 @@ namespace DarkRift
         /// <param name="value">The array of doubles to write.</param>
         public void Write(double[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 8);
+            buffer.EnsureLength(Position + 4 + (value.Length * 8));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 8)
             {
-                byte[] b = BitConverter.GetBytes(value[i]);
+                var b = BitConverter.GetBytes(value[i]);
                 if (BitConverter.IsLittleEndian)
+                {
                     Array.Reverse(b);
+                }
 
-                System.Buffer.BlockCopy(b, 0, buffer.Buffer, j, 8);
+                Buffer.BlockCopy(b, 0, buffer.Buffer, j, 8);
             }
 
-            Position += 4 + value.Length * 8;
+            Position += 4 + (value.Length * 8);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -387,13 +391,15 @@ namespace DarkRift
         /// <param name="value">The array of 16bit integers to write.</param>
         public void Write(short[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 2);
+            buffer.EnsureLength(Position + 4 + (value.Length * 2));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 2)
+            {
                 BigEndianHelper.WriteBytes(buffer.Buffer, j, value[i]);
+            }
 
-            Position += 4 + value.Length * 2;
+            Position += 4 + (value.Length * 2);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -403,13 +409,15 @@ namespace DarkRift
         /// <param name="value">The array of 32bit integers to write.</param>
         public void Write(int[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 4);
+            buffer.EnsureLength(Position + 4 + (value.Length * 4));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 4)
+            {
                 BigEndianHelper.WriteBytes(buffer.Buffer, j, value[i]);
+            }
 
-            Position += 4 + value.Length * 4;
+            Position += 4 + (value.Length * 4);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -419,13 +427,15 @@ namespace DarkRift
         /// <param name="value">The array of 64bit integers to write.</param>
         public void Write(long[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 8);
+            buffer.EnsureLength(Position + 4 + (value.Length * 8));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 8)
+            {
                 BigEndianHelper.WriteBytes(buffer.Buffer, j, value[i]);
+            }
 
-            Position += 4 + value.Length * 8;
+            Position += 4 + (value.Length * 8);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -437,7 +447,7 @@ namespace DarkRift
         {
             buffer.EnsureLength(Position + 4 + value.Length);
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
-            System.Buffer.BlockCopy(value, 0, buffer.Buffer, Position + 4, value.Length);
+            Buffer.BlockCopy(value, 0, buffer.Buffer, Position + 4, value.Length);
             Position += 4 + value.Length;
             buffer.Count = Math.Max(Length, Position);
         }
@@ -448,19 +458,21 @@ namespace DarkRift
         /// <param name="value">The array of singles to write.</param>
         public void Write(float[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 4);
+            buffer.EnsureLength(Position + 4 + (value.Length * 4));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 4)
             {
-                byte[] b = BitConverter.GetBytes(value[i]);
+                var b = BitConverter.GetBytes(value[i]);
                 if (BitConverter.IsLittleEndian)
+                {
                     Array.Reverse(b);
+                }
 
-                System.Buffer.BlockCopy(b, 0, buffer.Buffer, j, 4);
+                Buffer.BlockCopy(b, 0, buffer.Buffer, j, 4);
             }
 
-            Position += 4 + value.Length * 4;
+            Position += 4 + (value.Length * 4);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -470,13 +482,15 @@ namespace DarkRift
         /// <param name="value">The array of strings to write.</param>
         public void Write(string[] value)
         {
-            buffer.EnsureLength(Position + 4);          //Encodings suck, just do this manually
+            buffer.EnsureLength(Position + 4); //Encodings suck, just do this manually
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
             Position += 4;
             buffer.Count = Math.Max(Length, Position);
 
-            foreach (string b in value)
+            foreach (var b in value)
+            {
                 Write(b);
+            }
         }
 
         /// <summary>
@@ -485,13 +499,15 @@ namespace DarkRift
         /// <param name="value">The array of unsigned 16bit integers to write.</param>
         public void Write(ushort[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 2);
+            buffer.EnsureLength(Position + 4 + (value.Length * 2));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 2)
+            {
                 BigEndianHelper.WriteBytes(buffer.Buffer, j, value[i]);
+            }
 
-            Position += 4 + value.Length * 2;
+            Position += 4 + (value.Length * 2);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -501,13 +517,15 @@ namespace DarkRift
         /// <param name="value">The array of unsigned 32bit integers to write.</param>
         public void Write(uint[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 4);
+            buffer.EnsureLength(Position + 4 + (value.Length * 4));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 4)
+            {
                 BigEndianHelper.WriteBytes(buffer.Buffer, j, value[i]);
+            }
 
-            Position += 4 + value.Length * 4;
+            Position += 4 + (value.Length * 4);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -517,13 +535,15 @@ namespace DarkRift
         /// <param name="value">The array of unsigned 64bit integers to write.</param>
         public void Write(ulong[] value)
         {
-            buffer.EnsureLength(Position + 4 + value.Length * 8);
+            buffer.EnsureLength(Position + 4 + (value.Length * 8));
             BigEndianHelper.WriteBytes(buffer.Buffer, Position, value.Length);
 
             for (int i = 0, j = Position + 4; i < value.Length; i++, j += 8)
+            {
                 BigEndianHelper.WriteBytes(buffer.Buffer, j, value[i]);
+            }
 
-            Position += 4 + value.Length * 8;
+            Position += 4 + (value.Length * 8);
             buffer.Count = Math.Max(Length, Position);
         }
 
@@ -539,8 +559,10 @@ namespace DarkRift
             Position += 4;
             buffer.Count = Math.Max(Length, Position);
 
-            for (int i = 0; i < value.Length; i++)
+            for (var i = 0; i < value.Length; i++)
+            {
                 Write(value[i]);
+            }
         }
 
         /// <summary>
@@ -552,7 +574,7 @@ namespace DarkRift
         public void WriteRaw(byte[] bytes, int offset, int length)
         {
             buffer.EnsureLength(Position + length);
-            System.Buffer.BlockCopy(bytes, offset, buffer.Buffer, Position, length);
+            Buffer.BlockCopy(bytes, offset, buffer.Buffer, Position, length);
 
             Position += length;
             buffer.Count = Math.Max(Length, Position);
@@ -567,7 +589,7 @@ namespace DarkRift
         {
             buffer.EnsureLength(Position + size);
 
-            int location = Position;
+            var location = Position;
 
             Position += size;
             buffer.Count = Math.Max(Length, Position);
@@ -581,7 +603,7 @@ namespace DarkRift
         /// <returns>An array containg the writer's contents.</returns>
         public byte[] ToArray()
         {
-            byte[] array = new byte[Length];
+            var array = new byte[Length];
             CopyTo(array, 0);
             return array;
         }
@@ -594,7 +616,7 @@ namespace DarkRift
         /// <returns>An array containg the writer's contents.</returns>
         public byte[] ToArray(int offset, int count)
         {
-            byte[] array = new byte[count];
+            var array = new byte[count];
             CopyTo(array, offset, 0, count);
             return array;
         }
@@ -659,7 +681,9 @@ namespace DarkRift
         ~DarkRiftWriter()
         {
             if (!isCurrentlyLoungingInAPool)
+            {
                 ObjectCacheHelper.DarkRiftWriterWasFinalized();
+            }
         }
     }
 }

@@ -44,7 +44,7 @@ namespace DarkRift
         /// <param name="generate">The function that will be invoked to generate a new instance. This must be thread safe.</param>
         public ObjectPool(int maxObjects, Func<T> generate)
         {
-            this.MaxObjects = maxObjects;
+            MaxObjects = maxObjects;
             this.generate = generate;
 
             pool = new T[maxObjects];
@@ -60,9 +60,13 @@ namespace DarkRift
         public T GetInstance()
         {
             if (Count > 0)
+            {
                 return pool[--Count];
+            }
             else
+            {
                 return generate();
+            }
         }
 
         /// <summary>

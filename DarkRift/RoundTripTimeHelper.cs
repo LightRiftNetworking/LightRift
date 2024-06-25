@@ -44,7 +44,7 @@ namespace DarkRift
         /// </summary>
         public RoundTripTimeHelper(int rttSampleCount, int pingBacklogSize)
         {
-            this.RttSampleCount = rttSampleCount;
+            RttSampleCount = rttSampleCount;
 
             movingAverage = new MovingAverageFilter(rttSampleCount);
             waitingPings = new CircularDictionary<ushort, long>(pingBacklogSize);
@@ -65,11 +65,11 @@ namespace DarkRift
         /// <param name="pingCode">The code to identify the ping.</param>
         public void RecordInboundPing(ushort pingCode)
         {
-            long sendTimestamp = waitingPings[pingCode];
+            var sendTimestamp = waitingPings[pingCode];
 
-            long receiveTimestamp = Stopwatch.GetTimestamp();
+            var receiveTimestamp = Stopwatch.GetTimestamp();
 
-            float rtt = (float)(receiveTimestamp - sendTimestamp) / Stopwatch.Frequency;
+            var rtt = (float)(receiveTimestamp - sendTimestamp) / Stopwatch.Frequency;
 
             movingAverage.Add(rtt);
             LatestRtt = rtt;

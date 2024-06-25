@@ -47,7 +47,6 @@ namespace DarkRift
         /// </summary>
         internal MessageBuffer()
         {
-
         }
 
         /// <summary>
@@ -57,9 +56,9 @@ namespace DarkRift
         /// <returns>The new message buffer.</returns>
         public static MessageBuffer Create(int minCapacity)
         {
-            AutoRecyclingArray array = AutoRecyclingArray.Create(minCapacity);
+            var array = AutoRecyclingArray.Create(minCapacity);
 
-            MessageBuffer buffer = ObjectCache.GetMessageBuffer();
+            var buffer = ObjectCache.GetMessageBuffer();
 
             buffer.isCurrentlyLoungingInAPool = false;
 
@@ -76,7 +75,7 @@ namespace DarkRift
         /// <returns>A new <see cref="MessageBuffer"/> with the same values as this.</returns>
         public IMessageBuffer Clone()
         {
-            MessageBuffer buffer = ObjectCache.GetMessageBuffer();
+            var buffer = ObjectCache.GetMessageBuffer();
 
             buffer.isCurrentlyLoungingInAPool = false;
 
@@ -98,8 +97,8 @@ namespace DarkRift
             if (newLength > backingBuffer.Buffer.Length)
             {
                 //Get a new buffer and copy over data
-                int newCapacity = Math.Max(newLength, backingBuffer.Buffer.Length * 2);
-                AutoRecyclingArray newBackingBuffer = AutoRecyclingArray.Create(newCapacity);
+                var newCapacity = Math.Max(newLength, backingBuffer.Buffer.Length * 2);
+                var newBackingBuffer = AutoRecyclingArray.Create(newCapacity);
                 Array.Copy(backingBuffer.Buffer, newBackingBuffer.Buffer, backingBuffer.Buffer.Length);
 
                 // Swap out the buffer
@@ -112,7 +111,9 @@ namespace DarkRift
         /// <summary>
         ///     Recycles the backing array behind the message buffer. 
         /// </summary>
+
         #region IDisposable Support
+
         public void Dispose()
         {
             //AutoRecyclingArray is reference counted, mark that we're no longer using it
@@ -122,6 +123,7 @@ namespace DarkRift
             ObjectCache.ReturnMessageBuffer(this);
             isCurrentlyLoungingInAPool = true;
         }
+
         #endregion
 
         /// <summary>
@@ -130,7 +132,9 @@ namespace DarkRift
         ~MessageBuffer()
         {
             if (!isCurrentlyLoungingInAPool)
+            {
                 ObjectCacheHelper.MessageBufferWasFinalized();
+            }
         }
     }
 }

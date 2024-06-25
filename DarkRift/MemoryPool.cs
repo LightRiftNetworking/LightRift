@@ -66,17 +66,17 @@ namespace DarkRift
 
         public MemoryPool(int extraSmallSize, int maxExtraSmall, int smallSize, int maxSmall, int mediumSize, int maxMedium, int largeSize, int maxLarge, int extraLargeSize, int maxExtraLarge)
         {
-            this.ExtraSmallSize = extraSmallSize;
-            this.SmallSize = smallSize;
-            this.MediumSize = mediumSize;
-            this.LargeSize = largeSize;
-            this.ExtraLargeSize = extraLargeSize;
+            ExtraSmallSize = extraSmallSize;
+            SmallSize = smallSize;
+            MediumSize = mediumSize;
+            LargeSize = largeSize;
+            ExtraLargeSize = extraLargeSize;
 
-            this.extraSmallPool = new ObjectPool<byte[]>(maxExtraSmall, () => new byte[ExtraSmallSize]);
-            this.smallPool = new ObjectPool<byte[]>(maxSmall, () => new byte[SmallSize]);
-            this.mediumPool = new ObjectPool<byte[]>(maxMedium, () => new byte[MediumSize]);
-            this.largePool = new ObjectPool<byte[]>(maxLarge, () => new byte[LargeSize]);
-            this.extraLargePool = new ObjectPool<byte[]>(maxExtraLarge, () => new byte[ExtraLargeSize]);
+            extraSmallPool = new ObjectPool<byte[]>(maxExtraSmall, () => new byte[ExtraSmallSize]);
+            smallPool = new ObjectPool<byte[]>(maxSmall, () => new byte[SmallSize]);
+            mediumPool = new ObjectPool<byte[]>(maxMedium, () => new byte[MediumSize]);
+            largePool = new ObjectPool<byte[]>(maxLarge, () => new byte[LargeSize]);
+            extraLargePool = new ObjectPool<byte[]>(maxExtraLarge, () => new byte[ExtraLargeSize]);
         }
 
         /// <summary>
@@ -87,17 +87,29 @@ namespace DarkRift
         public byte[] GetInstance(int minSize)
         {
             if (minSize <= ExtraSmallSize)
+            {
                 return extraSmallPool.GetInstance();
+            }
             else if (minSize <= SmallSize)
+            {
                 return smallPool.GetInstance();
+            }
             else if (minSize <= MediumSize)
+            {
                 return mediumPool.GetInstance();
+            }
             else if (minSize <= LargeSize)
+            {
                 return largePool.GetInstance();
+            }
             else if (minSize <= ExtraLargeSize)
+            {
                 return extraLargePool.GetInstance();
+            }
             else
+            {
                 return new byte[minSize];
+            }
         }
 
         /// <summary>
@@ -107,15 +119,25 @@ namespace DarkRift
         public void ReturnInstance(byte[] buffer)
         {
             if (buffer.Length >= ExtraLargeSize)
+            {
                 extraLargePool.ReturnInstance(buffer);
+            }
             else if (buffer.Length >= LargeSize)
+            {
                 largePool.ReturnInstance(buffer);
+            }
             else if (buffer.Length >= MediumSize)
+            {
                 mediumPool.ReturnInstance(buffer);
+            }
             else if (buffer.Length >= SmallSize)
+            {
                 smallPool.ReturnInstance(buffer);
+            }
             else if (buffer.Length >= ExtraSmallSize)
+            {
                 extraSmallPool.ReturnInstance(buffer);
+            }
 
             //Else ignore and let the GC deal with it
         }
