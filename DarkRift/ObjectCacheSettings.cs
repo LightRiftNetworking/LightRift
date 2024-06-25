@@ -38,7 +38,7 @@ namespace DarkRift
         public int MaxSocketAsyncEventArgs { get; set; }
 
         /// <summary>
-        ///     The maximum number of ActionDisapatcherTasks to cache per thread.
+        ///     The maximum number of ActionDispatcherTasks to cache per thread.
         /// </summary>
         public int MaxActionDispatcherTasks { get; set; }
 
