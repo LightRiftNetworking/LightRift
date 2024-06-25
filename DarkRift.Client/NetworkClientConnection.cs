@@ -21,7 +21,7 @@ namespace DarkRift.Client
         /// </summary>
         /// <param name="messageBuffer">The message buffer received.</param>
         /// <param name="sendMode">The send mode the message was received with.</param>
-        public delegate void MessageReceviedHandler(MessageBuffer messageBuffer, SendMode sendMode);
+        public delegate void MessageReceivedHandler(MessageBuffer messageBuffer, SendMode sendMode);
 
         /// <summary>
         ///     Delegate for handling disconnections.
@@ -33,7 +33,7 @@ namespace DarkRift.Client
         /// <summary>
         ///     The method called when a message has been received.
         /// </summary>
-        public MessageReceviedHandler MessageReceived { get; set; }
+        public MessageReceivedHandler MessageReceived { get; set; }
 
         /// <summary>
         ///     The method called when this connection is disconnected.
