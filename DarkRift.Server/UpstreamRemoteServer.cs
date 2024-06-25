@@ -50,7 +50,7 @@ namespace DarkRift.Server
         ///     The connection to the remote server.
         /// </summary>
         /// <remarks>
-        ///     Will change reference on reconnections. Currently this is not marked volatile as that is a very exceptional circumstance and at that point
+        ///     Will change reference on reconnections. Currently, this is not marked volatile as that is a very exceptional circumstance and at that point
         ///     was can likely tolerate just waiting for something else to synchronise caches later.
         /// </remarks>
         private NetworkClientConnection connection;
@@ -151,8 +151,8 @@ namespace DarkRift.Server
             IEnumerable<IPAddress> addresses = Dns.GetHostEntry(Host).AddressList;
 
             // Try to connect to an IP address
-            // TODO this might not reconnect to the same IP, break out option to prioritised last connected to.
-            // TODO this will always try the same IP address, break out round robin option for load balancing
+            // TODO this might not reconnect to the same IP, break out option to prioritise last connected to.
+            // TODO this will always try the same IP address, break out round-robin option for load balancing
             connection = GetResultOfFirstSuccessfulInvocationOf(addresses, (address) =>
             {
                 var c = serverGroup.GetConnection(address, Port);
@@ -191,7 +191,7 @@ namespace DarkRift.Server
                     {
                         serverConnectedEventFailuresCounter.Increment();
 
-                        // TODO this seems bad, shouldn't we disconenct them?
+                        // TODO this seems bad, shouldn't we disconnect them?
                         logger.Error("A plugin encountered an error whilst handling the ServerConnected event. The server will still be connected. (See logs for exception)", e);
                     }
 
@@ -233,7 +233,7 @@ namespace DarkRift.Server
         /// <summary>
         ///     Callback for when data is received.
         /// </summary>
-        /// <param name="buffer">The data recevied.</param>
+        /// <param name="buffer">The data received.</param>
         /// <param name="sendMode">The SendMode used to send the data.</param>
         private void MessageReceivedHandler(MessageBuffer buffer, SendMode sendMode)
         {
@@ -273,10 +273,10 @@ namespace DarkRift.Server
         ///     Handles a message received.
         /// </summary>
         /// <param name="message">The message that was received.</param>
-        /// <param name="sendMode">The send mode the emssage was received with.</param>
+        /// <param name="sendMode">The send mode the message was received with.</param>
         private void HandleMessage(Message message, SendMode sendMode)
         {
-            // Get another reference to the message so 1. we can control the backing array's lifecycle and thus it won't get disposed of before we dispatch, and
+            // Get another reference to the message so 1. we can control the backing array's lifecycle, and thus it won't get disposed of before we dispatch, and
             // 2. because the current message will be disposed of when this method returns.
             var messageReference = message.Clone();
 
@@ -314,8 +314,8 @@ namespace DarkRift.Server
         /// <summary>
         /// Called when the connection is lost.
         /// </summary>
-        /// <param name="error">The socket error that ocurred</param>
-        /// <param name="exception">The exception that ocurred.</param>
+        /// <param name="error">The socket error that occurred</param>
+        /// <param name="exception">The exception that occurred.</param>
         private void DisconnectedHandler(SocketError error, Exception exception)
         {
             serverGroup.DisconnectedHandler(connection, this, exception);
@@ -352,7 +352,7 @@ namespace DarkRift.Server
         /// <typeparam name="T">The type of inbound data.</typeparam>
         /// <typeparam name="TResult">The type of data being returned.</typeparam>
         /// <param name="inbound">The data to test the function against.</param>
-        /// <param name="function">The function to test each peice fo data against.</param>
+        /// <param name="function">The function to test each piece fo data against.</param>
         /// <returns>The first result.</returns>
         private TResult GetResultOfFirstSuccessfulInvocationOf<T, TResult>(IEnumerable<T> inbound, Func<T, TResult> function) where TResult : class
         {
@@ -388,8 +388,7 @@ namespace DarkRift.Server
         ///     Handles disposing of the connection.
         /// </summary>
         /// <param name="disposing"></param>
-#pragma warning disable CS0628
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing && !disposed)
             {
@@ -401,6 +400,5 @@ namespace DarkRift.Server
                 }
             }
         }
-#pragma warning restore CS0628
     }
 }

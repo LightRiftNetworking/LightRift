@@ -49,7 +49,7 @@ namespace DarkRift.Server
         private static int finalizedServerMessageReceivedEventArgs = 0;
 
         /// <summary>
-        ///     Indcates an <see cref="MessageReceivedEventArgs"/> did not get recycled properly.
+        ///     Indicates an <see cref="MessageReceivedEventArgs"/> did not get recycled properly.
         /// </summary>
         internal static void MessageReceivedEventArgsWasFinalized()
         {
@@ -57,7 +57,7 @@ namespace DarkRift.Server
         }
 
         /// <summary>
-        ///     Indcates an <see cref="ServerMessageReceivedEventArgs"/> did not get recycled properly.
+        ///     Indicates an <see cref="ServerMessageReceivedEventArgs"/> did not get recycled properly.
         /// </summary>
         internal static void ServerMessageReceivedEventArgsWasFinalized()
         {

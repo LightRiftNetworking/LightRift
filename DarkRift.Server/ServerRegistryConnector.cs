@@ -74,7 +74,7 @@ namespace DarkRift.Server
         ///     <see cref="HandleServerJoin(ushort, string, string, ushort, IDictionary{string, string})"/> or if it is a reconnection attempt
         ///     following a lost connection.
         ///
-        ///     By default this method does nothing.
+        ///     By default, this method does nothing.
         /// </remarks>
         /// <param name="id">The ID of the server unable to connect to.</param>
         protected internal virtual void HandleConnectionFailure(ushort id)
@@ -85,12 +85,12 @@ namespace DarkRift.Server
         ///     Instructs the server that a new server has joined the cluster.
         /// </summary>
         /// <remarks>
-        ///     Upon calling this method DarkRift will decide whether is it necessary to track this server and whether or not a connection
-        ///     needs to be made to it based on the contents of the system configuration file. Therefore it is ok to call this method for
+        ///     Upon calling this method DarkRift will decide whether is it necessary to track this server and whether a connection
+        ///     needs to be made to it based on the contents of the system configuration file. Therefore, it is ok to call this method for
         ///     all servers regardless of whether the server's group is relevant to this server or not.
         ///
-        ///     Similarly this method can be called on a server when that server is the server joining (i.e. notifying it of itself) and
-        ///     aditional checks do not need to be put in place in the connector as that call will be discarded automatically.
+        ///     Similarly, this method can be called on a server when that server is the server joining (i.e. notifying it of itself) and
+        ///     additional checks do not need to be put in place in the connector as that call will be discarded automatically.
         /// </remarks>
         /// <param name="id">The ID of the server.</param>
         /// <param name="group">The group the server is part of.</param>
@@ -107,7 +107,7 @@ namespace DarkRift.Server
         /// </summary>
         /// <remarks>
         ///     Upon calling this method DarkRift will check to see if it is actually connected to the server before performing any action.
-        ///     Therefore it is ok to call this method for all servers regardless of whether the server's group is relevant to this server or
+        ///     Therefore, it is ok to call this method for all servers regardless of whether the server's group is relevant to this server or
         ///     not.
         /// </remarks>
         /// <param name="id">The ID of the server.</param>

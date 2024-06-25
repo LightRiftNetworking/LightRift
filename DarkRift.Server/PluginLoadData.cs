@@ -31,7 +31,7 @@ namespace DarkRift.Server
         public INetworkListenerManager NetworkListenerManager { get; set; }
 
         /// <summary>
-        ///     The server regsitry connector manager to pass to the plugin.
+        ///     The server registry connector manager to pass to the plugin.
         /// </summary>
         public IServerRegistryConnectorManager ServerRegistryConnectorManager { get; set; }
 

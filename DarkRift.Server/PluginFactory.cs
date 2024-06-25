@@ -90,7 +90,7 @@ namespace DarkRift.Server
         /// <summary>
         ///     Adds the given plugin files into the index.
         /// </summary>
-        /// <param name="files">An array of filepaths to the plugins.</param>
+        /// <param name="files">An array of file paths to the plugins.</param>
         /// <param name="dependencyResolutionStrategy">The way to resolve dependencies for the plugin.</param>
         /// <param name="searchedDirectory">the directory that was searched to find this file.</param>
         internal void AddFiles(IEnumerable<string> files, DependencyResolutionStrategy dependencyResolutionStrategy, string searchedDirectory)
@@ -137,7 +137,7 @@ namespace DarkRift.Server
             //Log
             logger.Trace($"Searching '{file}' for plugins.");
 
-            // Setup assembly resolver to help find dependencies recursively in the folder heirachy of the plugin
+            // Setup assembly resolver to help find dependencies recursively in the folder hierarchy of the plugin
             AppDomain.CurrentDomain.AssemblyResolve += LoadFromSameFolder;
 
             Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
@@ -247,7 +247,7 @@ namespace DarkRift.Server
         /// <typeparam name="T">The type of plugin to load it as.</typeparam>
         /// <param name="type">The name of the type to load.</param>
         /// <param name="loadData">The data to load into the plugin.</param>
-        /// <param name="backupLoadData">The backup load data to try for backwards compatablity.</param>
+        /// <param name="backupLoadData">The backup load data to try for backwards compatibility.</param>
         /// <returns>The new plugin.</returns>
         internal T Create<T>(string type, PluginBaseLoadData loadData, PluginLoadData backupLoadData = null) where T : PluginBase
         {
@@ -267,7 +267,7 @@ namespace DarkRift.Server
         /// <typeparam name="T">The type of plugin to load it as.</typeparam>
         /// <param name="type">The type to load.</param>
         /// <param name="loadData">The data to load into the plugin.</param>
-        /// <param name="backupLoadData">The backup load data to try for backwards compatability.</param>
+        /// <param name="backupLoadData">The backup load data to try for backwards compatibility.</param>
         /// <returns>The new plugin.</returns>
         internal T Create<T>(Type type, PluginBaseLoadData loadData, PluginLoadData backupLoadData = null) where T : PluginBase
         {

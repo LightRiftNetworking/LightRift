@@ -149,7 +149,7 @@ namespace DarkRift.Server
                     {
                         serverJoinedEventFailuresCounter.Increment();
 
-                        // TODO this seems bad, shoudln't we disconnect them?
+                        // TODO this seems bad, shouldn't we disconnect them?
                         logger.Error("A plugin encountered an error whilst handling the ServerJoined event. The server will still be connected. (See logs for exception)", e);
                     }
 

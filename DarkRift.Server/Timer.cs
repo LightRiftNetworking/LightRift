@@ -10,7 +10,7 @@ using System.Threading;
 namespace DarkRift.Server
 {
     /// <summary>
-    ///     A timer for delaying execution or one-shot or repetative tasks.
+    ///     A timer for delaying execution or one-shot or repetitive tasks.
     /// </summary>
     public sealed class Timer : IDisposable
     {
@@ -27,7 +27,7 @@ namespace DarkRift.Server
         /// <summary>
         ///     The initial delay set on the timer.
         /// </summary>
-        public int IntialDelay { get; }
+        public int InitialDelay { get; }
 
         /// <summary>
         ///     The repetition period set on the timer.
@@ -55,7 +55,7 @@ namespace DarkRift.Server
             this.threadHelper = threadHelper;
             IsOneShot = true;
             Callback = callback;
-            IntialDelay = delay;
+            InitialDelay = delay;
 
             timer = new System.Threading.Timer(InvokeCallback, null, delay, Timeout.Infinite);
         }
@@ -72,7 +72,7 @@ namespace DarkRift.Server
             this.threadHelper = threadHelper;
             IsOneShot = false;
             Callback = callback;
-            IntialDelay = initialDelay;
+            InitialDelay = initialDelay;
             RepetitionPeriod = repetitionPeriod;
 
             timer = new System.Threading.Timer(InvokeCallback, null, initialDelay, repetitionPeriod);

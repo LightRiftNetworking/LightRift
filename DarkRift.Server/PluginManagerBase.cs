@@ -26,7 +26,7 @@ namespace DarkRift.Server
         private readonly DarkRiftServer server;
 
         /// <summary>
-        ///     The server's datamanager.
+        ///     The server's data manager.
         /// </summary>
         private readonly DataManager dataManager;
 
@@ -124,7 +124,7 @@ namespace DarkRift.Server
         ///     Searches for the given plugin name.
         /// </summary>
         /// <param name="name">The name of the plugin.</param>
-        /// <returns>Whether the plugins was found.</returns>
+        /// <returns>Whether the plugins were found.</returns>
         protected bool ContainsPlugin(string name)
         {
             return plugins.ContainsKey(name);

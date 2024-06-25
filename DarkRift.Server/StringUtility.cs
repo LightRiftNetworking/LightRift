@@ -13,7 +13,7 @@ namespace DarkRift.Server
     internal static class StringUtility
     {
         /// <summary>
-        ///     Formats a list of IPEndPoints nicely seperated by pipe characters.
+        ///     Formats a list of IPEndPoints nicely separated by pipe characters.
         /// </summary>
         /// <param name="endPoints">The end points to format.</param>
         /// <returns>The formatted string.</returns>

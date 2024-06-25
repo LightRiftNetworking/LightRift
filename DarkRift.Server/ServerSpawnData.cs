@@ -55,7 +55,7 @@ namespace DarkRift.Server
         public ListenersSettings Listeners { get; set; } = new ListenersSettings();
 
         /// <summary>
-        ///     The settings for the server regirsty.
+        ///     The settings for the server registry.
         /// </summary>
         public ServerRegistrySettings ServerRegistry { get; set; } = new ServerRegistrySettings();
 
@@ -91,7 +91,7 @@ namespace DarkRift.Server
             public string ServerGroup { get; set; }
 
             /// <summary>
-            ///     The number of times to try to reconnect to a server before considering it unconnectable.
+            ///     The number of times to try to reconnect to a server before considering it unreachable.
             /// </summary>
             public ushort ReconnectAttempts { get; set; } = 5;
 

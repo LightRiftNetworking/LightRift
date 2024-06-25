@@ -32,7 +32,7 @@ namespace DarkRift.Server
         ConnectionRequest,
 
         /// <summary>
-        ///     Specifies a client sent a ping acknowledgement for a nonexistant ping.
+        ///     Specifies a client sent a ping acknowledgement for a nonexistent ping.
         /// </summary>
         UnidentifiedPing,
 

@@ -73,7 +73,7 @@ namespace DarkRift.Server
         /// <summary>
         ///     Gets the message received.
         /// </summary>
-        /// <returns>An new instance of the message received.</returns>
+        /// <returns>A new instance of the message received.</returns>
         public Message GetMessage()
         {
             return message.Clone();

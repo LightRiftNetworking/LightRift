@@ -46,7 +46,7 @@ namespace DarkRift.Server
         /// </summary>
         /// <param name="remoteServer">The RemoteServer that disconnected.</param>
         /// <param name="error">The error that caused the disconnect.</param>
-        /// <param name="exception">The exception that caused the disconenct.</param>
+        /// <param name="exception">The exception that caused the disconnect.</param>
         public ServerDisconnectedEventArgs(IRemoteServer remoteServer, SocketError error, Exception exception)
         {
             RemoteServer = remoteServer;
