@@ -5,9 +5,8 @@ name: Build, test, create release, upload artifacts
 
 on:
   push:
-    branches: ["release"]
-  pull_request:
-    branches: ["release"]
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
