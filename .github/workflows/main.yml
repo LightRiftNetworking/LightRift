@@ -5,9 +5,9 @@ name: Build, test, create release, upload artifacts
 
 on:
   push:
-    branches: ["master", "ci"]
+    branches: ["release"]
   pull_request:
-    branches: ["master", "ci"]
+    branches: ["release"]
 
 jobs:
   build:
@@ -41,6 +41,5 @@ jobs:
 
     - name: Release on tag
       uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: lightrift-artifacts.zip
