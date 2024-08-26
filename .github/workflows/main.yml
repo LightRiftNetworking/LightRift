@@ -1,3 +1,5 @@
+name: Build, test, create release, upload artifacts
+
 on:
   push:
     tags:
