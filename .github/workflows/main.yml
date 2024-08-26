@@ -1,13 +1,13 @@
-# This workflow will build a .NET project
+# This workflow will build a .NET project and upload artifacts
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: Build and upload artifacts
 
 on:
   push:
-    branches: [ "master","ci" ]
+    branches: ["master", "ci"]
   pull_request:
-    branches: [ "master","ci" ]
+    branches: ["master", "ci"]
 
 jobs:
   build:
@@ -16,13 +16,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: /home/runner/work/LightRift/LightRift/*/bin/*
+        if-no-files-found: 'error'
+        overwrite: true
