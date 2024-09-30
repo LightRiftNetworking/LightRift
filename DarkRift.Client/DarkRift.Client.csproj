@@ -3,9 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>disable</Nullable>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="readme.md" Pack="true" PackagePath=""/>
     <ProjectReference Include="..\DarkRift\DarkRift.csproj" />
   </ItemGroup>
 
