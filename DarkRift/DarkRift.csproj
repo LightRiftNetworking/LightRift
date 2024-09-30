@@ -1,14 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RepositoryUrl>https://github.com/LightRiftNetworking/LightRift</RepositoryUrl>
+    <PackageId>LightRift</PackageId>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
-	<None Include="readme.md" Pack="true" PackagePath=""/>
+	<None Include="README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
