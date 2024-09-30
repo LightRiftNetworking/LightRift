@@ -28,10 +28,19 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build --no-restore --configuration Release /p:Version=${TAG_NAME}
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal /p:Version=${TAG_NAME} 
+
+    - name: Pack DarkRift
+      run: dotnet pack ./DarkRift --configuration Release /p:Version=${TAG_NAME} --no-build --output .
+
+    - name: Pack DarkRift.Client
+      run: dotnet pack ./DarkRift.Client --configuration Release /p:Version=${TAG_NAME} --no-build --output .
+
+    - name: Pack DarkRift.Server
+      run: dotnet pack ./DarkRift.Server --configuration Release /p:Version=${TAG_NAME} --no-build --output .
 
     - name: Create zip of artifacts
       run: |
@@ -39,8 +48,11 @@ jobs:
         zip -j -r artifacts/lightrift.zip /home/runner/work/LightRift/LightRift/DarkRift.Server.Console/bin/Release/*
         ls -lA artifacts
 
-    - name: Release on tag
+    - name: Release
       uses: softprops/action-gh-release@v2
       with:
         files: artifacts/lightrift.zip
         fail_on_unmatched_files: true
+
+    - name: Push nuget
+      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/LightRift/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
