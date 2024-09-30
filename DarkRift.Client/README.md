@@ -1,1 +1,1 @@
-Darkrift.Client
+DarkRift.Client

@@ -1,1 +1,1 @@
-Lightrift.Server
+DarkRift.Server
