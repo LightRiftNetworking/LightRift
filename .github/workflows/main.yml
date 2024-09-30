@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
     steps:
     - uses: actions/checkout@v4
 
@@ -54,8 +55,5 @@ jobs:
         files: artifacts/lightrift.zip
         fail_on_unmatched_files: true
 
-
-
     - name: Push nuget
-      run: |
-        dotnet nuget push *.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/LightRift/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
