@@ -34,13 +34,13 @@ jobs:
       run: dotnet test --no-build --verbosity normal /p:Version=${TAG_NAME} 
 
     - name: Pack DarkRift
-      run: dotnet pack ./DarkRift --configuration Release /p:Version=${TAG_NAME} --no-build --output .
+      run: dotnet pack ./DarkRift --configuration Release /p:AssemblyVersion=${TAG_NAME} /p:Version=${TAG_NAME} --no-build --output .
 
     - name: Pack DarkRift.Client
-      run: dotnet pack ./DarkRift.Client --configuration Release /p:Version=${TAG_NAME} --no-build --output .
+      run: dotnet pack ./DarkRift.Client --configuration Release /p:AssemblyVersion=${TAG_NAME} /p:Version=${TAG_NAME} --no-build --output .
 
     - name: Pack DarkRift.Server
-      run: dotnet pack ./DarkRift.Server --configuration Release /p:Version=${TAG_NAME} --no-build --output .
+      run: dotnet pack ./DarkRift.Server --configuration Release /p:AssemblyVersion=${TAG_NAME} /p:Version=${TAG_NAME} --no-build --output .
 
     - name: Create zip of artifacts
       run: |
