@@ -56,4 +56,4 @@ jobs:
         fail_on_unmatched_files: true
 
     - name: Push nuget
-      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/LightRift/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
