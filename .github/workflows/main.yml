@@ -1,0 +1,46 @@
+name: Build, test, create release, upload artifacts
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Replace <Version> in Directory.Build.props with tag name (without 'v')
+      run: |
+        TAG_NAME=${GITHUB_REF#refs/tags/v}
+        sed -i "s|<Version>.*</Version>|<Version>${TAG_NAME}</Version>|" Directory.Build.props
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Create zip of artifacts
+      run: |
+        mkdir -p artifacts
+        zip -j -r artifacts/lightrift.zip /home/runner/work/LightRift/LightRift/DarkRift.Server.Console/bin/Release/*
+        ls -lA artifacts
+
+    - name: Release on tag
+      uses: softprops/action-gh-release@v2
+      with:
+        files: artifacts/lightrift.zip
+        fail_on_unmatched_files: true
