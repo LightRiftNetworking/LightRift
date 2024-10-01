@@ -3,9 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>disable</Nullable>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/LightRiftNetworking/LightRift</RepositoryUrl>
+	    <PackageId>LightRift.Client</PackageId>
+	    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath=""/>
     <ProjectReference Include="..\DarkRift\DarkRift.csproj" />
   </ItemGroup>
 

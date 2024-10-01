@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
     steps:
     - uses: actions/checkout@v4
 
@@ -28,10 +29,19 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build --no-restore --configuration Release 
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal 
+
+    - name: Pack DarkRift
+      run: dotnet pack ./DarkRift --configuration Release --no-build --output .
+
+    - name: Pack DarkRift.Client
+      run: dotnet pack ./DarkRift.Client --configuration Release --no-build --output .
+
+    - name: Pack DarkRift.Server
+      run: dotnet pack ./DarkRift.Server --configuration Release --no-build --output .
 
     - name: Create zip of artifacts
       run: |
@@ -39,7 +49,13 @@ jobs:
         zip -j -r artifacts/lightrift.zip /home/runner/work/LightRift/LightRift/DarkRift.Server.Console/bin/Release/*
         ls -lA artifacts
 
-    - name: Release on tag
+    - name: Push nuget to github.com
+      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push nuget to nuget.org
+      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGETORG_API_KEY }}
+
+    - name: Create github release
       uses: softprops/action-gh-release@v2
       with:
         files: artifacts/lightrift.zip
