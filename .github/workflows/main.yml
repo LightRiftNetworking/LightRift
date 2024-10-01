@@ -46,7 +46,7 @@ jobs:
     - name: Create zip of artifacts
       run: |
         mkdir -p artifacts
-        zip -j -r artifacts/lightrift.zip /home/runner/work/LightRift/LightRift/DarkRift.Server.Console/bin/Release/*
+        zip -j -r artifacts/lightrift.zip /home/runner/work/LightRift/LightRift/DarkRift.Server/bin/Release/netstandard2.1/*
         ls -lA artifacts
 
     - name: Push nuget to github.com
