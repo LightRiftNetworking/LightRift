@@ -55,5 +55,8 @@ jobs:
         files: artifacts/lightrift.zip
         fail_on_unmatched_files: true
 
-    - name: Push nuget
+    - name: Push nuget to github.com
       run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push nuget to nuget.org
+      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGETORG_API_KEY }}
